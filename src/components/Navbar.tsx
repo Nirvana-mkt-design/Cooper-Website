@@ -205,7 +205,7 @@ export default function Navbar() {
 
       {/* ── Mega menu panel (inside same nav) ── */}
       <div
-        className={`relative z-10 overflow-hidden transition-all duration-200 ease-out ${
+        className={`relative z-10 overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
           isOpen ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'
         }`}
         onMouseEnter={handlePanelEnter}
