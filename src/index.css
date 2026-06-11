@@ -1,0 +1,113 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: 'BIZ UDPMincho', 'Georgia', serif;
+  --font-grotesk: 'Space Grotesk', system-ui, sans-serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+
+  --color-cream: #ede7d9;
+  --color-cream-light: #fffcf1;
+  --color-dark: #1e1a15;
+  --color-dark-2: #1d1a17;
+  --color-muted: #4d4c48;
+  --color-accent-orange: #d95611;
+  --color-accent-red: #ff472f;
+}
+
+@keyframes marquee-left {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes marquee-right {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
+@utility animate-marquee-left {
+  animation: marquee-left 30s linear infinite;
+}
+@utility animate-marquee-right {
+  animation: marquee-right 30s linear infinite;
+}
+
+@keyframes shapes-up {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(calc(-50%)); }
+}
+@keyframes shapes-down {
+  0% { transform: translateY(calc(-50%)); }
+  100% { transform: translateY(0); }
+}
+
+@utility animate-shapes-up {
+  animation: shapes-up 120s linear infinite;
+}
+@utility animate-shapes-down {
+  animation: shapes-down 120s linear infinite;
+}
+
+@keyframes slot-roll-in {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+    filter: blur(6px);
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+    filter: blur(0px);
+  }
+}
+
+@keyframes fade-blur-in {
+  0% {
+    opacity: 0;
+    filter: blur(12px);
+    transform: translateY(16px);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0px);
+    transform: translateY(0);
+  }
+}
+
+@utility animate-fade-blur-in {
+  animation: fade-blur-in 1s ease-out both;
+}
+
+/* ── Scroll Reveal ── */
+@keyframes reveal-up {
+  0% {
+    opacity: 0;
+    transform: translateY(32px);
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0px);
+  }
+}
+
+.reveal-section {
+  opacity: 0;
+}
+
+.reveal-section.revealed {
+  animation: reveal-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  body {
+    margin: 0;
+    background: #fffcf1;
+    color: #1e1a15;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+}

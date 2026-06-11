@@ -1,0 +1,74 @@
+const metrics = [
+  { value: '25h', label: 'Saved monthly per producer', note: 'avg. across active teams' },
+  { value: '17%', label: 'More bound premium per producer', note: 'avg. across active teams' },
+  { value: '28%', label: 'Document processing accuracy', note: 'validated across all formats' },
+]
+
+export default function Metrics() {
+  return (
+    <section className="relative h-[516px] overflow-hidden">
+      {/* Background layers from Figma */}
+      <div className="absolute inset-0">
+        {/* Base dark color */}
+        <div className="absolute inset-0 bg-[#1e1a15]" />
+        {/* Photo */}
+        <img
+          src="/images/metrics-bg.png"
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover object-bottom"
+        />
+        {/* Warm gradient overlays — hard-light */}
+        <div
+          className="absolute inset-0 mix-blend-hard-light"
+          style={{ backgroundImage: 'linear-gradient(239.87deg, rgba(186,67,9,0) 47.62%, rgba(186,67,9,0.43) 82.36%)' }}
+        />
+        <div
+          className="absolute inset-0 mix-blend-hard-light"
+          style={{ backgroundImage: 'linear-gradient(-69.48deg, rgba(186,186,9,0) 56.77%, rgba(186,89,9,0.43) 92.22%)' }}
+        />
+        {/* Radial vignette */}
+        <div
+          className="absolute inset-0 opacity-60"
+          style={{ background: 'radial-gradient(ellipse at 71% 70%, rgba(0,0,0,0) 0%, rgba(28,11,5,1) 100%)' }}
+        />
+      </div>
+
+      {/* Glassmorphism blur overlay */}
+      <div
+        className="absolute inset-0"
+        style={{
+          backdropFilter: 'blur(1.5px)',
+          WebkitBackdropFilter: 'blur(1.5px)',
+        }}
+      />
+
+      {/* Content */}
+      <div className="relative z-10 max-w-[1440px] mx-auto px-[138px] pt-[50px] pb-[50px]">
+        <div className="flex flex-col gap-[50px]">
+          {/* Heading */}
+          <div className="flex flex-col gap-[28px] max-w-[483px]">
+            <p className="font-grotesk font-medium text-[14.5px] tracking-[1.45px] uppercase text-cream-light leading-[1.5]">
+              Impact
+            </p>
+            <h2 className="font-serif text-[48px] leading-[1.2] text-cream-light">
+              Measurable results from day one
+            </h2>
+          </div>
+
+          {/* Metrics row */}
+          <div className="flex items-start justify-between w-full">
+            {metrics.map((m) => (
+              <div key={m.value} className="flex flex-col gap-[16px] items-center text-center flex-1">
+                <span className="font-serif text-[96px] leading-[1] text-cream-light">{m.value}</span>
+                <span className="font-grotesk font-medium text-[14.5px] tracking-[1.45px] uppercase text-cream-light leading-[1.5]">
+                  {m.label}
+                </span>
+                <span className="font-sans text-[16px] leading-[1.2] text-cream-light/50">{m.note}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
