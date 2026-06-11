@@ -205,17 +205,21 @@ export default function Navbar() {
 
       {/* ── Mega menu panel (inside same nav) ── */}
       <div
-        className={`relative z-10 overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-          isOpen ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'
-        }`}
+        className="relative z-10 grid transition-[grid-template-rows] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
+        style={{ gridTemplateRows: isOpen ? '1fr' : '0fr' }}
         onMouseEnter={handlePanelEnter}
       >
+        <div className="overflow-hidden">
         {/* Thin white divider line */}
         <div className="mx-[62px] border-t border-white/[0.12]" />
 
         {/* Panel content */}
         {panel && (
-          <div className="max-w-[1440px] mx-auto px-[62px] py-[32px]">
+          <div
+            className={`max-w-[1440px] mx-auto px-[62px] py-[32px] transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+              isOpen ? 'opacity-100 translate-y-0 blur-0' : 'opacity-0 -translate-y-4 blur-[8px]'
+            }`}
+          >
             <div
               className="grid gap-0"
               style={{
@@ -272,6 +276,7 @@ export default function Navbar() {
             </div>
           </div>
         )}
+        </div>
       </div>
     </nav>
   )
