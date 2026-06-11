@@ -1,4 +1,3 @@
-const COL_SPACING = 72
 const ROW_SPACING = 44
 const SHAPE_SIZE = 21
 const CELL_SIZE = 31
