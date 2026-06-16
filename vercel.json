@@ -1,0 +1,9 @@
+{
+  "buildCommand": "cd cooper-site && npm run build",
+  "outputDirectory": "cooper-site/dist",
+  "installCommand": "cd cooper-site && npm install",
+  "framework": "vite",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
