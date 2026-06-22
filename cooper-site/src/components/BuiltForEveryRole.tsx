@@ -1,16 +1,21 @@
+import { Link } from 'react-router-dom'
+
 const topRoles = [
   {
     tag: 'Retail Agencies',
+    slug: 'retail-agencies',
     title: 'Cooper adapts\nto your workflow',
     desc: 'Cooper pulls submissions out of your inbox and turns them into clean applications, then shows how each carrier\'s coverage compares in plain terms. It keeps an eye on renewals too, so none slip your mind.',
   },
   {
     tag: 'Wholesale Brokers',
+    slug: 'wholesale-brokers',
     title: 'Place more\nbusiness faster',
     desc: 'Submissions arrive in every format imaginable. Cooper cleans them up, steers each risk to the markets likely to write it, then lines up quotes so you can respond while the deal\'s still warm.',
   },
   {
     tag: 'MGAs & Insurers',
+    slug: 'mgas-insurers',
     title: 'Scale underwriting\nwithout scaling headcount',
     desc: 'Cooper runs each risk against the program\'s guidelines and flags anything outside appetite before it binds. When bordereaux are due, it pulls them together, so a lean team can cover more programs.',
   },
@@ -19,19 +24,21 @@ const topRoles = [
 const bottomRoles = [
   {
     tag: 'Claims TPAs',
+    slug: 'claims-tpas',
     title: 'Streamline claims from\nintake to reporting',
     desc: 'When a claim comes in, Cooper captures the details, checks them against the policy, and gives adjusters what they need to make the call. Loss runs are ready whenever a carrier asks.',
   },
   {
     tag: 'Reinsurers',
+    slug: 'reinsurers',
     title: 'Optimize treaties and\nrisk at portfolio scale',
     desc: 'Cedent reports get validated as they land, and exposure is tracked across the portfolio, not one treaty at a time. You\'ll see concentration building well before it\'s a problem.',
   },
 ]
 
-function RoleCard({ tag, title, desc }: { tag: string; title: string; desc: string }) {
+function RoleCard({ tag, slug, title, desc }: { tag: string; slug: string; title: string; desc: string }) {
   return (
-    <div className="px-[52px] py-[44px] flex flex-col gap-[31px] cursor-pointer group relative transition-colors duration-300 hover:bg-dark/[0.02]">
+    <Link to={`/personas/${slug}`} className="px-[52px] py-[44px] flex flex-col gap-[31px] cursor-pointer group relative transition-colors duration-300 hover:bg-dark/[0.02] no-underline">
       {/* Hover accent bar */}
       <div className="absolute top-0 left-0 right-0 h-[3px] bg-accent-orange opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
       <p className="font-grotesk font-medium text-[14px] tracking-[1.4px] uppercase text-accent-orange leading-[1.5]">
@@ -48,7 +55,7 @@ function RoleCard({ tag, title, desc }: { tag: string; title: string; desc: stri
       >
         Learn More
       </span>
-    </div>
+    </Link>
   )
 }
 
