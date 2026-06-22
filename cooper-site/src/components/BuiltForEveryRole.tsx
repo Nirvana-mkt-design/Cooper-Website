@@ -70,11 +70,11 @@ export default function BuiltForEveryRole() {
               Built for every role
             </p>
             <h2 className="font-serif text-[38px] leading-[1.2] text-dark">
-              Cooper adapts to your workflow
+              From inbox to application,<br />without the busywork
             </h2>
           </div>
           <p className="font-sans text-[16px] leading-[1.5] text-dark/70 max-w-[452px] pt-[24px]">
-            Whether you're a retail broker, wholesale underwriter, or claims adjuster — Cooper works the way you already work.
+            Whether you're a retail broker, wholesale underwriter, or claims adjuster, Cooper works the way you already work.
           </p>
         </div>
 
