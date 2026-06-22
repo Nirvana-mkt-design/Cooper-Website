@@ -1,0 +1,76 @@
+{
+  "project_id": "1214835477910635",
+  "workspace_id": "1199205552361841",
+
+  "user_mappings": {
+    "hygorammirk": {
+      "asana_gid": "1210792573128839",
+      "name": "Hygor Ammirk"
+    }
+  },
+
+  "page_tasks": {
+    "home": {
+      "task_gid": "1215944614298872",
+      "label": "Home"
+    },
+    "retail-agencies": {
+      "task_gid": "1215944614298874",
+      "label": "Retail Agencies / Persona"
+    },
+    "wholesale-brokers": {
+      "task_gid": "1215944614298876",
+      "label": "Wholesale Broker / Persona"
+    },
+    "mgas-insurers": {
+      "task_gid": "1215944614298878",
+      "label": "MGAs & Insurers / Persona"
+    },
+    "claims-tpas": {
+      "task_gid": "1215944614298880",
+      "label": "Claims TPAs / Persona"
+    },
+    "reinsurers": {
+      "task_gid": "1215944614298882",
+      "label": "Reinsurers / Persona"
+    },
+    "intelligent-intake": {
+      "task_gid": "1215944614298887",
+      "label": "Intelligent Intake / Product"
+    },
+    "deep-insights": {
+      "task_gid": "1215944614298889",
+      "label": "Deep Insights / Product"
+    },
+    "workflow-automation": {
+      "task_gid": "1215944614298891",
+      "label": "Workflow Automation / Product"
+    },
+    "integration": {
+      "task_gid": "1215944614298893",
+      "label": "Integration / Product"
+    },
+    "demo": {
+      "task_gid": "1215944614298872",
+      "label": "Home"
+    }
+  },
+
+  "file_to_pages": {
+    "src/components/Hero.tsx": ["home"],
+    "src/components/OnePlatform.tsx": ["home"],
+    "src/components/HowCooperHelps.tsx": ["home"],
+    "src/components/BuiltForEveryRole.tsx": ["home"],
+    "src/components/Metrics.tsx": ["home"],
+    "src/components/Integrations.tsx": ["home", "integration"],
+    "src/components/Testimonial.tsx": ["home"],
+    "src/components/FinalCTA.tsx": ["home"],
+    "src/components/TeamSection.tsx": ["home"],
+    "src/components/DemoPage.tsx": ["demo"],
+    "src/components/Navbar.tsx": ["home"],
+    "src/components/Footer.tsx": ["home"],
+    "src/components/PersonaPage.tsx": ["retail-agencies", "wholesale-brokers", "mgas-insurers", "claims-tpas", "reinsurers"],
+    "src/data/personas.ts": ["retail-agencies", "wholesale-brokers", "mgas-insurers", "claims-tpas", "reinsurers"],
+    "src/index.css": ["home"]
+  }
+}
