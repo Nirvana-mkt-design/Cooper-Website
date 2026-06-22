@@ -1,3 +1,13 @@
+import { Link } from 'react-router-dom'
+
+const roles = [
+  { label: 'Retail Agencies', slug: 'retail-agencies', delay: '1.6s' },
+  { label: 'Wholesale Brokers', slug: 'wholesale-brokers', delay: '1.75s' },
+  { label: 'MGAs & Insurers', slug: 'mgas-insurers', delay: '1.9s' },
+  { label: 'Claims TPAs', slug: 'claims-tpas', delay: '2.05s' },
+  { label: 'Reinsurers', slug: 'reinsurers', delay: '2.2s' },
+]
+
 export default function Hero() {
   return (
     <section className="relative overflow-hidden h-[897px]">
@@ -62,11 +72,23 @@ export default function Hero() {
             Built<br />For
           </span>
           <div className="flex items-center gap-[52px] font-serif text-[24px] leading-[1.2] text-cream-light">
-            <span className="animate-fade-blur-in" style={{ animationDelay: '1.6s' }}>Retail Agencies</span>
-            <span className="animate-fade-blur-in" style={{ animationDelay: '1.75s' }}>Wholesale Brokers</span>
-            <span className="animate-fade-blur-in" style={{ animationDelay: '1.9s' }}>MGAs &amp; Insurers</span>
-            <span className="animate-fade-blur-in" style={{ animationDelay: '2.05s' }}>Claims TPAs</span>
-            <span className="animate-fade-blur-in" style={{ animationDelay: '2.2s' }}>Reinsurers</span>
+            {roles.map((role) => (
+              <Link
+                key={role.slug}
+                to={`/personas/${role.slug}`}
+                className="animate-fade-blur-in no-underline text-cream-light hover:text-cream-light"
+                style={{
+                  animationDelay: role.delay,
+                  borderBottom: '1.2px dashed transparent',
+                  paddingBottom: '2px',
+                  transition: 'border-color 0.3s ease',
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.borderColor = 'rgba(255,252,241,0.6)')}
+                onMouseLeave={(e) => (e.currentTarget.style.borderColor = 'transparent')}
+              >
+                {role.label}
+              </Link>
+            ))}
           </div>
         </div>
       </div>
