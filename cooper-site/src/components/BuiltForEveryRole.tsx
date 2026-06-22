@@ -4,7 +4,7 @@ const topRoles = [
   {
     tag: 'Retail Agencies',
     slug: 'retail-agencies',
-    title: 'Cooper adapts\nto your workflow',
+    title: 'From inbox to application,\nwithout the busywork',
     desc: 'Cooper pulls submissions out of your inbox and turns them into clean applications, then shows how each carrier\'s coverage compares in plain terms. It keeps an eye on renewals too, so none slip your mind.',
   },
   {
@@ -70,7 +70,7 @@ export default function BuiltForEveryRole() {
               Built for every role
             </p>
             <h2 className="font-serif text-[38px] leading-[1.2] text-dark">
-              From inbox to application,<br />without the busywork
+              Cooper adapts to your workflow
             </h2>
           </div>
           <p className="font-sans text-[16px] leading-[1.5] text-dark/70 max-w-[452px] pt-[24px]">

@@ -170,23 +170,7 @@ export default function PersonaPage() {
           </div>
         </div>
 
-        {/* Bottom: full-width video/image */}
-        <div className="max-w-[1440px] mx-auto px-[62px] pb-[0px]">
-          <div
-            className="animate-fade-blur-in w-full aspect-[2.4/1] rounded-[16px] overflow-hidden relative"
-            style={{ animationDelay: '0.6s' }}
-          >
-            <video
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="absolute inset-0 w-full h-full object-cover"
-            >
-              <source src="/images/persona-hero-video.mp4" type="video/mp4" />
-            </video>
-          </div>
-        </div>
+        {/* Bottom: full-width video/image — hidden for now */}
       </section>
 
       {/* Features Section */}
@@ -265,7 +249,7 @@ export default function PersonaPage() {
                       {p.name}
                     </span>
                     <span className="font-sans text-[15px] text-dark/40 group-hover:text-dark/60 transition-colors">
-                      {p.subtitle.split(' — ')[0].split('.')[0]}.
+                      {p.subtitle.split('.')[0]}.
                     </span>
                   </div>
                   </div>
