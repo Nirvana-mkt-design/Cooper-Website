@@ -6,7 +6,7 @@ const tabs = [
     label: 'Intelligent intake',
     title: 'Submissions processed in seconds, not hours',
     description:
-      "Emails, PDFs, applications, loss runs — Cooper reads everything that comes in, organizes it into your workflow, and tells you exactly what's missing before you have to chase it.",
+      "Emails, PDFs, applications, loss runs. Cooper reads everything that comes in, organizes it into your workflow, and tells you exactly what's missing before you have to chase it.",
     checks: [
       { bold: 'Any format, any carrier.', rest: 'Processed automatically' },
       { bold: 'Key details structured and ready', rest: 'for your team instantly' },
@@ -18,7 +18,7 @@ const tabs = [
     label: 'Deep insights',
     title: 'Catch what matters before it costs money',
     description:
-      'Cooper reads policies, loss runs, and applications like a senior underwriter — surfacing coverage gaps, comparing terms across carriers, and catching the issues that would take your team hours to find.',
+      'Cooper reads policies, loss runs, and applications like a senior underwriter, surfacing coverage gaps, comparing terms across carriers, and catching the issues that would take your team hours to find.',
     checks: [
       { bold: 'Side-by-side policy and quote', rest: 'comparison' },
       { bold: 'Loss history trends', rest: 'and ratio analysis in seconds' },
@@ -30,11 +30,11 @@ const tabs = [
     label: 'Workflow automation',
     title: 'Your process, running at the speed of AI',
     description:
-      'Cooper plugs into the way you already work — verifying guidelines, drafting emails, generating reports, answering questions about your documents in plain English.',
+      'Cooper plugs into the way you already work, verifying guidelines, drafting emails, generating reports, answering questions about your documents in plain English.',
     checks: [
       { bold: 'Compliance and guideline checks', rest: 'run automatically' },
       { bold: 'Emails, summaries, and reports', rest: 'drafted with the right context' },
-      { bold: 'Ask Cooper anything —', rest: 'get answers from your documents instantly' },
+      { bold: 'Ask Cooper anything,', rest: 'get answers from your documents instantly' },
     ],
   },
 ]
