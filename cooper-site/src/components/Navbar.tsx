@@ -27,7 +27,7 @@ const productPanel: NavPanel = {
     {
       label: 'By role',
       items: [
-        { title: 'Retail Brokers', desc: 'Win more business and serve clients better.', href: '/personas/retail-agencies' },
+        { title: 'Retail Agencies', desc: 'Cooper adapts to your workflow.', href: '/personas/retail-agencies' },
         { title: 'Wholesale Brokers', desc: 'Place more business faster with intelligent matching.', href: '/personas/wholesale-brokers' },
         { title: 'Insurers & MGAs', desc: 'Scale underwriting without scaling headcount.', href: '/personas/mgas-insurers' },
         { title: 'Reinsurers', desc: 'Optimize treaties and risk at portfolio scale.', href: '/personas/reinsurers' },
