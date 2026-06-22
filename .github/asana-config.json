@@ -2,6 +2,7 @@
   "project_id": "1214835477910635",
   "workspace_id": "1199205552361841",
   "master": "hygorammirk",
+  "vercel_base_url": "https://askcooper.vercel.app",
 
   "user_mappings": {
     "hygorammirk": {
@@ -17,47 +18,58 @@
   "page_tasks": {
     "home": {
       "task_gid": "1215944614298872",
-      "label": "Home"
+      "label": "Home",
+      "vercel_path": "/"
     },
     "retail-agencies": {
       "task_gid": "1215944614298874",
-      "label": "Retail Agencies / Persona"
+      "label": "Retail Agencies / Persona",
+      "vercel_path": "/personas/retail-agencies"
     },
     "wholesale-brokers": {
       "task_gid": "1215944614298876",
-      "label": "Wholesale Broker / Persona"
+      "label": "Wholesale Broker / Persona",
+      "vercel_path": "/personas/wholesale-brokers"
     },
     "mgas-insurers": {
       "task_gid": "1215944614298878",
-      "label": "MGAs & Insurers / Persona"
+      "label": "MGAs & Insurers / Persona",
+      "vercel_path": "/personas/mgas-insurers"
     },
     "claims-tpas": {
       "task_gid": "1215944614298880",
-      "label": "Claims TPAs / Persona"
+      "label": "Claims TPAs / Persona",
+      "vercel_path": "/personas/claims-tpas"
     },
     "reinsurers": {
       "task_gid": "1215944614298882",
-      "label": "Reinsurers / Persona"
+      "label": "Reinsurers / Persona",
+      "vercel_path": "/personas/reinsurers"
     },
     "intelligent-intake": {
       "task_gid": "1215944614298887",
-      "label": "Intelligent Intake / Product"
+      "label": "Intelligent Intake / Product",
+      "vercel_path": null
     },
     "deep-insights": {
       "task_gid": "1215944614298889",
-      "label": "Deep Insights / Product"
+      "label": "Deep Insights / Product",
+      "vercel_path": null
     },
     "workflow-automation": {
       "task_gid": "1215944614298891",
-      "label": "Workflow Automation / Product"
+      "label": "Workflow Automation / Product",
+      "vercel_path": null
     },
     "integration": {
       "task_gid": "1215944614298893",
-      "label": "Integration / Product"
+      "label": "Integration / Product",
+      "vercel_path": null
     },
     "demo": {
       "task_gid": "1215944614298872",
-      "label": "Home"
+      "label": "Home",
+      "vercel_path": "/demo"
     }
   },
 

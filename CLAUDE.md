@@ -10,6 +10,12 @@ Cooper is an AI platform built for insurance professionals. This repo contains t
 - React Router (SPA with client-side routing)
 - Deployed via Vercel CLI to https://askcooper.vercel.app
 
+## Vercel Projects (do not confuse)
+- **askcooper.vercel.app** — The live marketing site (THIS project)
+- **cooper-wireframe.vercel.app** — A separate wireframe project (NOT this repo)
+
+Always deploy from `cooper-site/` directory and alias to `askcooper.vercel.app`.
+
 ## Session Start — Identity Check
 
 **Every time a new session starts, do the following before any work:**
@@ -44,15 +50,81 @@ Then add them to `.github/asana-config.json` under `user_mappings` with `registe
 ## Workflow Rules
 
 - **Do NOT auto-commit or auto-push.** Only commit and push when the user explicitly asks.
-- Deploy to Vercel with `npx vercel --prod` from the `cooper-site/` directory, then alias with `npx vercel alias <deploy-url> askcooper.vercel.app`
-- When deploying, always deploy from `cooper-site/` (not from root)
+- Deploy to Vercel: `cd cooper-site && npx vercel --prod`, then `npx vercel alias <deploy-url> askcooper.vercel.app`
+- When deploying, ALWAYS deploy from `cooper-site/` (not from root — root has a conflicting vercel.json)
 
 ## Asana Integration
 
-- Every PR merge triggers a GitHub Action that posts to the relevant Asana task
-- The file-to-page mapping in `asana-config.json` determines which Asana tasks get updated
-- Daily summary runs at midnight UTC
-- Comments on Asana are posted in office-friendly English, not technical jargon
+The project uses a GitHub Action (`.github/workflows/asana-sync.yml`) that automatically posts updates to Asana tasks when PRs are merged.
+
+### How it works
+1. **On PR merge** → The action detects which files changed, maps them to page tasks via `.github/asana-config.json`, and posts a detailed comment to each affected Asana task
+2. **Daily at midnight UTC** → Collects all merged PRs from the day and posts a summary (skips PRs already posted in real-time)
+3. **Deduplication** → Before posting, checks the last 30 comments on the task for `PR #X` to avoid duplicates
+
+### Asana comment format
+Comments should always be:
+- Written in **office-friendly English** (non-technical people read these)
+- **Detailed with bullet points** explaining what specifically changed on each page
+- Include **links** to both the live Vercel page and the GitHub PR
+- Formatted with the template:
+  ```
+  Website Update — PR #X
+  Published by [Name] on [Date]
+
+  What changed on this page:
+  - [Detailed bullet point 1]
+  - [Detailed bullet point 2]
+
+  Links:
+  View live page (Vercel URL)
+  View pull request on GitHub
+  ```
+
+### Configuration files
+- `.github/asana-config.json` — User mappings, page-to-task mappings, file-to-page mappings, Vercel URLs
+- `.github/scripts/asana-notify.cjs` — The notification script (uses CommonJS `.cjs` because root package.json has `"type": "module"`)
+- `.github/workflows/asana-sync.yml` — GitHub Action workflow
+
+### GitHub Secret required
+- `ASANA_PAT` — Asana Personal Access Token (set via `gh secret set ASANA_PAT --repo Nirvana-mkt-design/Cooper-Website`)
+
+### Page → Asana Task mapping
+
+| Page | Route | Asana Task GID | Asana Task Name |
+|------|-------|----------------|-----------------|
+| Home | `/` | 1215944614298872 | Home |
+| Retail Agencies | `/personas/retail-agencies` | 1215944614298874 | Retail Agencies / Persona |
+| Wholesale Brokers | `/personas/wholesale-brokers` | 1215944614298876 | Wholesale Broker / Persona |
+| MGAs & Insurers | `/personas/mgas-insurers` | 1215944614298878 | MGAs & Insurers / Persona |
+| Claims TPAs | `/personas/claims-tpas` | 1215944614298880 | Claims TPAs / Persona |
+| Reinsurers | `/personas/reinsurers` | 1215944614298882 | Reinsurers / Persona |
+| Demo | `/demo` | 1215944614298872 | Home (shared) |
+
+### Adding new pages
+When a new page is built:
+1. Add the route to `cooper-site/src/App.tsx`
+2. Add the page to `asana-config.json` under `page_tasks` with `task_gid`, `label`, and `vercel_path`
+3. Add the component files to `file_to_pages` mapping
+4. The GitHub Action will automatically start tracking changes to that page
+
+## Asana Project Structure
+
+**Project:** Web — 2026 (Cooper) (ID: 1214835477910635)
+**Workspace:** nirvanatech.com (ID: 1199205552361841)
+**Team:** Cooper AI Creative
+
+### Sections (lifecycle stages)
+1. **Backlog** — Just an idea, nothing started
+2. **Strategy Planning** — Being planned/designed, may be on Vercel for development
+3. **Developing** — Presented and being refined
+4. **Production** — Published and live
+5. **Expansion & Optimization** — In production, being optimized (SEO, tracking, marketing)
+6. **Archived** — Page removed
+7. **Bug Fix** — Has an active bug/demand
+
+### Key rule
+Page tasks **never close**. They move between sections as the page evolves through its lifecycle.
 
 ## Code Conventions
 

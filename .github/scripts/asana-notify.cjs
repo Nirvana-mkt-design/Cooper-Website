@@ -108,7 +108,7 @@ function getAsanaUser(githubUsername) {
   return mapping || { asana_gid: null, name: githubUsername }
 }
 
-// ── Summarize changes in plain English ──────────────────
+// ── Summarize changes as bullet points ──────────────────
 function summarizeChanges(commits) {
   const messages = commits
     .map((c) => c.message || c)
@@ -116,19 +116,25 @@ function summarizeChanges(commits) {
     .filter((m) => !m.includes('Co-Authored-By'))
     .map((m) => m.split('\n')[0])
 
-  if (messages.length === 0) return 'Minor updates and maintenance.'
+  if (messages.length === 0) return '<li>Minor updates and maintenance.</li>'
 
   const updates = []
   for (const msg of messages) {
     let clean = msg
       .replace(/^(fix|feat|chore|refactor|style|docs)(\(.+?\))?:\s*/i, '')
-      .replace(/^(Add|Update|Remove|Fix|Change)\s+/i, (match) => match)
 
     clean = clean.charAt(0).toUpperCase() + clean.slice(1)
-    updates.push(clean)
+    updates.push(`<li>${clean}</li>`)
   }
 
-  return updates.join('. ') + '.'
+  return updates.join('\n')
+}
+
+// ── Build Vercel URL for a page ─────────────────────────
+function getVercelUrl(pageKey) {
+  const task = config.page_tasks[pageKey]
+  if (!task || !task.vercel_path) return null
+  return (config.vercel_base_url || 'https://askcooper.vercel.app') + task.vercel_path
 }
 
 // ── PR Merge Handler ────────────────────────────────────
@@ -196,13 +202,26 @@ async function handlePRMerge() {
       continue
     }
 
-    const html = `<body>
-<strong>Website Update</strong> by ${asanaUser.name}
+    // Build Vercel links for all pages mapped to this task
+    const vercelLinks = info.pages
+      .map((p) => getVercelUrl(p))
+      .filter(Boolean)
+      .filter((v, i, a) => a.indexOf(v) === i)
+      .map((url) => `<a href="${url}">View live page</a>`)
+      .join(' | ')
 
+    const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+
+    const html = `<body><strong>Website Update — PR #${prNumber}</strong>
+Published by <strong>${asanaUser.name}</strong> on ${today}
+
+<strong>What changed on this page:</strong>
+<ul>
 ${summary}
+</ul>
 
-<em>PR #${prNumber}: ${prTitle}</em>
-<a href="${prUrl}">View pull request on GitHub</a>
+<strong>Links:</strong>
+${vercelLinks ? vercelLinks + '\n' : ''}<a href="${prUrl}">View pull request on GitHub</a>
 </body>`
 
     console.log(`Posting to Asana task: ${info.label} (${taskGid})`)
@@ -291,20 +310,26 @@ async function handleDailySummary() {
       continue
     }
 
+    // Build Vercel link for this task
+    const firstPage = Object.entries(config.page_tasks).find(([, v]) => v.task_gid === taskGid)
+    const vercelUrl = firstPage ? getVercelUrl(firstPage[0]) : null
+    const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+
     const entriesHtml = newEntries
       .map(
         (e) =>
-          `<li><strong>${e.author}</strong>: ${e.summary} (<a href="${e.prUrl}">PR #${e.prNumber}</a>)</li>`
+          `<strong>${e.author}</strong> (<a href="${e.prUrl}">PR #${e.prNumber}</a>):\n<ul>\n${e.summary}\n</ul>`
       )
-      .join('\n')
+      .join('\n\n')
 
-    const html = `<body>
-<strong>Daily Summary</strong>
+    const html = `<body><strong>Daily Summary — ${today}</strong>
 
 Here's what happened on this page today:
-<ul>
+
 ${entriesHtml}
-</ul>
+
+<strong>Links:</strong>
+${vercelUrl ? '<a href="' + vercelUrl + '">View live page</a>\n' : ''}<a href="https://github.com/${REPO}">View repository on GitHub</a>
 </body>`
 
     console.log(`Posting daily summary to: ${info.label}`)
