@@ -52,4 +52,4 @@ jobs:
         run: |
           MODE="${{ github.event_name == 'pull_request' && 'pr' || github.event.inputs.mode || 'daily' }}"
           echo "Running in mode: $MODE"
-          node .github/scripts/asana-notify.js "$MODE"
+          node .github/scripts/asana-notify.cjs "$MODE"
