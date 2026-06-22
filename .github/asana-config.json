@@ -1,11 +1,16 @@
 {
   "project_id": "1214835477910635",
   "workspace_id": "1199205552361841",
+  "master": "hygorammirk",
 
   "user_mappings": {
     "hygorammirk": {
       "asana_gid": "1210792573128839",
-      "name": "Hygor Ammirk"
+      "name": "Hygor Ammirk",
+      "git_name": "HygorAmmirk",
+      "git_email": "hygordezign@gmail.com",
+      "registered_by": "hygorammirk",
+      "registered_at": "2026-06-22"
     }
   },
 

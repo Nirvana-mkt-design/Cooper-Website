@@ -1,12 +1,13 @@
 /**
- * Asana ↔ GitHub Sync
+ * Asana <> GitHub Sync
  *
  * Posts friendly, non-technical updates to Asana tasks
  * when PRs are merged or as a daily summary.
+ * Deduplicates: will not re-post if a PR was already reported.
  *
  * Usage:
- *   node asana-notify.js pr       — called on PR merge
- *   node asana-notify.js daily    — called by midnight cron
+ *   node asana-notify.cjs pr       — called on PR merge
+ *   node asana-notify.cjs daily    — called by midnight cron
  */
 
 const https = require('https')
@@ -20,7 +21,7 @@ const config = JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8'))
 
 const ASANA_TOKEN = process.env.ASANA_PAT
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN
-const REPO = process.env.GITHUB_REPOSITORY // e.g. "Nirvana-mkt-design/Cooper-Website"
+const REPO = process.env.GITHUB_REPOSITORY
 
 if (!ASANA_TOKEN) {
   console.error('Missing ASANA_PAT secret')
@@ -65,12 +66,28 @@ async function postComment(taskGid, htmlText) {
   })
 }
 
+async function getRecentComments(taskGid) {
+  const result = await asanaRequest(
+    'GET',
+    `/tasks/${taskGid}/stories?opt_fields=text,created_at,type&limit=30`
+  )
+  if (!result.data) return []
+  // Only return comment-type stories (not system events)
+  return result.data.filter((s) => s.type === 'comment')
+}
+
+// ── Deduplication: check if a PR was already posted ─────
+async function isPRAlreadyPosted(taskGid, prNumber) {
+  const comments = await getRecentComments(taskGid)
+  const prTag = `PR #${prNumber}`
+  return comments.some((c) => c.text && c.text.includes(prTag))
+}
+
 // ── Detect affected pages from changed files ────────────
 function detectAffectedPages(changedFiles) {
   const pages = new Set()
 
   for (const file of changedFiles) {
-    // Strip the cooper-site/ prefix if present
     const cleanFile = file.replace(/^cooper-site\//, '')
 
     for (const [pattern, pageKeys] of Object.entries(config.file_to_pages)) {
@@ -93,24 +110,20 @@ function getAsanaUser(githubUsername) {
 
 // ── Summarize changes in plain English ──────────────────
 function summarizeChanges(commits) {
-  // Extract commit messages, clean them up
   const messages = commits
     .map((c) => c.message || c)
     .filter((m) => !m.startsWith('Merge'))
     .filter((m) => !m.includes('Co-Authored-By'))
-    .map((m) => m.split('\n')[0]) // first line only
+    .map((m) => m.split('\n')[0])
 
   if (messages.length === 0) return 'Minor updates and maintenance.'
 
-  // Group by type of change
   const updates = []
   for (const msg of messages) {
-    // Make it office-friendly: remove technical prefixes
     let clean = msg
       .replace(/^(fix|feat|chore|refactor|style|docs)(\(.+?\))?:\s*/i, '')
       .replace(/^(Add|Update|Remove|Fix|Change)\s+/i, (match) => match)
 
-    // Capitalize first letter
     clean = clean.charAt(0).toUpperCase() + clean.slice(1)
     updates.push(clean)
   }
@@ -140,14 +153,12 @@ async function handlePRMerge() {
   const prAuthor = pr.user.login
   const asanaUser = getAsanaUser(prAuthor)
 
-  // Get changed files from the PR
   const changedFilesRaw = execSync(
     `gh pr view ${prNumber} --json files --jq '.files[].path'`,
     { encoding: 'utf8' }
   ).trim()
   const changedFiles = changedFilesRaw.split('\n').filter(Boolean)
 
-  // Get commits
   const commitsRaw = execSync(
     `gh pr view ${prNumber} --json commits --jq '.commits[].messageHeadline'`,
     { encoding: 'utf8' }
@@ -162,7 +173,7 @@ async function handlePRMerge() {
     return
   }
 
-  // Deduplicate task GIDs (multiple pages might map to same task)
+  // Deduplicate task GIDs
   const taskUpdates = new Map()
   for (const pageKey of affectedPages) {
     const taskInfo = config.page_tasks[pageKey]
@@ -177,8 +188,14 @@ async function handlePRMerge() {
     taskUpdates.get(taskInfo.task_gid).pages.push(pageKey)
   }
 
-  // Post to each affected Asana task
+  // Post to each affected Asana task (skip if already posted)
   for (const [taskGid, info] of taskUpdates) {
+    const alreadyPosted = await isPRAlreadyPosted(taskGid, prNumber)
+    if (alreadyPosted) {
+      console.log(`PR #${prNumber} already posted to ${info.label}. Skipping.`)
+      continue
+    }
+
     const html = `<body>
 <strong>Website Update</strong> by ${asanaUser.name}
 
@@ -208,7 +225,6 @@ async function handleDailySummary() {
   const since = yesterday.toISOString().split('T')[0]
   const until = today.toISOString().split('T')[0]
 
-  // Get all merged PRs from the last 24h
   let prsRaw = ''
   try {
     prsRaw = execSync(
@@ -224,14 +240,6 @@ async function handleDailySummary() {
   if (prs.length === 0) {
     console.log('No merged PRs today. Skipping daily summary.')
     return
-  }
-
-  // Group by author
-  const byAuthor = new Map()
-  for (const pr of prs) {
-    const author = pr.author.login
-    if (!byAuthor.has(author)) byAuthor.set(author, [])
-    byAuthor.get(author).push(pr)
   }
 
   // Group by affected Asana task
@@ -265,9 +273,25 @@ async function handleDailySummary() {
     }
   }
 
-  // Post daily summary to each affected task
+  // Post daily summary to each affected task (skip if all PRs already posted)
   for (const [taskGid, info] of taskSummaries) {
-    const entriesHtml = info.entries
+    // Check which PRs are already posted
+    const newEntries = []
+    for (const entry of info.entries) {
+      const alreadyPosted = await isPRAlreadyPosted(taskGid, entry.prNumber)
+      if (!alreadyPosted) {
+        newEntries.push(entry)
+      } else {
+        console.log(`PR #${entry.prNumber} already posted to ${info.label}. Skipping in daily summary.`)
+      }
+    }
+
+    if (newEntries.length === 0) {
+      console.log(`All PRs already posted to ${info.label}. Nothing new to summarize.`)
+      continue
+    }
+
+    const entriesHtml = newEntries
       .map(
         (e) =>
           `<li><strong>${e.author}</strong>: ${e.summary} (<a href="${e.prUrl}">PR #${e.prNumber}</a>)</li>`
@@ -275,7 +299,7 @@ async function handleDailySummary() {
       .join('\n')
 
     const html = `<body>
-<strong>Daily Summary — ${until}</strong>
+<strong>Daily Summary</strong>
 
 Here's what happened on this page today:
 <ul>
@@ -302,6 +326,6 @@ if (mode === 'pr') {
 } else if (mode === 'daily') {
   handleDailySummary().catch(console.error)
 } else {
-  console.log('Usage: node asana-notify.js [pr|daily]')
+  console.log('Usage: node asana-notify.cjs [pr|daily]')
   process.exit(1)
 }
