@@ -97,7 +97,7 @@ export default function HowCooperHelps() {
               How Cooper helps
             </p>
             <h2 className="font-serif text-[38px] leading-[1.2] text-dark mb-[28px]">
-              Your AI copilot for the<br />entire insurance workflow
+              Your AI coworker for the<br />entire insurance workflow
             </h2>
             <p className="font-sans text-[17.8px] leading-[1.5] text-dark/50" style={{ maxWidth: 620 }}>
               From the moment a submission lands in your inbox to the final bound policy, Cooper handles the manual work across every step. Your team focuses on decisions, relationships, and growing the book.
