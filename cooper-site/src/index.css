@@ -76,6 +76,171 @@
   animation: fade-blur-in 1s ease-out both;
 }
 
+@keyframes cooper-glow {
+  0%, 100% { box-shadow: 0 0 0 10px rgba(217,86,17,0.10); opacity: 1; }
+  50% { box-shadow: 0 0 0 18px rgba(217,86,17,0.0); opacity: 0.7; }
+}
+
+/* ── Workflow builder (intake card) — looping assemble ── */
+@keyframes wf-s1 {
+  0% { opacity: 0; transform: translateY(8px); }
+  8% { opacity: 1; transform: translateY(0); }
+  88% { opacity: 1; transform: translateY(0); }
+  96%, 100% { opacity: 0; transform: translateY(8px); }
+}
+@keyframes wf-s2 {
+  0%, 12% { opacity: 0; transform: translateY(8px); }
+  20% { opacity: 1; transform: translateY(0); }
+  88% { opacity: 1; transform: translateY(0); }
+  96%, 100% { opacity: 0; transform: translateY(8px); }
+}
+@keyframes wf-s3 {
+  0%, 26% { opacity: 0; transform: translateY(8px); }
+  34% { opacity: 1; transform: translateY(0); }
+  88% { opacity: 1; transform: translateY(0); }
+  96%, 100% { opacity: 0; transform: translateY(8px); }
+}
+@keyframes wf-s4 {
+  0%, 40% { opacity: 0; transform: translateY(8px); }
+  48% { opacity: 1; transform: translateY(0); }
+  88% { opacity: 1; transform: translateY(0); }
+  96%, 100% { opacity: 0; transform: translateY(8px); }
+}
+@keyframes wf-cursor {
+  0%, 52% { opacity: 0; transform: translate(9px, 9px); }
+  60% { opacity: 1; transform: translate(0, 0); }
+  72% { opacity: 1; transform: translate(0, 0); }
+  76% { transform: translate(0, 2px); }
+  80% { transform: translate(0, 0); }
+  88% { opacity: 1; transform: translate(0, 0); }
+  96%, 100% { opacity: 0; transform: translate(9px, 9px); }
+}
+@keyframes wf-admin {
+  0%, 76% { opacity: 0; transform: translateY(5px) scale(0.95); }
+  82% { opacity: 1; transform: translateY(0) scale(1); }
+  88% { opacity: 1; transform: translateY(0) scale(1); }
+  96%, 100% { opacity: 0; transform: translateY(5px) scale(0.95); }
+}
+@keyframes wf-draw1 {
+  0%, 8% { stroke-dashoffset: 100; }
+  18% { stroke-dashoffset: 0; }
+  88% { stroke-dashoffset: 0; }
+  96%, 100% { stroke-dashoffset: 100; }
+}
+@keyframes wf-draw2 {
+  0%, 20% { stroke-dashoffset: 100; }
+  30% { stroke-dashoffset: 0; }
+  88% { stroke-dashoffset: 0; }
+  96%, 100% { stroke-dashoffset: 100; }
+}
+@keyframes wf-fade-arrow {
+  0%, 28% { opacity: 0; }
+  34% { opacity: 1; }
+  88% { opacity: 1; }
+  96%, 100% { opacity: 0; }
+}
+@keyframes wf-fade-l3 {
+  0%, 40% { opacity: 0; }
+  48% { opacity: 1; }
+  88% { opacity: 1; }
+  96%, 100% { opacity: 0; }
+}
+@keyframes wf-flow {
+  to { stroke-dashoffset: -10; }
+}
+
+.wf-s1 { animation: wf-s1 6.5s ease-in-out infinite; }
+.wf-s2 { animation: wf-s2 6.5s ease-in-out infinite; }
+.wf-s3 { animation: wf-s3 6.5s ease-in-out infinite; }
+.wf-s4 { animation: wf-s4 6.5s ease-in-out infinite; }
+.wf-cursor { animation: wf-cursor 6.5s ease-in-out infinite; }
+.wf-admin { animation: wf-admin 6.5s ease-in-out infinite; transform-origin: left top; }
+.wf-d1 { animation: wf-draw1 6.5s ease-in-out infinite; }
+.wf-d2 { animation: wf-draw2 6.5s ease-in-out infinite; }
+.wf-arrow { animation: wf-fade-arrow 6.5s ease-in-out infinite; }
+.wf-l3 { animation: wf-fade-l3 6.5s ease-in-out infinite, wf-flow 0.9s linear infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .wf-s1, .wf-s2, .wf-s3, .wf-s4, .wf-cursor, .wf-admin, .wf-arrow, .wf-l3 {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  .wf-d1, .wf-d2 { animation: none; stroke-dashoffset: 0; }
+}
+
+/* ── Cooper orb — hover micro-interaction ── */
+.cooper-orb { cursor: pointer; }
+.orb-body {
+  box-shadow:
+    0 24px 60px -18px rgba(20, 17, 12, 0.65),
+    0 0 0 1px rgba(217, 86, 17, 0.18),
+    inset 0 2px 3px rgba(255, 255, 255, 0.12),
+    inset 0 -10px 24px rgba(0, 0, 0, 0.45);
+  transition: transform 0.45s cubic-bezier(0.2, 0.85, 0.25, 1), box-shadow 0.45s ease;
+  will-change: transform;
+}
+.orb-glow {
+  opacity: 0.85;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.orb-mark {
+  transition: transform 0.55s cubic-bezier(0.2, 0.85, 0.25, 1);
+}
+.cooper-orb:hover .orb-body {
+  transform: scale(1.07);
+  box-shadow:
+    0 36px 84px -20px rgba(20, 17, 12, 0.72),
+    0 0 0 1px rgba(217, 86, 17, 0.38),
+    inset 0 2px 3px rgba(255, 255, 255, 0.16),
+    inset 0 -10px 24px rgba(0, 0, 0, 0.45);
+}
+.cooper-orb:hover .orb-glow {
+  opacity: 1;
+  transform: scale(1.28);
+}
+.cooper-orb:hover .orb-mark {
+  transform: scale(1.1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .orb-body, .orb-glow, .orb-mark { transition: none; }
+  .cooper-orb:hover .orb-body,
+  .cooper-orb:hover .orb-glow,
+  .cooper-orb:hover .orb-mark { transform: none; }
+}
+
+/* ── Feature cards 2 & 3 — staggered reveal (7s loop) ── */
+@keyframes rise-a { 0% { opacity: 0; transform: translateY(9px); } 7% { opacity: 1; transform: translateY(0); } 90% { opacity: 1; transform: translateY(0); } 97%, 100% { opacity: 0; transform: translateY(9px); } }
+@keyframes rise-b { 0%, 9% { opacity: 0; transform: translateY(9px); } 16% { opacity: 1; transform: translateY(0); } 90% { opacity: 1; transform: translateY(0); } 97%, 100% { opacity: 0; transform: translateY(9px); } }
+@keyframes rise-c { 0%, 18% { opacity: 0; transform: translateY(9px); } 25% { opacity: 1; transform: translateY(0); } 90% { opacity: 1; transform: translateY(0); } 97%, 100% { opacity: 0; transform: translateY(9px); } }
+@keyframes rise-d { 0%, 27% { opacity: 0; transform: translateY(9px); } 34% { opacity: 1; transform: translateY(0); } 90% { opacity: 1; transform: translateY(0); } 97%, 100% { opacity: 0; transform: translateY(9px); } }
+@keyframes rise-e { 0%, 36% { opacity: 0; transform: translateY(9px); } 43% { opacity: 1; transform: translateY(0); } 90% { opacity: 1; transform: translateY(0); } 97%, 100% { opacity: 0; transform: translateY(9px); } }
+@keyframes rise-f { 0%, 45% { opacity: 0; transform: translateY(9px); } 52% { opacity: 1; transform: translateY(0); } 90% { opacity: 1; transform: translateY(0); } 97%, 100% { opacity: 0; transform: translateY(9px); } }
+
+.rise-a { animation: rise-a 7s ease-in-out infinite; }
+.rise-b { animation: rise-b 7s ease-in-out infinite; }
+.rise-c { animation: rise-c 7s ease-in-out infinite; }
+.rise-d { animation: rise-d 7s ease-in-out infinite; }
+.rise-e { animation: rise-e 7s ease-in-out infinite; }
+.rise-f { animation: rise-f 7s ease-in-out infinite; }
+
+/* card 2 — status badge swap (In review → Bound) */
+@keyframes pw-badge-out { 0%, 58% { opacity: 1; } 64% { opacity: 0; } 90% { opacity: 0; } 97%, 100% { opacity: 1; } }
+@keyframes pw-badge-in { 0%, 64% { opacity: 0; transform: scale(0.9); } 70% { opacity: 1; transform: scale(1); } 90% { opacity: 1; transform: scale(1); } 97%, 100% { opacity: 0; transform: scale(0.9); } }
+.pw-badge-out { animation: pw-badge-out 7s ease-in-out infinite; }
+.pw-badge-in { animation: pw-badge-in 7s ease-in-out infinite; }
+
+/* card 3 — alert slides up from the bottom */
+@keyframes dx-alert { 0%, 60% { opacity: 0; transform: translateY(16px); } 68% { opacity: 1; transform: translateY(0); } 90% { opacity: 1; transform: translateY(0); } 97%, 100% { opacity: 0; transform: translateY(16px); } }
+.dx-alert { animation: dx-alert 7s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .rise-a, .rise-b, .rise-c, .rise-d, .rise-e, .rise-f, .pw-badge-in, .dx-alert {
+    animation: none; opacity: 1; transform: none;
+  }
+  .pw-badge-out { animation: none; opacity: 0; }
+}
+
 /* ── Scroll Reveal ── */
 @keyframes reveal-up {
   0% {
