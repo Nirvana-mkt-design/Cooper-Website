@@ -19,15 +19,15 @@ const productPanel: NavPanel = {
     {
       label: 'Capabilities',
       items: [
-        { title: 'Intelligent Intake', desc: 'Submissions processed in seconds — any format, any carrier.' },
-        { title: 'Deep Insights', desc: 'Coverage gaps, policy changes, red flags — caught before they cost money.' },
-        { title: 'Workflow Automation', desc: 'Guidelines, correspondence, reports — your process at machine speed.' },
+        { title: 'Intelligent Intake', desc: 'Submissions processed in seconds, any format, any carrier.' },
+        { title: 'Deep Insights', desc: 'Coverage gaps, policy changes, red flags, caught before they cost money.' },
+        { title: 'Workflow Automation', desc: 'Guidelines, correspondence, reports, your process at machine speed.' },
       ],
     },
     {
       label: 'By role',
       items: [
-        { title: 'Retail Brokers', desc: 'Win more business and serve clients better.', href: '/personas/retail-agencies' },
+        { title: 'Retail Agencies', desc: 'Cooper adapts to your workflow.', href: '/personas/retail-agencies' },
         { title: 'Wholesale Brokers', desc: 'Place more business faster with intelligent matching.', href: '/personas/wholesale-brokers' },
         { title: 'Insurers & MGAs', desc: 'Scale underwriting without scaling headcount.', href: '/personas/mgas-insurers' },
         { title: 'Reinsurers', desc: 'Optimize treaties and risk at portfolio scale.', href: '/personas/reinsurers' },
@@ -38,7 +38,7 @@ const productPanel: NavPanel = {
   featured: {
     badge: 'Featured',
     title: 'Cooper for Submissions',
-    desc: 'See how teams process submissions 3x faster — from intake to bound policy, fully automated.',
+    desc: 'See how teams process submissions 3x faster, from intake to bound policy, fully automated.',
     link: 'Learn more',
   },
 }

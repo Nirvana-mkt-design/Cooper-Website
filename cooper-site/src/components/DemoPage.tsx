@@ -67,7 +67,7 @@ export default function DemoPage() {
                 Book a Cooper demo
               </h1>
               <p className="font-sans text-[16px] leading-[1.6] text-dark/50 mb-[40px] max-w-[440px]">
-                Schedule a 1:1 session with an insurance AI expert from our team. We'll show you Cooper with your own workflows — no generic demo.
+                Schedule a 1:1 session with an insurance AI expert from our team. We'll show you Cooper with your own workflows, no generic demo.
               </p>
 
               <form onSubmit={handleSubmit} className="flex flex-col gap-[20px] max-w-[440px]">

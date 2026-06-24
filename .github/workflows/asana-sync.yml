@@ -1,0 +1,55 @@
+name: Asana Sync
+
+on:
+  # Real-time: when a PR is merged
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+  # Daily summary at midnight UTC
+  schedule:
+    - cron: '0 0 * * *'
+
+  # Manual trigger for testing
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Run mode'
+        required: true
+        default: 'daily'
+        type: choice
+        options:
+          - pr
+          - daily
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  notify-asana:
+    # Only run if PR was actually merged (not just closed)
+    if: >
+      github.event_name == 'schedule' ||
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run Asana notification
+        env:
+          ASANA_PAT: ${{ secrets.ASANA_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          MODE="${{ github.event_name == 'pull_request' && 'pr' || github.event.inputs.mode || 'daily' }}"
+          echo "Running in mode: $MODE"
+          node .github/scripts/asana-notify.cjs "$MODE"
