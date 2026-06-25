@@ -264,7 +264,7 @@ export const vignettes: Record<string, ReactNode[]> = {
     </VigWindow>,
   ],
 
-  // data order: FNOL · Coverage · Signals · Reports
+  // data order: FNOL · Signals · Coverage · Reports
   'claims-tpas': [
     <VigWindow title="FNOL intake">
       <TwoCol
@@ -283,18 +283,18 @@ export const vignettes: Record<string, ReactNode[]> = {
       />
       <Row attn className="mt-[8px]"><B>Acknowledged within SLA</B><St kind="ok">✓ 1h12m</St></Row>
     </VigWindow>,
-    <VigWindow title="Coverage · policy vs loss">
-      <KV k="Per-occurrence limit" v="$500k" />
-      <KV k="Deductible" v="$2,500" />
-      <KV k="Water exclusion" v="applies" accent />
-      <Note>With the contract language cited</Note>
-    </VigWindow>,
     <VigWindow title="Signals · for adjuster review">
       <Stack>
         <Row attn><B>Possible subrogation · 3rd party</B><St kind="warn">● review</St></Row>
         <Row attn><B>Prior-loss pattern noted</B><St kind="warn">● review</St></Row>
       </Stack>
       <Note>Cooper flags, the adjuster decides</Note>
+    </VigWindow>,
+    <VigWindow title="Coverage · policy vs loss">
+      <KV k="Per-occurrence limit" v="$500k" />
+      <KV k="Deductible" v="$2,500" />
+      <KV k="Water exclusion" v="applies" accent />
+      <Note>With the contract language cited</Note>
     </VigWindow>,
     <VigWindow title="Reports · on demand">
       <Stack>

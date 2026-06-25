@@ -1,0 +1,93 @@
+{
+  "project_id": "1214835477910635",
+  "workspace_id": "1199205552361841",
+  "master": "hygorammirk",
+  "vercel_base_url": "https://askcooper.vercel.app",
+
+  "user_mappings": {
+    "hygorammirk": {
+      "asana_gid": "1210792573128839",
+      "name": "Hygor Ammirk",
+      "git_name": "HygorAmmirk",
+      "git_email": "hygordezign@gmail.com",
+      "registered_by": "hygorammirk",
+      "registered_at": "2026-06-22"
+    }
+  },
+
+  "page_tasks": {
+    "home": {
+      "task_gid": "1215944614298872",
+      "label": "Home",
+      "vercel_path": "/"
+    },
+    "retail-agencies": {
+      "task_gid": "1215944614298874",
+      "label": "Retail Agencies / Persona",
+      "vercel_path": "/personas/retail-agencies"
+    },
+    "wholesale-brokers": {
+      "task_gid": "1215944614298876",
+      "label": "Wholesale Broker / Persona",
+      "vercel_path": "/personas/wholesale-brokers"
+    },
+    "mgas-insurers": {
+      "task_gid": "1215944614298878",
+      "label": "MGAs & Insurers / Persona",
+      "vercel_path": "/personas/mgas-insurers"
+    },
+    "claims-tpas": {
+      "task_gid": "1215944614298880",
+      "label": "Claims TPAs / Persona",
+      "vercel_path": "/personas/claims-tpas"
+    },
+    "reinsurers": {
+      "task_gid": "1215944614298882",
+      "label": "Reinsurers / Persona",
+      "vercel_path": "/personas/reinsurers"
+    },
+    "intelligent-intake": {
+      "task_gid": "1215944614298887",
+      "label": "Intelligent Intake / Product",
+      "vercel_path": null
+    },
+    "deep-insights": {
+      "task_gid": "1215944614298889",
+      "label": "Deep Insights / Product",
+      "vercel_path": null
+    },
+    "workflow-automation": {
+      "task_gid": "1215944614298891",
+      "label": "Workflow Automation / Product",
+      "vercel_path": null
+    },
+    "integration": {
+      "task_gid": "1215944614298893",
+      "label": "Integration / Product",
+      "vercel_path": null
+    },
+    "demo": {
+      "task_gid": "1215944614298872",
+      "label": "Home",
+      "vercel_path": "/demo"
+    }
+  },
+
+  "file_to_pages": {
+    "src/components/Hero.tsx": ["home"],
+    "src/components/OnePlatform.tsx": ["home"],
+    "src/components/HowCooperHelps.tsx": ["home"],
+    "src/components/BuiltForEveryRole.tsx": ["home"],
+    "src/components/Metrics.tsx": ["home"],
+    "src/components/Integrations.tsx": ["home", "integration"],
+    "src/components/Testimonial.tsx": ["home"],
+    "src/components/FinalCTA.tsx": ["home"],
+    "src/components/TeamSection.tsx": ["home"],
+    "src/components/DemoPage.tsx": ["demo"],
+    "src/components/Navbar.tsx": ["home"],
+    "src/components/Footer.tsx": ["home"],
+    "src/components/PersonaPage.tsx": ["retail-agencies", "wholesale-brokers", "mgas-insurers", "claims-tpas", "reinsurers"],
+    "src/data/personas.ts": ["retail-agencies", "wholesale-brokers", "mgas-insurers", "claims-tpas", "reinsurers"],
+    "src/index.css": ["home"]
+  }
+}
