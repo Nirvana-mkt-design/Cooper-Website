@@ -1,12 +1,15 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import type { ReactNode } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { personas, getPersonaBySlug } from '../data/personas'
 import type { Feature } from '../data/personas'
+import { getHeroImage, getFeatureImages, getStatsBand } from '../data/personaMedia'
+import { vignettes, roletags } from './persona/vignettes'
 import Navbar from './Navbar'
 import Testimonial from './Testimonial'
 import Footer from './Footer'
 
-function RevealOnScroll({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
+function RevealOnScroll({ children, delay = 0 }: { children: ReactNode; delay?: number }) {
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -32,36 +35,118 @@ function RevealOnScroll({ children, delay = 0 }: { children: React.ReactNode; de
   )
 }
 
-function FeatureBlock({ feature, index }: { feature: Feature; index: number }) {
+/* Count-up stat — animates the leading number from 0 when scrolled into view */
+function CountUp({ value }: { value: string }) {
+  const match = value.match(/^(\d[\d,]*)(.*)$/)
+  const target = match ? parseInt(match[1].replace(/,/g, ''), 10) : 0
+  const suffix = match ? match[2] : value
+  const hasComma = match ? match[1].includes(',') : false
+  const [display, setDisplay] = useState(0)
+  const ref = useRef<HTMLSpanElement>(null)
+  const started = useRef(false)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el || !match) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setDisplay(target)
+      return
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !started.current) {
+          started.current = true
+          const duration = 2600
+          const start = performance.now()
+          const tick = (now: number) => {
+            const t = Math.min(1, (now - start) / duration)
+            const eased = 1 - Math.pow(1 - t, 3)
+            setDisplay(Math.round(eased * target))
+            if (t < 1) requestAnimationFrame(tick)
+          }
+          requestAnimationFrame(tick)
+          observer.unobserve(el)
+        }
+      },
+      { threshold: 0.5 }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [target, match])
+
+  if (!match) return <span>{value}</span>
+  const shown = hasComma ? display.toLocaleString('en-US') : String(display)
+  return (
+    <span ref={ref} style={{ fontVariantNumeric: 'tabular-nums' }}>
+      {shown}
+      {suffix}
+    </span>
+  )
+}
+
+/* Feature row — text + full-bleed photo, alternating sides (Figma "Aqui C") */
+function FeatureBlock({
+  feature,
+  index,
+  image,
+  vignette,
+  roletag,
+}: {
+  feature: Feature
+  index: number
+  image: string
+  vignette?: ReactNode
+  roletag?: string
+}) {
   const isReversed = index % 2 === 1
 
-  return (
-    <RevealOnScroll delay={index * 100}>
-      <div className={`grid grid-cols-1 lg:grid-cols-2 gap-[48px] lg:gap-[80px] items-center py-[64px] ${
-        index > 0 ? 'border-t border-dark/[0.06]' : ''
-      }`}>
-        {/* Text side */}
-        <div className={isReversed ? 'lg:order-2' : ''}>
-          <span className="inline-flex items-center justify-center w-[36px] h-[36px] rounded-full bg-accent-orange/10 text-accent-orange font-grotesk font-semibold text-[14px] mb-[24px]">
-            {index + 1}
-          </span>
-          <h3 className="font-serif text-[32px] leading-[1.2] text-dark mb-[16px]">
-            {feature.title}
-          </h3>
-          <p className="font-sans text-[17px] leading-[1.7] text-dark/55">
-            {feature.description}
-          </p>
-        </div>
+  const text = (
+    <div className={isReversed ? 'lg:pl-[40px]' : 'lg:pr-[40px]'}>
+      <h3 className="font-serif text-[32px] leading-[1.05] tracking-[-0.4px] text-[#0a0a0a] mb-[24px]">
+        {feature.title}
+      </h3>
+      <p className="font-sans text-[18px] leading-[1.55] text-[#6b6b6b] max-w-[440px]">
+        {feature.description}
+      </p>
+      {roletag && (
+        <span className="mt-[22px] inline-flex items-center gap-[8px] rounded-full border border-dark/[0.12] bg-cream/60 px-[13px] py-[6px] font-grotesk text-[10.5px] font-semibold uppercase tracking-[0.08em] text-dark/55">
+          <span className="h-[5px] w-[5px] rounded-full bg-accent-orange" />
+          {roletag}
+        </span>
+      )}
+    </div>
+  )
 
-        {/* Visual placeholder */}
-        <div className={isReversed ? 'lg:order-1' : ''}>
-          <div
-            className="w-full aspect-[4/3] rounded-[16px] border border-dark/[0.06]"
-            style={{
-              background: 'linear-gradient(135deg, #F5F0E8 0%, #EDE6D8 50%, #E8DFD0 100%)',
-            }}
-          />
+  const photo = (
+    <div className="relative h-[320px] overflow-hidden bg-[#fbfbf9] sm:h-[460px] lg:h-[540px]">
+      <img src={image} alt="" className="absolute inset-0 h-full w-full object-cover" />
+      {vignette && <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-black/5 to-black/10" />}
+      {vignette && (
+        <div className="absolute inset-0 flex items-center justify-center p-[20px]">
+          <div className="w-full max-w-[460px]">{vignette}</div>
         </div>
+      )}
+    </div>
+  )
+
+  return (
+    <RevealOnScroll delay={index * 80}>
+      <div
+        className={`grid grid-cols-1 items-start gap-[40px] lg:gap-[24px] ${
+          isReversed ? 'lg:grid-cols-[minmax(0,1fr)_460px]' : 'lg:grid-cols-[460px_minmax(0,1fr)]'
+        }`}
+      >
+        {isReversed ? (
+          <>
+            {photo}
+            {text}
+          </>
+        ) : (
+          <>
+            {text}
+            {photo}
+          </>
+        )}
       </div>
     </RevealOnScroll>
   )
@@ -79,7 +164,7 @@ export default function PersonaPage() {
     return (
       <div className="min-h-screen bg-cream-light">
         <Navbar />
-        <div className="max-w-[1440px] mx-auto px-[62px] pt-[200px] pb-[120px] text-center">
+        <div className="max-w-[1440px] mx-auto px-[60px] pt-[200px] pb-[120px] text-center">
           <h1 className="font-serif text-[48px] text-dark mb-[16px]">Page not found</h1>
           <p className="font-sans text-[17px] text-dark/50 mb-[32px]">
             The persona you are looking for does not exist.
@@ -97,8 +182,13 @@ export default function PersonaPage() {
   }
 
   const otherPersonas = personas.filter((p) => p.slug !== persona.slug)
+  const heroImage = getHeroImage(persona.slug)
+  const featureImages = getFeatureImages(persona.slug)
+  const stats = getStatsBand(persona.slug)
+  const vigs = vignettes[persona.slug]
+  const tags = roletags[persona.slug]
 
-  const personaIcons: Record<string, React.ReactNode> = {
+  const personaIcons: Record<string, ReactNode> = {
     'retail-agencies': (
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" /><polyline points="9 22 9 12 15 12 15 22" />
@@ -119,7 +209,7 @@ export default function PersonaPage() {
         <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /><polyline points="10 9 9 9 8 9" />
       </svg>
     ),
-    'reinsurers': (
+    reinsurers: (
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" />
       </svg>
@@ -130,62 +220,89 @@ export default function PersonaPage() {
     <div className="min-h-screen bg-cream-light">
       <Navbar variant="light" />
 
-      {/* Hero Section — Harvey-style layout */}
+      {/* ── Hero ── */}
       <section className="bg-cream-light">
-        {/* Top: text row */}
-        <div className="max-w-[1440px] mx-auto px-[62px] pt-[160px] pb-[60px]">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-[40px] lg:gap-[80px] items-end">
-            {/* Left — label + headline */}
-            <div>
+        <div className="mx-auto max-w-[1440px] px-[60px] pt-[150px]">
+          <div className="flex flex-col gap-[60px]">
+            {/* text row */}
+            <div className="grid grid-cols-1 items-start gap-[40px] lg:grid-cols-[minmax(0,1fr)_minmax(0,540px)] lg:gap-[80px]">
+              <div className="flex flex-col gap-[32px]">
+                <div className="flex flex-col gap-[24px]">
+                  <div className="animate-fade-blur-in flex items-center gap-[6px]" style={{ animationDelay: '0.15s' }}>
+                    <Link to="/" className="font-sans text-[13px] text-[#68655e] no-underline hover:text-dark transition-colors">
+                      HOME
+                    </Link>
+                    <span className="font-sans text-[13px] text-[#68655e]">/</span>
+                    <span className="font-grotesk text-[13px] font-medium uppercase tracking-[1.3px] text-accent-orange">
+                      {persona.label}
+                    </span>
+                  </div>
+                  <h1
+                    className="animate-fade-blur-in font-serif text-[48px] leading-[1.0] tracking-[-1.44px] text-[#0a0a0a] max-w-[560px]"
+                    style={{ animationDelay: '0.3s' }}
+                  >
+                    {persona.headline}
+                  </h1>
+                </div>
+                <Link
+                  to="/demo"
+                  className="animate-fade-blur-in inline-flex w-fit items-center rounded-[8px] bg-[#1e1a15] px-[32px] py-[14px] font-sans text-[16px] font-medium text-cream-light no-underline transition-opacity hover:opacity-90"
+                  style={{ animationDelay: '0.45s' }}
+                >
+                  {persona.ctaText}
+                </Link>
+              </div>
               <p
-                className="animate-fade-blur-in font-grotesk font-medium text-[13px] tracking-[1.3px] uppercase text-accent-orange mb-[28px]"
-                style={{ animationDelay: '0.2s' }}
-              >
-                {persona.label}
-              </p>
-              <h1
-                className="animate-fade-blur-in font-serif text-[67px] leading-[1.05] text-dark"
-                style={{ animationDelay: '0.4s' }}
-              >
-                {persona.headline}
-              </h1>
-            </div>
-
-            {/* Right — subtitle + CTA */}
-            <div className="lg:pb-[8px]">
-              <p
-                className="animate-fade-blur-in font-sans text-[18px] leading-[1.6] text-dark/50 max-w-[460px] mb-[32px]"
+                className="animate-fade-blur-in font-sans text-[18px] leading-[1.6] text-dark/50 lg:pt-[44px]"
                 style={{ animationDelay: '0.6s' }}
               >
                 {persona.subtitle}
               </p>
-              <Link
-                to="/demo"
-                className="animate-fade-blur-in inline-block font-sans font-medium text-[16px] text-cream-light bg-dark rounded-[8px] px-[32px] py-[14px] no-underline hover:opacity-90 transition-opacity cursor-pointer"
-                style={{ animationDelay: '0.8s' }}
-              >
-                {persona.ctaText}
-              </Link>
+            </div>
+
+            {/* hero image */}
+            <div className="animate-fade-blur-in aspect-[16/9] w-full overflow-hidden bg-[#fbfbf9]" style={{ animationDelay: '0.5s' }}>
+              <img src={heroImage} alt="" className="h-full w-full object-cover" />
             </div>
           </div>
         </div>
-
-        {/* Bottom: full-width video/image — hidden for now */}
       </section>
 
-      {/* Features Section */}
-      <section className="bg-cream-light pb-[80px]">
-        <div className="max-w-[1440px] mx-auto px-[62px]">
-
-          <div className="flex flex-col">
-            {persona.features.map((feature, index) => (
-              <FeatureBlock key={index} feature={feature} index={index} />
-            ))}
+      {/* ── Stats band ── */}
+      <RevealOnScroll>
+        <section className="bg-cream-light">
+          <div className="mx-auto max-w-[1440px] px-[60px] pb-[80px] pt-[64px]">
+            <div className="flex flex-col flex-wrap gap-[48px] sm:flex-row sm:justify-end sm:gap-[56px]">
+              {stats.map((s) => (
+                <div key={s.label} className="max-w-[300px]">
+                  <div className="font-serif text-[72px] leading-[0.95] tracking-[-2px] text-[#0d1016] sm:text-[88px] sm:tracking-[-2.64px]">
+                    <CountUp value={s.value} />
+                  </div>
+                  <p className="mt-[14px] font-sans text-[15px] leading-[1.4] text-[#6b6b6b]">{s.label}</p>
+                </div>
+              ))}
+            </div>
           </div>
+        </section>
+      </RevealOnScroll>
+
+      {/* ── Feature sections ── */}
+      <section className="bg-cream-light pb-[100px]">
+        <div className="mx-auto flex max-w-[1440px] flex-col gap-[120px] px-[60px]">
+          {persona.features.map((feature, index) => (
+            <FeatureBlock
+              key={index}
+              feature={feature}
+              index={index}
+              image={featureImages[index % featureImages.length]}
+              vignette={vigs?.[index]}
+              roletag={tags?.[index]}
+            />
+          ))}
         </div>
       </section>
 
-      {/* Testimonial Section */}
+      {/* Testimonial */}
       <RevealOnScroll>
         <Testimonial />
       </RevealOnScroll>
@@ -193,21 +310,14 @@ export default function PersonaPage() {
       {/* CTA Section */}
       <RevealOnScroll>
         <section className="relative overflow-hidden py-[120px]">
-          {/* Video background */}
           <div className="absolute inset-0">
             <div className="absolute inset-0 bg-[#1e1a15]" />
-            <video
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="absolute inset-0 w-full h-full object-cover opacity-50"
-            >
+            <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover opacity-50">
               <source src="/images/persona-cta-video.mp4" type="video/mp4" />
             </video>
             <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(30,26,21,0.3) 0%, rgba(30,26,21,0.7) 100%)' }} />
           </div>
-          <div className="relative z-10 max-w-[1440px] mx-auto px-[62px] text-center">
+          <div className="relative z-10 max-w-[1440px] mx-auto px-[60px] text-center">
             <h2 className="font-serif text-[42px] leading-[1.2] text-cream-light mb-[16px]">
               Ready to see Cooper in action?
             </h2>
@@ -227,7 +337,7 @@ export default function PersonaPage() {
       {/* Other Personas Navigation */}
       <RevealOnScroll>
         <section className="bg-cream-light py-[100px]">
-          <div className="max-w-[1440px] mx-auto px-[62px]">
+          <div className="max-w-[1440px] mx-auto px-[60px]">
             <p className="font-grotesk font-medium text-[12px] tracking-[1.2px] uppercase text-dark/40 mb-[40px]">
               Built for every role
             </p>
@@ -245,28 +355,16 @@ export default function PersonaPage() {
                       {personaIcons[p.slug]}
                     </div>
                     <div className="flex flex-col gap-[4px]">
-                    <span className="font-serif text-[28px] leading-[1.3] text-dark group-hover:text-accent-orange transition-colors">
-                      {p.name}
-                    </span>
-                    <span className="font-sans text-[15px] text-dark/40 group-hover:text-dark/60 transition-colors">
-                      {p.subtitle.split('.')[0]}.
-                    </span>
+                      <span className="font-serif text-[28px] leading-[1.3] text-dark group-hover:text-accent-orange transition-colors">
+                        {p.name}
+                      </span>
+                      <span className="font-sans text-[15px] text-dark/40 group-hover:text-dark/60 transition-colors">
+                        {p.subtitle.split(' — ')[0].split('.')[0]}.
+                      </span>
+                    </div>
                   </div>
-                  </div>
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    className="text-dark/20 group-hover:text-accent-orange transition-colors shrink-0 ml-[24px]"
-                  >
-                    <path
-                      d="M7 4l6 6-6 6"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="text-dark/20 group-hover:text-accent-orange transition-colors shrink-0 ml-[24px]">
+                    <path d="M7 4l6 6-6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </Link>
               ))}
