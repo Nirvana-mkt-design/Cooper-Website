@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, type ComponentType, type ReactNode } from 'react'
+import { useState, useEffect, useRef, type ComponentType } from 'react'
 import { Link } from 'react-router-dom'
 import CooperLogo from './CooperLogo'
 import {
@@ -8,70 +8,6 @@ import {
   Info, Envelope,
   Newspaper, Package, Monitor,
 } from '@phosphor-icons/react'
-
-/* ── Mini vignette row for nav featured cards ── */
-function MiniRow({ children, attn = false }: { children: ReactNode; attn?: boolean }) {
-  return (
-    <div
-      className="flex items-center justify-between gap-[6px] rounded-[5px] border px-[8px] py-[5px] font-sans text-[10px] text-dark/70"
-      style={
-        attn
-          ? { background: 'rgba(217,86,17,0.07)', borderColor: 'rgba(217,86,17,0.28)', borderLeft: '2.5px solid #d95611', paddingLeft: 6 }
-          : { background: '#fff', borderColor: 'rgba(30,26,21,0.10)' }
-      }
-    >
-      {children}
-    </div>
-  )
-}
-function MiniSt({ kind, children }: { kind: 'ok' | 'warn' | 'no'; children: ReactNode }) {
-  const c = kind === 'ok' ? '#3f7a45' : kind === 'warn' ? '#b4561a' : '#b23b3b'
-  return <span className="shrink-0 font-grotesk text-[8px] font-semibold uppercase tracking-[0.03em]" style={{ color: c }}>{children}</span>
-}
-function MiniVig({ title, children }: { title: string; children: ReactNode }) {
-  return (
-    <div
-      aria-label={title}
-      className="overflow-hidden rounded-[6px] border border-dark/[0.08] bg-cream-light shadow-[0_12px_30px_-10px_rgba(20,17,12,0.5)]"
-    >
-      <div
-        className="flex flex-col gap-[5px] p-[10px]"
-        style={{
-          backgroundColor: '#faf7ef',
-          backgroundImage: 'radial-gradient(rgba(30,26,21,0.05) 0.8px, transparent 0.8px)',
-          backgroundSize: '10px 10px',
-        }}
-      >
-        {children}
-      </div>
-    </div>
-  )
-}
-
-/* ── Nav featured card vignettes ── */
-const productVignette = (
-  <MiniVig title="Submission · ready to quote">
-    <MiniRow><b className="font-semibold text-dark">ACORD application</b><MiniSt kind="ok">✓ filled</MiniSt></MiniRow>
-    <MiniRow><b className="font-semibold text-dark">Carrier supplements</b><MiniSt kind="ok">✓ filled</MiniSt></MiniRow>
-    <MiniRow attn><b className="font-semibold text-dark">Gap: no hired-auto</b><MiniSt kind="warn">● flagged</MiniSt></MiniRow>
-  </MiniVig>
-)
-
-const customersVignette = (
-  <MiniVig title="Results · Nirvana Insurance">
-    <MiniRow><b className="font-semibold text-dark">Submission time</b><MiniSt kind="ok">3 hrs → 12 min</MiniSt></MiniRow>
-    <MiniRow><b className="font-semibold text-dark">Volume</b><MiniSt kind="ok">2x without hiring</MiniSt></MiniRow>
-    <MiniRow><b className="font-semibold text-dark">Accuracy</b><MiniSt kind="ok">99.2%</MiniSt></MiniRow>
-  </MiniVig>
-)
-
-const aboutVignette = (
-  <MiniVig title="Latest · Cooper AI">
-    <MiniRow><b className="font-semibold text-dark">Series A</b><MiniSt kind="ok">✓ announced</MiniSt></MiniRow>
-    <MiniRow><b className="font-semibold text-dark">SOC 2 Type II</b><MiniSt kind="ok">✓ certified</MiniSt></MiniRow>
-    <MiniRow><b className="font-semibold text-dark">New: portal submissions</b><MiniSt kind="ok">✓ live</MiniSt></MiniRow>
-  </MiniVig>
-)
 
 /* ── Panel data ── */
 interface NavItem {
@@ -83,7 +19,7 @@ interface NavItem {
 
 interface NavPanel {
   cols: { label: string; items: NavItem[] }[]
-  featured: { badge: string; title: string; desc: string; link: string; image: string; vignette: ReactNode }
+  featured: { badge: string; title: string; desc: string; link: string; image: string }
 }
 
 const productPanel: NavPanel = {
@@ -113,7 +49,6 @@ const productPanel: NavPanel = {
     desc: 'See how teams process submissions 3x faster, from intake to bound policy, fully automated.',
     link: 'Learn more',
     image: '/images/persona/persona-retail-1.webp',
-    vignette: productVignette,
   },
 }
 
@@ -134,7 +69,6 @@ const customersPanel: NavPanel = {
     desc: '"What took hours now takes seconds." See how Nirvana transformed their submission process.',
     link: 'Read the story',
     image: '/images/persona/persona-retail-2.webp',
-    vignette: customersVignette,
   },
 }
 
@@ -162,7 +96,6 @@ const aboutPanel: NavPanel = {
     desc: 'Placeholder for the latest company announcement, funding round, or product launch.',
     link: 'Read more',
     image: '/images/persona/persona-retail-3.webp',
-    vignette: aboutVignette,
   },
 }
 
@@ -376,9 +309,6 @@ export default function Navbar({ variant = 'dark' }: { variant?: 'dark' | 'light
               <div className={`pl-[32px] border-l ${isLight ? 'border-dark/[0.08]' : 'border-white/[0.08]'} flex flex-col`}>
                 <div className={`rounded-[8px] aspect-[16/10] mb-[16px] flex items-center justify-center border overflow-hidden relative ${isLight ? 'bg-dark/[0.04] border-dark/[0.08]' : 'bg-white/[0.06] border-white/[0.08]'}`}>
                   <img src={panel.featured.image} alt={panel.featured.title} className="absolute inset-0 h-full w-full object-cover" />
-                  <div className="relative z-10 w-[75%]">
-                    {panel.featured.vignette}
-                  </div>
                 </div>
                 <div className={`font-sans text-[14px] font-semibold mb-[6px] ${isLight ? 'text-dark' : 'text-white/90'}`}>
                   {panel.featured.title}
