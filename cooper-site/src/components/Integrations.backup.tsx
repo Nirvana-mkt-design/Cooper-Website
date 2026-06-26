@@ -22,18 +22,18 @@ const XL = 130
 
 /* Icon sets for left and right streams */
 const leftIcons = [
-  '/images/logo-gmail.png',
-  '/images/logo-salesforce.png',
-  '/images/logo-samsara.png',
-  '/images/logo-slack.png',
-  '/images/logo-gcloud.png',
+  '/images/logo-gmail.webp',
+  '/images/logo-salesforce.webp',
+  '/images/logo-samsara.webp',
+  '/images/logo-slack.webp',
+  '/images/logo-gcloud.webp',
 ]
 const rightIcons = [
-  '/images/logo-outlook.png',
-  '/images/logo-drive.png',
-  '/images/logo-gmail.png',
-  '/images/logo-salesforce.png',
-  '/images/logo-gear.png',
+  '/images/logo-outlook.webp',
+  '/images/logo-drive.webp',
+  '/images/logo-gmail.webp',
+  '/images/logo-salesforce.webp',
+  '/images/logo-gear.webp',
 ]
 
 export default function Integrations() {

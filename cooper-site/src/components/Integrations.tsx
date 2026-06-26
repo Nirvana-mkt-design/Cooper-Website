@@ -64,23 +64,20 @@ const sources = [
   { label: 'Carriers', card: 'Submissions', icon: 'carriers' as const },
 ]
 
-/* Carriers Cooper submits into — sample set from the June-24 home spec. */
-const carriersTop = ['Travelers', 'Chubb', 'Nationwide', 'The Hartford', 'Liberty Mutual', 'Zurich']
-const carriersBottom = ['CNA', 'Markel', 'AmTrust', 'Progressive', 'Great American', 'Nautilus']
 
 const tools = [
-  { src: '/images/logo-gmail.png', label: 'Gmail' },
-  { src: '/images/logo-outlook.png', label: 'Outlook' },
-  { src: '/images/logo-salesforce.png', label: 'Salesforce' },
-  { src: '/images/logo-docs.png', label: 'Google Docs' },
-  { src: '/images/logo-dropbox.png', label: 'Dropbox' },
-  { src: '/images/logo-sharepoint.png', label: 'SharePoint' },
-  { src: '/images/logo-drive.png', label: 'Google Drive' },
-  { src: '/images/logo-slack.png', label: 'Slack' },
-  { src: '/images/logo-gcloud.png', label: 'Google Cloud' },
-  { src: '/images/logo-hawksoft.png', label: 'HawkSoft' },
-  { src: '/images/logo-epic.png', label: 'Applied Epic' },
-  { src: '/images/logo-ams360.png', label: 'AMS360' },
+  { src: '/images/logo-gmail.webp', label: 'Gmail' },
+  { src: '/images/logo-outlook.webp', label: 'Outlook' },
+  { src: '/images/logo-salesforce.webp', label: 'Salesforce' },
+  { src: '/images/logo-docs.webp', label: 'Google Docs' },
+  { src: '/images/logo-dropbox.webp', label: 'Dropbox' },
+  { src: '/images/logo-sharepoint.webp', label: 'SharePoint' },
+  { src: '/images/logo-drive.webp', label: 'Google Drive' },
+  { src: '/images/logo-slack.webp', label: 'Slack' },
+  { src: '/images/logo-gcloud.webp', label: 'Google Cloud' },
+  { src: '/images/logo-hawksoft.webp', label: 'HawkSoft' },
+  { src: '/images/logo-epic.webp', label: 'Applied Epic' },
+  { src: '/images/logo-ams360.webp', label: 'AMS360' },
 ]
 
 /* ── Diagram geometry (xl canvas) ── */
@@ -150,36 +147,20 @@ const features: { title: string; desc: string; image: string }[] = [
   {
     title: 'Triage every submission automatically.',
     desc: 'Cooper reads inbound emails and attachments, extracts the details, and routes each submission to the right place — no manual sorting.',
-    image: '/images/integ-intake.png',
+    image: '/images/integ-intake.webp',
   },
   {
     title: 'One workspace for every policy.',
     desc: 'Quotes, endorsements, and renewals tracked in a single source of truth your team already trusts.',
-    image: '/images/integ-policies.png',
+    image: '/images/integ-policies.webp',
   },
   {
     title: 'Built for every role on the team.',
     desc: 'From producers to account managers, Cooper fits the way your agency already works.',
-    image: '/images/integ-roles.png',
+    image: '/images/integ-roles.webp',
   },
 ]
 
-/* ── Carrier name marquee — one continuously scrolling row ── */
-function CarrierMarquee({ names, reverse = false, duration = 34 }: { names: string[]; reverse?: boolean; duration?: number }) {
-  return (
-    <div
-      className="flex w-max items-center"
-      style={{ animation: `${reverse ? 'carrier-marquee-r' : 'carrier-marquee-l'} ${duration}s linear infinite` }}
-    >
-      {[...names, ...names].map((name, i) => (
-        <span key={i} className="flex items-center whitespace-nowrap">
-          <span className="px-[26px] font-sans text-[15px] font-medium leading-none text-dark/40">{name}</span>
-          <span className="h-[5px] w-[5px] shrink-0 rounded-full bg-accent-orange/40" />
-        </span>
-      ))}
-    </div>
-  )
-}
 
 export default function Integrations() {
   return (
@@ -342,24 +323,24 @@ export default function Integrations() {
 
         {/* ──────────── Customer logo wall ──────────── */}
         <div className="mt-[24px] grid items-stretch gap-[24px] overflow-hidden rounded-[16px] border border-dark/[0.08] bg-cream-light p-[14px] md:grid-cols-[1fr_2fr]">
-          <div className="flex flex-col justify-center rounded-[14px] bg-cream/50 p-[28px]">
+          <div className="flex flex-col justify-between rounded-[14px] bg-cream/50 p-[28px]">
             <p className="font-serif text-[24px] leading-[1.3] text-dark">
               Trusted by forward-thinking insurance teams.
             </p>
+            <a
+              href="#"
+              className="group mt-[24px] inline-flex items-center gap-[8px] font-grotesk text-[12px] font-medium uppercase tracking-[1.2px] text-dark/60 transition-colors hover:text-dark"
+            >
+              Read the case studies
+              <span className="transition-transform duration-300 group-hover:translate-x-[3px]">→</span>
+            </a>
           </div>
-          <div
-            className="relative flex flex-col justify-center gap-[18px] overflow-hidden rounded-[14px] bg-cream/40 py-[40px]"
-            style={{
-              maskImage: 'linear-gradient(to right, transparent, black 9%, black 91%, transparent)',
-              WebkitMaskImage: 'linear-gradient(to right, transparent, black 9%, black 91%, transparent)',
-            }}
-          >
-            <style>{`
-              @keyframes carrier-marquee-l { from { transform: translateX(0) } to { transform: translateX(-50%) } }
-              @keyframes carrier-marquee-r { from { transform: translateX(-50%) } to { transform: translateX(0) } }
-            `}</style>
-            <CarrierMarquee names={carriersTop} />
-            <CarrierMarquee names={carriersBottom} reverse duration={38} />
+          <div className="grid grid-cols-3 gap-[1px] overflow-hidden rounded-[14px] bg-dark/[0.06] sm:grid-cols-4">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="grid aspect-[16/9] place-items-center bg-cream-light">
+                <CooperMark className="h-[24px] w-[24px] text-dark/15" />
+              </div>
+            ))}
           </div>
         </div>
       </div>

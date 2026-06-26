@@ -1,9 +1,9 @@
 const badges = [
-  { label: 'SOC 2 Type ii', icon: '/images/icon-soc2.png' },
-  { label: 'HIPAA Compliant', icon: '/images/icon-hipaa.png' },
-  { label: 'No model training', icon: '/images/icon-no-training.png' },
-  { label: 'SSO & MFA', icon: '/images/icon-sso-mfa.png' },
-  { label: 'RBAC & audit logs', icon: '/images/icon-audit.png' },
+  { label: 'SOC 2 Type ii', icon: '/images/icon-soc2.webp' },
+  { label: 'HIPAA Compliant', icon: '/images/icon-hipaa.webp' },
+  { label: 'No model training', icon: '/images/icon-no-training.webp' },
+  { label: 'SSO & MFA', icon: '/images/icon-sso-mfa.webp' },
+  { label: 'RBAC & audit logs', icon: '/images/icon-audit.webp' },
 ]
 
 export default function SecurityCompliance() {

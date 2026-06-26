@@ -161,7 +161,7 @@ export default function OnePlatform() {
                 playsInline
                 className="absolute inset-0 w-full h-full object-cover"
               >
-                <source src="/images/platform-bg-video.mp4" type="video/mp4" />
+                <source src="/images/platform-bg-video-compressed.mp4" type="video/mp4" />
               </video>
               <div className="absolute inset-0 mix-blend-hard-light" style={{ backgroundImage: 'linear-gradient(-89.4deg, rgba(186,67,9,0.36) 35%, rgba(186,67,9,0) 70%)' }} />
               <div className="absolute inset-0 mix-blend-hard-light" style={{ backgroundImage: 'linear-gradient(241.6deg, rgba(186,186,9,0) 43%, rgba(186,89,9,0.43) 57%)' }} />
@@ -173,7 +173,7 @@ export default function OnePlatform() {
                 <div className="relative w-[420px] h-[560px]" key={`ui-${animKey}`}>
                   {/* 1: Icon cards + badge */}
                   <img
-                    src="/images/1.png"
+                    src="/images/1.webp"
                     alt=""
                     width="220"
                     height="200"
@@ -182,7 +182,7 @@ export default function OnePlatform() {
                   />
                   {/* 2: Status pills */}
                   <img
-                    src="/images/2.png"
+                    src="/images/2.webp"
                     alt=""
                     width="185"
                     height="120"
@@ -191,7 +191,7 @@ export default function OnePlatform() {
                   />
                   {/* 3: Incoming Documents card */}
                   <img
-                    src="/images/3.png"
+                    src="/images/3.webp"
                     alt=""
                     width="370"
                     height="320"
@@ -200,7 +200,7 @@ export default function OnePlatform() {
                   />
                   {/* 4: Missing elements alert */}
                   <img
-                    src="/images/4.png"
+                    src="/images/4.webp"
                     alt=""
                     width="340"
                     height="100"

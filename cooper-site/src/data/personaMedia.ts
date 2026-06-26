@@ -7,15 +7,15 @@ export type Stat = { value: string; label: string }
 const RETAIL = 'retail-agencies'
 
 export const heroImages: Record<string, string> = {
-  'retail-agencies': '/images/persona/persona-retail-hero.png',
+  'retail-agencies': '/images/persona/persona-retail-hero.webp',
 }
 
 export const featureImages: Record<string, string[]> = {
   'retail-agencies': [
-    '/images/persona/persona-retail-1.jpg',
-    '/images/persona/persona-retail-2.jpg',
-    '/images/persona/persona-retail-3.jpg',
-    '/images/persona/persona-retail-1.jpg',
+    '/images/persona/persona-retail-1.webp',
+    '/images/persona/persona-retail-2.webp',
+    '/images/persona/persona-retail-3.webp',
+    '/images/persona/persona-retail-1.webp',
   ],
 }
 

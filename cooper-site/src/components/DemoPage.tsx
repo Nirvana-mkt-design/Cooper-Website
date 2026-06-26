@@ -13,13 +13,13 @@ const testimonials = [
     quote: 'Cooper transformed how we process submissions. What took hours now takes minutes.',
     name: 'Rushil Goel',
     role: 'CEO, Nirvana Insurance',
-    photo: '/images/testimonial-rushil.png',
+    photo: '/images/testimonial-rushil.webp',
   },
   {
     quote: 'Our producers doubled their submission volume without adding headcount.',
     name: 'Sarah Chen',
     role: 'VP Operations, Apex Brokerage',
-    photo: '/images/testimonial-sarah.jpg',
+    photo: '/images/testimonial-sarah.webp',
   },
 ]
 

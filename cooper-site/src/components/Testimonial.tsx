@@ -6,8 +6,8 @@ const testimonials = [
     quote:
       '\u201CCooper transformed how we process submissions. What took hours now takes minutes. It\u2019s like having an insurance expert available 24/7. Cooper has become essential to scaling fast and staying competitive.\u201D',
     name: 'Rushil Goel, CEO Nirvana Insurance',
-    photo: '/images/testimonial-rushil.png',
-    logo: '/images/nirvana-logo.png',
+    photo: '/images/testimonial-rushil.webp',
+    logo: '/images/nirvana-logo.webp',
     logoAlt: 'Nirvana',
   },
   {
@@ -15,8 +15,8 @@ const testimonials = [
     quote:
       '\u201COur producers used to spend half their day chasing missing documents. Cooper handles that automatically now \u2014 flagging gaps, pulling data, and keeping everything organized. We\u2019ve doubled our submission volume without adding headcount.\u201D',
     name: 'Sarah Chen, VP Operations Apex Brokerage',
-    photo: '/images/testimonial-sarah.jpg',
-    logo: '/images/nirvana-logo.png',
+    photo: '/images/testimonial-sarah.webp',
+    logo: '/images/nirvana-logo.webp',
     logoAlt: 'Apex',
   },
   {
@@ -24,8 +24,8 @@ const testimonials = [
     quote:
       '\u201CThe policy comparison alone saves us 15 hours a week. Cooper reads every document, highlights what matters, and gives us side-by-side breakdowns that used to take our senior underwriters an entire afternoon.\u201D',
     name: 'James Mitchell, Head of Underwriting Trident MGA',
-    photo: '/images/testimonial-james.jpg',
-    logo: '/images/nirvana-logo.png',
+    photo: '/images/testimonial-james.webp',
+    logo: '/images/nirvana-logo.webp',
     logoAlt: 'Trident',
   },
   {
@@ -33,8 +33,8 @@ const testimonials = [
     quote:
       '\u201CWe were skeptical about AI in insurance, but Cooper proved us wrong in the first week. It caught coverage gaps we\u2019d been missing for months. Our loss ratio improved and our clients noticed the difference immediately.\u201D',
     name: 'Maria Santos, Managing Director Lighthouse Re',
-    photo: '/images/testimonial-maria.jpg',
-    logo: '/images/nirvana-logo.png',
+    photo: '/images/testimonial-maria.webp',
+    logo: '/images/nirvana-logo.webp',
     logoAlt: 'Lighthouse',
   },
 ]

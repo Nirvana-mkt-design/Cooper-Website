@@ -74,7 +74,7 @@ export default function Metrics() {
         <div className="absolute inset-0 bg-[#1e1a15]" />
         {/* Photo */}
         <img
-          src="/images/metrics-bg.png"
+          src="/images/metrics-bg.webp"
           alt=""
           className="absolute inset-0 w-full h-full object-cover object-bottom"
         />

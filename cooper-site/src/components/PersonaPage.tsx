@@ -367,7 +367,7 @@ export default function PersonaPage() {
           <div className="absolute inset-0">
             <div className="absolute inset-0 bg-[#1e1a15]" />
             <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover opacity-50">
-              <source src="/images/persona-cta-video.mp4" type="video/mp4" />
+              <source src="/images/persona-cta-video-compressed.mp4" type="video/mp4" />
             </video>
             <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(30,26,21,0.3) 0%, rgba(30,26,21,0.7) 100%)' }} />
           </div>
