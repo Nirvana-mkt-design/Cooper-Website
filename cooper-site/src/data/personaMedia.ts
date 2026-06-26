@@ -7,7 +7,7 @@ export type Stat = { value: string; label: string }
 const RETAIL = 'retail-agencies'
 
 export const heroImages: Record<string, string> = {
-  'retail-agencies': '/images/persona/persona-retail-hero.jpg',
+  'retail-agencies': '/images/persona/persona-retail-hero.png',
 }
 
 export const featureImages: Record<string, string[]> = {

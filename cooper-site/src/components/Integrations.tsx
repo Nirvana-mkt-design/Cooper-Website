@@ -1,5 +1,3 @@
-import type { ReactNode } from 'react'
-
 /* ──────────────────────────────────────────────────────────────
    Integrations — horizontal data-flow layout.
    Sources (left) → Cooper orb (centre) → tool-logo grid (right),
@@ -60,11 +58,15 @@ function SourceIcon({ name }: { name: keyof typeof glyph }) {
 
 /* ── Data ── */
 const sources = [
-  { label: 'Inbox', card: 'Email', icon: 'inbox' as const },
+  { label: 'Communication', card: 'Email', icon: 'inbox' as const },
   { label: 'Data', card: 'Documents', icon: 'data' as const },
   { label: 'AMS', card: 'Policies', icon: 'ams' as const },
   { label: 'Carriers', card: 'Submissions', icon: 'carriers' as const },
 ]
+
+/* Carriers Cooper submits into — sample set from the June-24 home spec. */
+const carriersTop = ['Travelers', 'Chubb', 'Nationwide', 'The Hartford', 'Liberty Mutual', 'Zurich']
+const carriersBottom = ['CNA', 'Markel', 'AmTrust', 'Progressive', 'Great American', 'Nautilus']
 
 const tools = [
   { src: '/images/logo-gmail.png', label: 'Gmail' },
@@ -142,400 +144,42 @@ function CooperOrb({ size = 150 }: { size?: number }) {
   )
 }
 
-/* ──────────────────────────────────────────────────────────────
-   WorkflowVisual — animated rules-builder mock for the intake card.
-   Natural 470×290 canvas; the parent clips the right/bottom edge so
-   it reads as a peek into a larger board (matches the reference).
-─────────────────────────────────────────────────────────────── */
-const wfIcon = {
-  trigger: <path d="M22 12h-6l-2 3h-4l-2-3H2M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11Z" />,
-  filter: <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z" />,
-  require: (
-    <>
-      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-      <circle cx="9" cy="7" r="4" />
-      <path d="m16 11 2 2 4-4" />
-    </>
-  ),
-  notify: (
-    <>
-      <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
-      <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
-    </>
-  ),
-}
-
-function WfNode({ name, accent = false, x, y, cls = '' }: { name: keyof typeof wfIcon; accent?: boolean; x: number; y: number; cls?: string }) {
-  return (
-    <div
-      className={`absolute grid h-[28px] w-[28px] place-items-center rounded-[8px] ${cls}`}
-      style={{
-        left: x,
-        top: y,
-        background: accent ? '#3f6fd1' : '#dcd8cf',
-        boxShadow: accent ? '0 4px 12px -4px rgba(63,111,209,0.55)' : '0 2px 6px -3px rgba(30,26,21,0.25)',
-      }}
-    >
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke={accent ? '#ffffff' : '#6b675f'}
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="h-[16px] w-[16px]"
-        aria-hidden
-      >
-        {wfIcon[name]}
-      </svg>
-    </div>
-  )
-}
-
-function WfPill({ children, muted = false }: { children: ReactNode; muted?: boolean }) {
-  return (
-    <span
-      className="inline-flex items-center gap-[6px] whitespace-nowrap rounded-[9px] bg-white px-[11px] py-[7px] font-sans text-[12.5px] leading-none text-dark shadow-[0_3px_11px_-4px_rgba(30,26,21,0.22)]"
-      style={muted ? { color: 'rgba(30,26,21,0.4)' } : undefined}
-    >
-      {children}
-    </span>
-  )
-}
-
-function WfChip({ initials, name, bg, fg }: { initials: string; name: string; bg: string; fg: string }) {
-  return (
-    <span className="inline-flex items-center gap-[8px] whitespace-nowrap rounded-[9px] bg-white py-[5px] pl-[5px] pr-[12px] font-sans text-[12.5px] leading-none text-dark shadow-[0_3px_11px_-4px_rgba(30,26,21,0.22)]">
-      <span
-        className="grid h-[20px] w-[20px] place-items-center rounded-[6px] text-[9.5px] font-bold"
-        style={{ background: bg, color: fg }}
-      >
-        {initials}
-      </span>
-      {name}
-    </span>
-  )
-}
-
-function WorkflowVisual() {
-  return (
-    <div
-      className="absolute inset-0"
-      style={{
-        backgroundImage: 'radial-gradient(rgba(30,26,21,0.10) 1px, transparent 1px)',
-        backgroundSize: '16px 16px',
-        backgroundColor: '#f4efe3',
-      }}
-    >
-      <div className="absolute left-[16px] top-1/2 -translate-y-1/2" style={{ width: 470, height: 280 }}>
-        {/* connectors */}
-        <svg className="absolute inset-0 pointer-events-none" width="470" height="280" fill="none" aria-hidden>
-          <path className="wf-d1" d="M30 42 V78" stroke="#bdb7aa" strokeWidth="1.5" pathLength={100} strokeDasharray={100} />
-          <path className="wf-d2" d="M30 106 V148 Q30 156 38 156 H43" stroke="#bdb7aa" strokeWidth="1.5" fill="none" pathLength={100} strokeDasharray={100} />
-          <path className="wf-arrow" d="M40 152 L46 156 L40 160 Z" fill="#bdb7aa" />
-          <path className="wf-l3" d="M58 170 V206" stroke="#cbc6ba" strokeWidth="1.5" strokeDasharray="1.5 3.5" />
-        </svg>
-
-        {/* nodes */}
-        <WfNode name="trigger" accent x={16} y={14} cls="wf-s1" />
-        <WfNode name="filter" x={16} y={78} cls="wf-s2" />
-        <WfNode name="require" x={44} y={142} cls="wf-s3" />
-        <WfNode name="notify" x={44} y={206} cls="wf-s4" />
-
-        {/* row 1 — trigger */}
-        <div className="absolute" style={{ left: 54, top: 28, transform: 'translateY(-50%)' }}>
-          <div className="wf-s1 flex items-center">
-            <WfPill>When a submission arrives</WfPill>
-          </div>
-        </div>
-
-        {/* row 2 — condition */}
-        <div className="absolute" style={{ left: 54, top: 92, transform: 'translateY(-50%)' }}>
-          <div className="wf-s2 flex items-center gap-[8px]">
-            <span className="font-sans text-[12.5px] text-dark/55">If the</span>
-            <WfPill muted>Premium</WfPill>
-            <span className="font-sans text-[12.5px] text-dark/55">exceeds</span>
-            <WfPill>
-              $25,000<span className="ml-[2px] text-dark/35">✕</span>
-            </WfPill>
-          </div>
-        </div>
-
-        {/* row 3 — require */}
-        <div className="absolute" style={{ left: 82, top: 156, transform: 'translateY(-50%)' }}>
-          <div className="wf-s3 flex items-center gap-[8px]">
-            <span className="font-sans text-[12.5px] text-dark/55">Require</span>
-            <WfChip initials="UW" name="Underwriter" bg="#cfe3cf" fg="#3f7a45" />
-            <span className="font-sans text-[13px] text-dark/45">+</span>
-            <WfChip initials="AM" name="Account Mgr" bg="#dbe4f7" fg="#3f6fd1" />
-          </div>
-        </div>
-
-        {/* row 4 — notify */}
-        <div className="absolute" style={{ left: 82, top: 220, transform: 'translateY(-50%)' }}>
-          <div className="wf-s4 flex items-center gap-[8px]">
-            <span className="font-sans text-[12.5px] text-dark/55">Notify</span>
-            <WfChip initials="PR" name="Producer" bg="#e6ddf5" fg="#7155b0" />
-          </div>
-        </div>
-
-        {/* cursor + label */}
-        <svg className="wf-cursor absolute" style={{ left: 214, top: 226 }} width="22" height="24" viewBox="0 0 22 24" fill="none" aria-hidden>
-          <path d="M2 2 L2 19 L7 14.5 L10.5 22 L13.5 20.7 L10 13.3 L17 13 Z" fill="#1e1a15" stroke="#fffcf1" strokeWidth="1.3" strokeLinejoin="round" />
-        </svg>
-        <div className="wf-admin absolute rounded-[8px] bg-white px-[12px] py-[6px] font-sans text-[11.5px] text-dark shadow-[0_4px_12px_-4px_rgba(30,26,21,0.3)]" style={{ left: 232, top: 250 }}>
-          Admin
-        </div>
-      </div>
-    </div>
-  )
-}
-
-/* ──────────────────────────────────────────────────────────────
-   PolicyWorkspaceVisual — workspace card for "every policy".
-   A policy list where rows cascade in and one status flips to Bound.
-─────────────────────────────────────────────────────────────── */
-function WsRow({
-  cls,
-  initials,
-  tint,
-  name,
-  line,
-  children,
-}: {
-  cls: string
-  initials: string
-  tint: string
-  name: string
-  line: string
-  children: ReactNode
-}) {
-  return (
-    <div className={`${cls} flex items-center gap-[11px] rounded-[11px] px-[10px] py-[9px]`}>
-      <span
-        className="grid h-[28px] w-[28px] shrink-0 place-items-center rounded-[8px] text-[10px] font-bold"
-        style={{ background: tint, color: '#5d5950' }}
-      >
-        {initials}
-      </span>
-      <span className="min-w-0 flex-1">
-        <span className="block truncate font-sans text-[12.5px] font-medium leading-tight text-dark">{name}</span>
-        <span className="block truncate font-sans text-[11px] leading-tight text-dark/45">{line}</span>
-      </span>
-      {children}
-    </div>
-  )
-}
-
-function WsBadge({ bg, fg, children }: { bg: string; fg: string; children: ReactNode }) {
-  return (
-    <span
-      className="inline-flex items-center gap-[4px] whitespace-nowrap rounded-full px-[9px] py-[4px] font-grotesk text-[10px] font-medium tracking-[0.3px]"
-      style={{ background: bg, color: fg }}
-    >
-      {children}
-    </span>
-  )
-}
-
-function PolicyWorkspaceVisual() {
-  return (
-    <div
-      className="absolute inset-0"
-      style={{
-        backgroundImage: 'radial-gradient(rgba(30,26,21,0.06) 1px, transparent 1px)',
-        backgroundSize: '16px 16px',
-        backgroundColor: '#f4efe3',
-      }}
-    >
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" style={{ width: 320 }}>
-        <div className="overflow-hidden rounded-[16px] border border-dark/[0.08] bg-white shadow-[0_18px_44px_-26px_rgba(30,26,21,0.5)]">
-          {/* header */}
-          <div className="rise-a flex items-center justify-between border-b border-dark/[0.06] px-[16px] py-[12px]">
-            <div className="flex items-center gap-[8px]">
-              <span className="font-serif text-[15px] text-dark">Policies</span>
-              <span className="rounded-full bg-cream px-[7px] py-[2px] font-grotesk text-[10px] font-medium text-dark/50">128</span>
-            </div>
-            <span className="font-grotesk text-[15px] leading-none text-dark/30">···</span>
-          </div>
-
-          {/* tabs */}
-          <div className="rise-a flex gap-[4px] border-b border-dark/[0.06] px-[10px] py-[8px]">
-            <span className="rounded-full bg-cream px-[11px] py-[4px] font-grotesk text-[11px] font-medium text-dark">All</span>
-            <span className="px-[11px] py-[4px] font-grotesk text-[11px] text-dark/45">Quotes</span>
-            <span className="px-[11px] py-[4px] font-grotesk text-[11px] text-dark/45">Renewals</span>
-            <span className="px-[11px] py-[4px] font-grotesk text-[11px] text-dark/45">Claims</span>
-          </div>
-
-          {/* rows */}
-          <div className="flex flex-col gap-[2px] p-[8px]">
-            <WsRow cls="rise-b" initials="AB" tint="#e6ddf5" name="ABC Trucking LLC" line="Commercial Auto">
-              <WsBadge bg="#f6e6cb" fg="#9a6a1a">Renewing</WsBadge>
-            </WsRow>
-            <WsRow cls="rise-c" initials="HF" tint="#cfe3cf" name="Harbor Freight Co" line="General Liability">
-              <WsBadge bg="#cfe3cf" fg="#3f7a45">Active</WsBadge>
-            </WsRow>
-            <WsRow cls="rise-d" initials="SL" tint="#dbe4f7" name="Sunrise Logistics" line="Cargo">
-              <WsBadge bg="#dbe4f7" fg="#3f6fd1">Quoted</WsBadge>
-            </WsRow>
-            <WsRow cls="rise-e" initials="MB" tint="#f0dcd2" name="Metro Builders" line="Umbrella">
-              <span className="relative inline-grid h-[22px] w-[78px] place-items-center justify-items-end">
-                <span className="pw-badge-out absolute right-0">
-                  <WsBadge bg="#e3dfd6" fg="#6b675f">In review</WsBadge>
-                </span>
-                <span className="pw-badge-in absolute right-0">
-                  <WsBadge bg="#cfe3cf" fg="#3f7a45">
-                    <svg viewBox="0 0 24 24" className="h-[10px] w-[10px]" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M20 6 9 17l-5-5" />
-                    </svg>
-                    Bound
-                  </WsBadge>
-                </span>
-              </span>
-            </WsRow>
-          </div>
-
-          {/* footer */}
-          <div className="rise-f border-t border-dark/[0.06] px-[16px] py-[10px] font-grotesk text-[11px] tracking-[0.2px] text-dark/40">
-            + 124 more across all lines
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-/* ──────────────────────────────────────────────────────────────
-   DocExtractVisual — "Incoming Documents" extraction panel.
-   Fields populate, source docs check in, then Cooper flags the
-   missing elements in an alert that slides up.
-─────────────────────────────────────────────────────────────── */
-function DxField({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex gap-[10px] py-[1.5px] leading-[1.35]">
-      <span className="w-[96px] shrink-0 font-sans text-[11.5px] font-semibold text-dark">{label}</span>
-      <span className="font-sans text-[11.5px] text-dark/45">{value}</span>
-    </div>
-  )
-}
-
-function DxCheck({ cls, label }: { cls: string; label: string }) {
-  return (
-    <span className={`${cls} inline-flex items-center gap-[5px] rounded-full border border-dark/[0.08] bg-cream-light px-[10px] py-[5px] font-grotesk text-[10.5px] font-medium tracking-[0.2px] text-dark`}>
-      <svg viewBox="0 0 24 24" className="h-[11px] w-[11px] text-accent-orange" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M20 6 9 17l-5-5" />
-      </svg>
-      {label}
-    </span>
-  )
-}
-
-function DxMissing({ label }: { label: string }) {
-  return (
-    <span className="dx-alert inline-flex items-center gap-[6px] rounded-full border border-dashed border-dark/25 px-[10px] py-[5px] font-grotesk text-[10.5px] font-medium tracking-[0.2px] text-dark/55">
-      <span className="grid h-[12px] w-[12px] place-items-center rounded-full border border-dashed border-dark/30 text-[9px] leading-none text-dark/40">+</span>
-      {label}
-    </span>
-  )
-}
-
-function DocExtractVisual() {
-  return (
-    <div
-      className="absolute inset-0 grid place-items-center px-[18px]"
-      style={{
-        backgroundImage: 'radial-gradient(rgba(30,26,21,0.06) 1px, transparent 1px)',
-        backgroundSize: '16px 16px',
-        backgroundColor: '#f4efe3',
-      }}
-    >
-      <div className="w-full max-w-[332px]" style={{ transform: 'scale(0.88)' }}>
-        {/* main window */}
-        <div className="rise-b overflow-hidden rounded-[16px] border border-dark/[0.08] bg-white shadow-[0_18px_44px_-24px_rgba(30,26,21,0.55)]">
-          <div className="flex items-center justify-between border-b border-dark/[0.06] px-[16px] py-[11px]">
-            <div className="flex items-center gap-[8px]">
-              <svg viewBox="0 0 24 24" className="h-[15px] w-[15px] text-dark" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" />
-              </svg>
-              <span className="font-sans text-[13px] font-semibold text-dark">Incoming Documents</span>
-            </div>
-            <span className="flex gap-[3px]">
-              <i className="h-[4px] w-[4px] rounded-full bg-dark/20" />
-              <i className="h-[4px] w-[4px] rounded-full bg-dark/20" />
-              <i className="h-[4px] w-[4px] rounded-full bg-dark/20" />
-            </span>
-          </div>
-
-          <div className="rise-c px-[16px] pt-[12px]">
-            <DxField label="Named Insured" value="ABC Trucking LLC" />
-            <DxField label="Policy Period" value="01/15/2025 – 01/15/2026" />
-            <DxField label="Coverage Lines" value="Auto, GL, Cargo" />
-            <DxField label="Limits" value="$1M CSL / $2M Aggregate" />
-          </div>
-
-          <div className="mx-[16px] my-[11px] border-t border-dark/[0.06]" />
-
-          <div className="px-[16px] pb-[15px]">
-            <p className="rise-d mb-[9px] font-sans text-[11.5px] font-semibold text-dark">Source Documents</p>
-            <div className="flex flex-wrap gap-[7px]">
-              <DxCheck cls="rise-d" label="ACORD 125" />
-              <DxCheck cls="rise-e" label="Loss Runs" />
-              <DxCheck cls="rise-f" label="Email" />
-            </div>
-          </div>
-        </div>
-
-        {/* alert — slides up */}
-        <div className="dx-alert mt-[18px]">
-          <div className="mb-[9px] flex items-center gap-[7px]">
-            <CooperMark className="h-[14px] w-[14px] text-accent-orange" />
-            <span className="font-sans text-[12px] font-medium text-dark/55">Cooper found something…</span>
-          </div>
-          <div className="rounded-[12px] border border-dark/[0.08] bg-white px-[13px] py-[12px] shadow-[0_14px_34px_-20px_rgba(30,26,21,0.5)]">
-            <div className="mb-[11px] flex items-start gap-[8px]">
-              <span className="mt-[4px] h-[7px] w-[7px] shrink-0 rounded-full bg-accent-orange" />
-              <span className="font-sans text-[11.5px] leading-[1.45] text-dark">It looks like some elements are missing in your files.</span>
-            </div>
-            <div className="flex gap-[7px]">
-              <DxMissing label="Driver Schedule" />
-              <DxMissing label="Vehicle List" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-type VisualKind = 'workflow' | 'workspace' | 'docextract'
-function FeatureVisual({ kind }: { kind: VisualKind }) {
-  if (kind === 'workspace') return <PolicyWorkspaceVisual />
-  if (kind === 'docextract') return <DocExtractVisual />
-  return <WorkflowVisual />
-}
 
 /* ── Feature cards ── */
-const features: { title: string; desc: string; cta: string; visual: VisualKind }[] = [
+const features: { title: string; desc: string; image: string }[] = [
   {
     title: 'Triage every submission automatically.',
     desc: 'Cooper reads inbound emails and attachments, extracts the details, and routes each submission to the right place — no manual sorting.',
-    cta: 'Explore intake',
-    visual: 'workflow',
+    image: '/images/integ-intake.png',
   },
   {
     title: 'One workspace for every policy.',
     desc: 'Quotes, endorsements, and renewals tracked in a single source of truth your team already trusts.',
-    cta: 'Platform overview',
-    visual: 'workspace',
+    image: '/images/integ-policies.png',
   },
   {
     title: 'Built for every role on the team.',
     desc: 'From producers to account managers, Cooper fits the way your agency already works.',
-    cta: 'See roles',
-    visual: 'docextract',
+    image: '/images/integ-roles.png',
   },
 ]
+
+/* ── Carrier name marquee — one continuously scrolling row ── */
+function CarrierMarquee({ names, reverse = false, duration = 34 }: { names: string[]; reverse?: boolean; duration?: number }) {
+  return (
+    <div
+      className="flex w-max items-center"
+      style={{ animation: `${reverse ? 'carrier-marquee-r' : 'carrier-marquee-l'} ${duration}s linear infinite` }}
+    >
+      {[...names, ...names].map((name, i) => (
+        <span key={i} className="flex items-center whitespace-nowrap">
+          <span className="px-[26px] font-sans text-[15px] font-medium leading-none text-dark/40">{name}</span>
+          <span className="h-[5px] w-[5px] shrink-0 rounded-full bg-accent-orange/40" />
+        </span>
+      ))}
+    </div>
+  )
+}
 
 export default function Integrations() {
   return (
@@ -685,19 +329,12 @@ export default function Integrations() {
               key={f.title}
               className="flex flex-col overflow-hidden rounded-[16px] border border-dark/[0.08] bg-cream-light shadow-[0_24px_60px_-48px_rgba(30,26,21,0.5)]"
             >
-              <div className="relative m-[14px] mb-0 h-[360px] overflow-hidden rounded-[16px] border border-dark/[0.06] bg-cream">
-                <FeatureVisual kind={f.visual} />
+              <div className="relative m-[14px] mb-0 aspect-square overflow-hidden rounded-[16px] border border-dark/[0.06] bg-cream">
+                <img src={f.image} alt="" className="absolute inset-0 h-full w-full object-cover" />
               </div>
               <div className="flex flex-1 flex-col p-[24px]">
                 <h3 className="font-serif text-[21px] leading-[1.25] text-dark">{f.title}</h3>
-                <p className="mt-[12px] flex-1 font-sans text-[14.5px] leading-[1.55] text-dark/55">{f.desc}</p>
-                <a
-                  href="#"
-                  className="group mt-[20px] inline-flex items-center gap-[8px] font-grotesk text-[12px] font-medium uppercase tracking-[1.2px] text-accent-orange"
-                >
-                  {f.cta}
-                  <span className="transition-transform duration-300 group-hover:translate-x-[3px]">→</span>
-                </a>
+                <p className="mt-[12px] font-sans text-[14.5px] leading-[1.55] text-dark/55">{f.desc}</p>
               </div>
             </div>
           ))}
@@ -705,24 +342,24 @@ export default function Integrations() {
 
         {/* ──────────── Customer logo wall ──────────── */}
         <div className="mt-[24px] grid items-stretch gap-[24px] overflow-hidden rounded-[16px] border border-dark/[0.08] bg-cream-light p-[14px] md:grid-cols-[1fr_2fr]">
-          <div className="flex flex-col justify-between rounded-[14px] bg-cream/50 p-[28px]">
+          <div className="flex flex-col justify-center rounded-[14px] bg-cream/50 p-[28px]">
             <p className="font-serif text-[24px] leading-[1.3] text-dark">
               Trusted by forward-thinking insurance teams.
             </p>
-            <a
-              href="#"
-              className="group mt-[24px] inline-flex items-center gap-[8px] font-grotesk text-[12px] font-medium uppercase tracking-[1.2px] text-dark/60 transition-colors hover:text-dark"
-            >
-              Read the case studies
-              <span className="transition-transform duration-300 group-hover:translate-x-[3px]">→</span>
-            </a>
           </div>
-          <div className="grid grid-cols-3 gap-[1px] overflow-hidden rounded-[14px] bg-dark/[0.06] sm:grid-cols-4">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="grid aspect-[16/9] place-items-center bg-cream-light">
-                <CooperMark className="h-[24px] w-[24px] text-dark/15" />
-              </div>
-            ))}
+          <div
+            className="relative flex flex-col justify-center gap-[18px] overflow-hidden rounded-[14px] bg-cream/40 py-[40px]"
+            style={{
+              maskImage: 'linear-gradient(to right, transparent, black 9%, black 91%, transparent)',
+              WebkitMaskImage: 'linear-gradient(to right, transparent, black 9%, black 91%, transparent)',
+            }}
+          >
+            <style>{`
+              @keyframes carrier-marquee-l { from { transform: translateX(0) } to { transform: translateX(-50%) } }
+              @keyframes carrier-marquee-r { from { transform: translateX(-50%) } to { transform: translateX(0) } }
+            `}</style>
+            <CarrierMarquee names={carriersTop} />
+            <CarrierMarquee names={carriersBottom} reverse duration={38} />
           </div>
         </div>
       </div>

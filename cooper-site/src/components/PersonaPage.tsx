@@ -6,7 +6,7 @@ import type { Feature } from '../data/personas'
 import { getHeroImage, getFeatureImages, getStatsBand } from '../data/personaMedia'
 import { vignettes, roletags } from './persona/vignettes'
 import Navbar from './Navbar'
-import Testimonial from './Testimonial'
+import PersonaTestimonial from './PersonaTestimonial'
 import Footer from './Footer'
 
 function RevealOnScroll({ children, delay = 0 }: { children: ReactNode; delay?: number }) {
@@ -237,20 +237,41 @@ export default function PersonaPage() {
                       {persona.label}
                     </span>
                   </div>
-                  <h1
-                    className="animate-fade-blur-in font-serif text-[48px] leading-[1.0] tracking-[-1.44px] text-[#0a0a0a] max-w-[560px]"
-                    style={{ animationDelay: '0.3s' }}
-                  >
-                    {persona.headline}
-                  </h1>
+                  {persona.headlineAccent ? (
+                    <h1
+                      className="animate-fade-blur-in font-serif max-w-[560px]"
+                      style={{ animationDelay: '0.3s' }}
+                    >
+                      <span className="block text-[48px] leading-[1.0] tracking-[-1.44px] text-[#0a0a0a]">
+                        {persona.headlineLead}
+                      </span>
+                      <span className="block text-[48px] leading-[1.0] tracking-[-1.44px] text-[#0a0a0a]">
+                        {persona.headlineAccent}
+                      </span>
+                    </h1>
+                  ) : (
+                    <h1
+                      className="animate-fade-blur-in font-serif text-[48px] leading-[1.0] tracking-[-1.44px] text-[#0a0a0a] max-w-[560px]"
+                      style={{ animationDelay: '0.3s' }}
+                    >
+                      {persona.headline}
+                    </h1>
+                  )}
                 </div>
-                <Link
-                  to="/demo"
-                  className="animate-fade-blur-in inline-flex w-fit items-center rounded-[8px] bg-[#1e1a15] px-[32px] py-[14px] font-sans text-[16px] font-medium text-cream-light no-underline transition-opacity hover:opacity-90"
-                  style={{ animationDelay: '0.45s' }}
-                >
-                  {persona.ctaText}
-                </Link>
+                <div className="animate-fade-blur-in flex flex-wrap items-center gap-[12px]" style={{ animationDelay: '0.45s' }}>
+                  <a
+                    href="#features"
+                    className="inline-flex w-fit items-center rounded-[8px] border border-dark/[0.18] bg-transparent px-[28px] py-[14px] font-sans text-[16px] font-medium text-dark no-underline transition-colors hover:bg-dark/[0.04]"
+                  >
+                    See how it works
+                  </a>
+                  <Link
+                    to="/demo"
+                    className="inline-flex w-fit items-center rounded-[8px] bg-[#1e1a15] px-[32px] py-[14px] font-sans text-[16px] font-medium text-cream-light no-underline transition-opacity hover:opacity-90"
+                  >
+                    Request a Demo
+                  </Link>
+                </div>
               </div>
               <p
                 className="animate-fade-blur-in font-sans text-[18px] leading-[1.6] text-dark/50 lg:pt-[44px]"
@@ -286,8 +307,41 @@ export default function PersonaPage() {
         </section>
       </RevealOnScroll>
 
+      {/* ── Role balance strip (optional, e.g. Retail: producers vs account managers) ── */}
+      {persona.roleBalance && (
+        <RevealOnScroll>
+          <section className="bg-cream-light">
+            <div className="mx-auto max-w-[1440px] px-[60px] pb-[80px]">
+              <div className="grid grid-cols-1 gap-[24px] md:grid-cols-2">
+                {persona.roleBalance.map((col) => (
+                  <div
+                    key={col.label}
+                    className="rounded-[16px] border border-dark/[0.1] bg-cream-light/60 p-[32px]"
+                  >
+                    <div className="mb-[12px] font-grotesk text-[11px] font-semibold uppercase tracking-[0.12em] text-accent-orange">
+                      {col.label}
+                    </div>
+                    <h3 className="mb-[20px] font-serif text-[24px] leading-[1.15] text-[#0a0a0a]">
+                      {col.title}
+                    </h3>
+                    <ul className="flex flex-col gap-[12px]">
+                      {col.points.map((point) => (
+                        <li key={point} className="flex items-start gap-[10px] font-sans text-[15px] leading-[1.5] text-dark/70">
+                          <span className="mt-[2px] font-semibold text-accent-orange">›</span>
+                          {point}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        </RevealOnScroll>
+      )}
+
       {/* ── Feature sections ── */}
-      <section className="bg-cream-light pb-[100px]">
+      <section id="features" className="scroll-mt-[100px] bg-cream-light pb-[100px]">
         <div className="mx-auto flex max-w-[1440px] flex-col gap-[120px] px-[60px]">
           {persona.features.map((feature, index) => (
             <FeatureBlock
@@ -304,7 +358,7 @@ export default function PersonaPage() {
 
       {/* Testimonial */}
       <RevealOnScroll>
-        <Testimonial />
+        <PersonaTestimonial testimonials={persona.testimonials} />
       </RevealOnScroll>
 
       {/* CTA Section */}
@@ -319,16 +373,16 @@ export default function PersonaPage() {
           </div>
           <div className="relative z-10 max-w-[1440px] mx-auto px-[60px] text-center">
             <h2 className="font-serif text-[42px] leading-[1.2] text-cream-light mb-[16px]">
-              Ready to see Cooper in action?
+              {persona.demoHeadline ?? 'Ready to see Cooper in action?'}
             </h2>
             <p className="font-sans text-[17px] leading-[1.6] text-cream-light/60 max-w-[460px] mx-auto mb-[32px]">
-              No generic demo. We show you how Cooper works for {persona.name.toLowerCase()}, with your own data.
+              {persona.demoSubtitle ?? `No generic demo. We show you how Cooper works for ${persona.name.toLowerCase()}, with your own data.`}
             </p>
             <Link
               to="/demo"
               className="inline-block font-sans font-medium text-[16px] text-dark bg-cream-light rounded-[8px] px-[32px] py-[14px] no-underline hover:opacity-90 transition-opacity cursor-pointer"
             >
-              Book a Demo
+              Request a Demo
             </Link>
           </div>
         </section>

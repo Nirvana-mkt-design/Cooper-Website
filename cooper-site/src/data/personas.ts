@@ -3,16 +3,39 @@ export interface Feature {
   description: string
 }
 
+/** Optional two-audience split shown right under the hero (e.g. producers vs account managers). */
+export interface RoleColumn {
+  label: string
+  title: string
+  points: string[]
+}
+
+export interface TestimonialItem {
+  quote: string
+  author: string
+  role: string
+}
+
 export interface Persona {
   slug: string
   name: string
   label: string
   headline: string
+  /** Optional two-tier hero headline: lead line in ink, accent line in ocre. Falls back to `headline`. */
+  headlineLead?: string
+  headlineAccent?: string
   subtitle: string
+  /** Optional two-audience split shown under the hero. */
+  roleBalance?: RoleColumn[]
+  /** Optional override for the closing demo band copy (falls back to the generic copy). */
+  demoHeadline?: string
+  demoSubtitle?: string
   features: Feature[]
   testimonialQuote: string
   testimonialAuthor: string
   testimonialRole: string
+  /** Multiple testimonials for the per-persona editorial slider. */
+  testimonials: TestimonialItem[]
   ctaText: string
 }
 
@@ -21,19 +44,43 @@ export const personas: Persona[] = [
     slug: 'retail-agencies',
     name: 'Retail Agencies',
     label: 'RETAIL AGENCIES',
-    headline: 'Your producers should be selling, not typing',
+    headline: 'Producers sell. Account managers serve. Cooper does the rest.',
+    headlineLead: 'Producers Sell. Account Managers Serve.',
+    headlineAccent: 'Cooper does the rest.',
     subtitle:
-      'Cooper is built for both account managers and producers. It automates the data entry, submissions, renewals, and certificate work that keeps your team buried, so they can focus on clients and revenue.',
+      'Built for both sides of the agency. Cooper handles the data entry, submissions, renewals, and certificate work that buries your service team, so producers stay in front of clients and account managers stay ahead of the book.',
+    roleBalance: [
+      {
+        label: 'For producers',
+        title: 'More time in front of clients',
+        points: [
+          'Walk into every meeting quote-ready',
+          'Round-out and cross-sell openings surfaced',
+          'Renewals prepped before the conversation',
+        ],
+      },
+      {
+        label: 'For account managers',
+        title: 'The busywork, off your desk',
+        points: [
+          'No re-keying between AMS and carrier portals',
+          'COIs and endorsements that check themselves',
+          'Every renewal date tracked, nothing slips',
+        ],
+      },
+    ],
+    demoHeadline: 'Stop retyping the same account ten times',
+    demoSubtitle: 'See Cooper in action with your own data.',
     features: [
       {
         title: 'Stop typing the same data twice',
         description:
-          'Cooper reads your dec pages, loss runs, and emails, then writes the details straight into Applied Epic, AMS360, HawkSoft, or whatever system you use, and into every carrier portal. You review instead of retype.',
+          'Cooper reads your dec pages, loss runs, and emails, then writes the details straight into Applied Epic, AMS360, or HawkSoft, and into every carrier portal. You review instead of retype.',
       },
       {
         title: 'Walk into every meeting quote-ready',
         description:
-          'Cooper builds submissions from what you already have on the account, spots coverage gaps worth a conversation, and fills out each carrier\'s application automatically. Your producers sell instead of doing paperwork.',
+          'Cooper builds submissions from what you already have on the account, spots coverage gaps worth a conversation, and fills each carrier\'s application automatically, so producers sell instead of prepping paperwork.',
       },
       {
         title: 'Never miss a renewal or a coverage change',
@@ -43,13 +90,40 @@ export const personas: Persona[] = [
       {
         title: 'Certificates that check themselves',
         description:
-          'Cooper verifies every COI and endorsement against the bound policy before it goes out. Routine requests ship automatically, only the real exceptions land on your desk.',
+          'Cooper verifies every COI and endorsement request against the bound policy before it goes out. Routine requests ship automatically. Only the real exceptions land on your desk.',
       },
     ],
     testimonialQuote:
       'We used to spend half the day re-keying data. Now our producers actually have time to sell.',
     testimonialAuthor: 'Agency Principal',
     testimonialRole: 'Regional P&C Agency',
+    testimonials: [
+      {
+        quote: 'It\'s probably cut down the time it takes from getting submission information to getting it out to market. Probably pretty close to in half.',
+        author: 'Holly Otlewski',
+        role: '',
+      },
+      {
+        quote: 'The coverage analysis is amazing, I absolutely love it. If we were to do that on our own, it would probably take five hours in itself.',
+        author: 'Debbie Butcher',
+        role: 'Account Executive, HBW Insurance',
+      },
+      {
+        quote: 'It has really opened the minds of our producers and a lot of our team who were previously very closed off to the idea of using AI.',
+        author: 'Laura Evans',
+        role: '',
+      },
+      {
+        quote: 'Now anything we get in a day, we can get out to market, as long as we have everything. Which is huge.',
+        author: 'Holly Otlewski',
+        role: '',
+      },
+      {
+        quote: 'I get a lot of documents from the producer, and now I can just forward them to Cooper instead of going into the system. I really like that a lot.',
+        author: 'Debbie Butcher',
+        role: 'Account Executive, HBW Insurance',
+      },
+    ],
     ctaText: 'See how Cooper works for your agency',
   },
   {
@@ -85,6 +159,23 @@ export const personas: Persona[] = [
       'The first quote back usually wins. Cooper makes sure that\'s us.',
     testimonialAuthor: 'VP of Brokerage',
     testimonialRole: 'National Wholesale Broker',
+    testimonials: [
+      {
+        quote: 'The first quote back usually wins. Cooper makes sure that\'s us.',
+        author: 'VP of Brokerage',
+        role: 'National Wholesale Broker',
+      },
+      {
+        quote: 'We clear and route submissions in minutes instead of hours. Our markets notice we respond first.',
+        author: 'Brokerage Manager',
+        role: 'E&S Wholesaler',
+      },
+      {
+        quote: 'Cooper reads every attachment, so my team only touches the deals worth working.',
+        author: 'Head of Casualty',
+        role: 'Wholesale Brokerage',
+      },
+    ],
     ctaText: 'See how Cooper places business faster',
   },
   {
@@ -120,6 +211,23 @@ export const personas: Persona[] = [
       'We doubled our program count without adding a single underwriter.',
     testimonialAuthor: 'Chief Underwriting Officer',
     testimonialRole: 'Specialty MGA',
+    testimonials: [
+      {
+        quote: 'We doubled our program count without adding a single underwriter.',
+        author: 'Chief Underwriting Officer',
+        role: 'Specialty MGA',
+      },
+      {
+        quote: 'Every bind ties back to our guidelines now. Audits went from dread to a non-event.',
+        author: 'Director of Underwriting',
+        role: 'Program MGA',
+      },
+      {
+        quote: 'Pricing stays consistent across the whole team, even as we scale fast.',
+        author: 'VP of Programs',
+        role: 'Specialty Insurer',
+      },
+    ],
     ctaText: 'See how Cooper scales your underwriting',
   },
   {
@@ -136,9 +244,9 @@ export const personas: Persona[] = [
           'Cooper takes the loss notice from any channel (phone, email, portal, fax), organizes it into a clean file, matches it to the right policy, and acknowledges within your client\'s SLA window.',
       },
       {
-        title: 'Spot recovery and fraud signals early',
+        title: 'Surface subrogation and recovery signals',
         description:
-          'Cooper reads each new loss for subrogation potential and fraud patterns, flags the files worth a referral, and shows what it found, so dollars that belong back in the file don\'t get written off.',
+          'Cooper reads each new loss for subrogation and recovery potential, flags the files worth a referral, and shows what it found. Cooper flags, the adjuster decides.',
       },
       {
         title: 'Coverage calls backed by the actual policy',
@@ -155,6 +263,23 @@ export const personas: Persona[] = [
       'Our adjusters handle 40% more files and our SLA compliance has never been better.',
     testimonialAuthor: 'VP of Claims Operations',
     testimonialRole: 'National Claims TPA',
+    testimonials: [
+      {
+        quote: 'Our adjusters handle 40% more files and our SLA compliance has never been better.',
+        author: 'VP of Claims Operations',
+        role: 'National Claims TPA',
+      },
+      {
+        quote: 'Every claim starts clean and matched to the right policy. No more chasing intake.',
+        author: 'Claims Manager',
+        role: 'Regional TPA',
+      },
+      {
+        quote: 'Coverage calls come backed by the actual policy language. Our adjusters move with confidence.',
+        author: 'Director of Claims',
+        role: 'Independent TPA',
+      },
+    ],
     ctaText: 'See how Cooper streamlines your claims',
   },
   {
@@ -190,6 +315,23 @@ export const personas: Persona[] = [
       'Renewal season used to mean three weeks of spreadsheet hell. Now we walk in prepared.',
     testimonialAuthor: 'Treaty Underwriter',
     testimonialRole: 'Global Reinsurer',
+    testimonials: [
+      {
+        quote: 'Renewal season used to mean three weeks of spreadsheet hell. Now we walk in prepared.',
+        author: 'Treaty Underwriter',
+        role: 'Global Reinsurer',
+      },
+      {
+        quote: 'Cedent data lands clean and mapped. Our analysts start working on day one.',
+        author: 'Head of Analytics',
+        role: 'Reinsurance Group',
+      },
+      {
+        quote: 'We see accumulation building well before it becomes a problem.',
+        author: 'Portfolio Manager',
+        role: 'Global Reinsurer',
+      },
+    ],
     ctaText: 'See how Cooper prepares your renewals',
   },
 ]
