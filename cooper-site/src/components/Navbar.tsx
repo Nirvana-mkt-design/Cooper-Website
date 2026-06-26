@@ -1,17 +1,25 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, type ComponentType } from 'react'
 import { Link } from 'react-router-dom'
 import CooperLogo from './CooperLogo'
+import {
+  Tray, MagnifyingGlass, Lightning,
+  Storefront, Handshake, Buildings, ChartLine, ClipboardText,
+  UsersThree, ChartBar, ShieldCheck,
+  Info, Envelope,
+  Newspaper, Package, Monitor,
+} from '@phosphor-icons/react'
 
 /* ── Panel data ── */
 interface NavItem {
   title: string
   desc: string
   href?: string
+  icon?: ComponentType<{ size?: number; weight?: 'thin' | 'light' | 'regular'; className?: string }>
 }
 
 interface NavPanel {
   cols: { label: string; items: NavItem[] }[]
-  featured: { badge: string; title: string; desc: string; link: string }
+  featured: { badge: string; title: string; desc: string; link: string; image: string }
 }
 
 const productPanel: NavPanel = {
@@ -19,19 +27,19 @@ const productPanel: NavPanel = {
     {
       label: 'Capabilities',
       items: [
-        { title: 'Intelligent Intake', desc: 'Submissions processed in seconds, any format, any carrier.' },
-        { title: 'Deep Insights', desc: 'Coverage gaps, policy changes, red flags, caught before they cost money.' },
-        { title: 'Workflow Automation', desc: 'Guidelines, correspondence, reports, your process at machine speed.' },
+        { title: 'Intelligent Intake', desc: 'Submissions processed in seconds, any format, any carrier.', icon: Tray },
+        { title: 'Deep Insights', desc: 'Coverage gaps, policy changes, red flags, caught before they cost money.', icon: MagnifyingGlass },
+        { title: 'Workflow Automation', desc: 'Guidelines, correspondence, reports, your process at machine speed.', icon: Lightning },
       ],
     },
     {
       label: 'By role',
       items: [
-        { title: 'Retail Agencies', desc: 'Cooper adapts to your workflow.', href: '/personas/retail-agencies' },
-        { title: 'Wholesale Brokers', desc: 'Place more business faster with intelligent matching.', href: '/personas/wholesale-brokers' },
-        { title: 'Insurers & MGAs', desc: 'Scale underwriting without scaling headcount.', href: '/personas/mgas-insurers' },
-        { title: 'Reinsurers', desc: 'Optimize treaties and risk at portfolio scale.', href: '/personas/reinsurers' },
-        { title: 'Claims TPAs', desc: 'Streamline claims from intake to reporting.', href: '/personas/claims-tpas' },
+        { title: 'Retail Agencies', desc: 'Cooper adapts to your workflow.', href: '/personas/retail-agencies', icon: Storefront },
+        { title: 'Wholesale Brokers', desc: 'Place more business faster with intelligent matching.', href: '/personas/wholesale-brokers', icon: Handshake },
+        { title: 'Insurers & MGAs', desc: 'Scale underwriting without scaling headcount.', href: '/personas/mgas-insurers', icon: Buildings },
+        { title: 'Reinsurers', desc: 'Optimize treaties and risk at portfolio scale.', href: '/personas/reinsurers', icon: ChartLine },
+        { title: 'Claims TPAs', desc: 'Streamline claims from intake to reporting.', href: '/personas/claims-tpas', icon: ClipboardText },
       ],
     },
   ],
@@ -40,6 +48,7 @@ const productPanel: NavPanel = {
     title: 'Cooper for Submissions',
     desc: 'See how teams process submissions 3x faster, from intake to bound policy, fully automated.',
     link: 'Learn more',
+    image: '/images/persona/persona-retail-1.webp',
   },
 }
 
@@ -48,9 +57,9 @@ const customersPanel: NavPanel = {
     {
       label: 'Customer stories',
       items: [
-        { title: 'All Stories', desc: 'How insurance teams are using Cooper to work faster.' },
-        { title: 'Case Studies', desc: 'Detailed results and outcomes from real teams.' },
-        { title: 'Security & Compliance', desc: 'SOC 2 Type II, HIPAA, audit logs, and more.' },
+        { title: 'All Stories', desc: 'How insurance teams are using Cooper to work faster.', icon: UsersThree },
+        { title: 'Case Studies', desc: 'Detailed results and outcomes from real teams.', icon: ChartBar },
+        { title: 'Security & Compliance', desc: 'SOC 2 Type II, HIPAA, audit logs, and more.', icon: ShieldCheck },
       ],
     },
   ],
@@ -59,6 +68,7 @@ const customersPanel: NavPanel = {
     title: 'Nirvana Insurance',
     desc: '"What took hours now takes seconds." See how Nirvana transformed their submission process.',
     link: 'Read the story',
+    image: '/images/persona/persona-retail-2.webp',
   },
 }
 
@@ -67,16 +77,16 @@ const aboutPanel: NavPanel = {
     {
       label: 'Company',
       items: [
-        { title: 'About Cooper', desc: 'Our mission, team, and why we\'re building for insurance.' },
-        { title: 'Contact', desc: 'Get in touch with our team.' },
+        { title: 'About Cooper', desc: 'Our mission, team, and why we\'re building for insurance.', icon: Info },
+        { title: 'Contact', desc: 'Get in touch with our team.', icon: Envelope },
       ],
     },
     {
       label: 'News & Press',
       items: [
-        { title: 'Newsroom', desc: 'Latest announcements, launches, and company updates.' },
-        { title: 'Press Kit', desc: 'Logos, brand assets, and media resources.' },
-        { title: 'In the Media', desc: 'Cooper in industry publications and coverage.' },
+        { title: 'Newsroom', desc: 'Latest announcements, launches, and company updates.', icon: Newspaper },
+        { title: 'Press Kit', desc: 'Logos, brand assets, and media resources.', icon: Package },
+        { title: 'In the Media', desc: 'Cooper in industry publications and coverage.', icon: Monitor },
       ],
     },
   ],
@@ -85,6 +95,7 @@ const aboutPanel: NavPanel = {
     title: 'Latest from Cooper',
     desc: 'Placeholder for the latest company announcement, funding round, or product launch.',
     link: 'Read more',
+    image: '/images/persona/persona-retail-3.webp',
   },
 }
 
@@ -257,16 +268,24 @@ export default function Navbar({ variant = 'dark' }: { variant?: 'dark' | 'light
                   </div>
                   <div className="flex flex-col gap-[2px]">
                     {col.items.map((item) => {
+                      const Icon = item.icon
                       const inner = (
-                        <>
-                          <div className={`relative font-sans text-[14px] font-semibold mb-[2px] w-fit ${isLight ? 'text-dark' : 'text-white/90'}`}>
-                            {item.title}
-                            <span className={`absolute bottom-[-2px] left-0 right-0 border-b border-dashed ${isLight ? 'border-dark/30' : 'border-white/50'} opacity-0 group-hover:opacity-100 transition-opacity duration-200`} />
+                        <div className="flex items-start gap-[12px]">
+                          {Icon && (
+                            <div className={`mt-[2px] shrink-0 ${isLight ? 'text-dark/40' : 'text-white/40'}`}>
+                              <Icon size={20} weight="thin" />
+                            </div>
+                          )}
+                          <div>
+                            <div className={`relative font-sans text-[14px] font-semibold mb-[2px] w-fit ${isLight ? 'text-dark' : 'text-white/90'}`}>
+                              {item.title}
+                              <span className={`absolute bottom-[-2px] left-0 right-0 border-b border-dashed ${isLight ? 'border-dark/30' : 'border-white/50'} opacity-0 group-hover:opacity-100 transition-opacity duration-200`} />
+                            </div>
+                            <div className={`font-sans text-[12px] leading-[1.45] ${isLight ? 'text-dark/40' : 'text-white/35'}`}>
+                              {item.desc}
+                            </div>
                           </div>
-                          <div className={`font-sans text-[12px] leading-[1.45] ${isLight ? 'text-dark/40' : 'text-white/35'}`}>
-                            {item.desc}
-                          </div>
-                        </>
+                        </div>
                       )
                       const cls = `block px-[12px] py-[10px] rounded-[8px] transition-colors no-underline group ${isLight ? 'hover:bg-dark/[0.04]' : 'hover:bg-white/[0.06]'}`
                       if ('href' in item && item.href) {
@@ -288,10 +307,8 @@ export default function Navbar({ variant = 'dark' }: { variant?: 'dark' | 'light
 
               {/* Featured card */}
               <div className={`pl-[32px] border-l ${isLight ? 'border-dark/[0.08]' : 'border-white/[0.08]'} flex flex-col`}>
-                <div className={`rounded-[8px] aspect-[16/10] mb-[16px] flex items-center justify-center border ${isLight ? 'bg-dark/[0.04] border-dark/[0.08]' : 'bg-white/[0.06] border-white/[0.08]'}`}>
-                  <span className={`font-grotesk font-medium text-[10px] tracking-[1px] uppercase px-[8px] py-[2px] rounded-[3px] ${isLight ? 'text-dark/40 bg-dark/[0.06] border border-dark/[0.1]' : 'text-white/40 bg-white/[0.08] border border-white/[0.1]'}`}>
-                    {panel.featured.badge}
-                  </span>
+                <div className={`rounded-[8px] aspect-[16/10] mb-[16px] flex items-center justify-center border overflow-hidden relative ${isLight ? 'bg-dark/[0.04] border-dark/[0.08]' : 'bg-white/[0.06] border-white/[0.08]'}`}>
+                  <img src={panel.featured.image} alt={panel.featured.title} className="absolute inset-0 h-full w-full object-cover" />
                 </div>
                 <div className={`font-sans text-[14px] font-semibold mb-[6px] ${isLight ? 'text-dark' : 'text-white/90'}`}>
                   {panel.featured.title}
