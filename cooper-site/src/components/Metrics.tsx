@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
 
 const metrics = [
-  { end: 25, suffix: 'h', label: 'Saved monthly per producer', note: 'avg. across active teams' },
-  { end: 17, suffix: '%', label: 'More bound premium per producer', note: 'avg. across active teams' },
-  { end: 28, suffix: '%', label: 'Document processing accuracy', note: 'validated across all formats' },
+  { end: 3, suffix: '+ hrs', label: 'Producer time saved', note: 'every week' },
+  { end: 700, suffix: '+', label: 'Carrier portal tasks', note: 'submitted autonomously' },
+  { end: 12, suffix: 'X', label: 'ACORD & portal submissions', note: 'completed faster' },
 ]
 
 function useCountUp(end: number, duration: number, start: boolean) {
