@@ -1,19 +1,35 @@
 /* ──────────────────────────────────────────────────────────────
-   PersonaTestimonial — photo-less editorial quote slider, reusable
-   across every persona page. Pulls the per-page testimonials via props.
+   PersonaTestimonial — Harvey-style editorial quote slider, reusable
+   across every persona page. Narrow meta column (author / role) on
+   the left, a large serif pull-quote on the right, and a segmented
+   progress bar that auto-advances. Pulls per-page testimonials via props.
 ─────────────────────────────────────────────────────────────── */
 import { useState, useEffect, useCallback, useRef } from 'react'
 import type { TestimonialItem } from '../data/personas'
 
 const DURATION = 9000
 
+function usePrefersReducedMotion() {
+  const [reduce, setReduce] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  )
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const handler = () => setReduce(mq.matches)
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
+  return reduce
+}
+
 export default function PersonaTestimonial({ testimonials }: { testimonials: TestimonialItem[] }) {
+  const reduce = usePrefersReducedMotion()
   const [active, setActive] = useState(0)
   const [animKey, setAnimKey] = useState(0)
   const [progress, setProgress] = useState(0)
   const [paused, setPaused] = useState(false)
-  const startRef = useRef(Date.now())
   const rafRef = useRef<number>(0)
+  const startRef = useRef(0)
 
   const multiple = testimonials.length > 1
   const t = testimonials[active]
@@ -23,7 +39,6 @@ export default function PersonaTestimonial({ testimonials }: { testimonials: Tes
     setActive((prev) => (prev + 1) % testimonials.length)
     setAnimKey((k) => k + 1)
     setProgress(0)
-    startRef.current = Date.now()
   }, [testimonials.length])
 
   const goTo = (idx: number) => {
@@ -31,16 +46,15 @@ export default function PersonaTestimonial({ testimonials }: { testimonials: Tes
     setActive(idx)
     setAnimKey((k) => k + 1)
     setProgress(0)
-    startRef.current = Date.now()
     setPaused(true)
-    setTimeout(() => setPaused(false), DURATION)
+    window.setTimeout(() => setPaused(false), DURATION)
   }
 
   useEffect(() => {
-    if (!multiple || paused) return
-    startRef.current = Date.now() - (progress / 100) * DURATION
+    if (!multiple || paused || reduce) return
+    startRef.current = performance.now() - (progress / 100) * DURATION
     const tick = () => {
-      const elapsed = Date.now() - startRef.current
+      const elapsed = performance.now() - startRef.current
       const pct = Math.min((elapsed / DURATION) * 100, 100)
       setProgress(pct)
       if (pct >= 100) goNext()
@@ -49,60 +63,54 @@ export default function PersonaTestimonial({ testimonials }: { testimonials: Tes
     rafRef.current = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(rafRef.current)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [paused, active, goNext, multiple])
+  }, [paused, active, goNext, multiple, reduce])
 
   return (
-    <section className="bg-cream-light py-[120px] px-[40px]">
-      <div className="mx-auto max-w-[900px] text-center">
-        {/* Oversized ocre quotation mark — sits on the right while the rest is centered */}
-        <div aria-hidden className="translate-y-[20px] text-right font-serif text-[124px] leading-[0.6] text-accent-orange select-none">
-          &rdquo;
-        </div>
-
-        <blockquote
-          key={`q-${animKey}`}
-          className="animate-fade-blur-in mt-[24px] font-serif text-[32px] leading-[1.3] tracking-[-0.5px] text-[#0a0a0a] sm:text-[40px]"
+    <section className="bg-cream-light py-[120px]">
+      <div className="mx-auto max-w-[1440px] px-[60px]">
+        <div
+          key={`row-${animKey}`}
+          className="grid grid-cols-1 items-start gap-[40px] lg:grid-cols-[260px_1fr] lg:gap-[80px]"
         >
-          {clean}
-        </blockquote>
+          {/* meta column */}
+          <div className="animate-fade-in lg:pt-[8px]">
+            <p className="font-grotesk text-[17px] font-medium leading-[1.3] text-dark">{t.author}</p>
+            {t.role && (
+              <p className="mt-[6px] max-w-[220px] font-sans text-[15px] leading-[1.45] text-dark/55">
+                {t.role}
+              </p>
+            )}
+          </div>
 
-        <div key={`a-${animKey}`} className="animate-fade-blur-in mt-[40px] flex flex-col items-center gap-[6px]" style={{ animationDelay: '0.12s' }}>
-          <p className="font-grotesk text-[14px] font-medium uppercase tracking-[1.6px] text-dark">{t.author}</p>
-          {t.role && <p className="font-sans text-[15px] text-dark/50">{t.role}</p>}
+          {/* quote */}
+          <blockquote
+            className="animate-fade-in font-serif text-[26px] leading-[1.28] text-dark sm:text-[32px] lg:text-[40px] lg:leading-[1.24]"
+            style={{ animationDelay: '0.08s' }}
+          >
+            &ldquo;{clean}&rdquo;
+          </blockquote>
         </div>
 
-        {/* Dots navigation with progress (only when more than one) */}
+        {/* segmented progress bar (only when more than one) */}
         {multiple && (
-          <div className="mt-[48px] flex justify-center gap-[14px]">
-            {testimonials.map((_, i) => {
-              const isActive = active === i
-              const isPast = i < active
+          <div className="mt-[72px] flex gap-[14px]">
+            {testimonials.map((item, i) => {
+              const fill = i < active ? 100 : i === active ? progress : 0
               return (
                 <button
-                  key={i}
+                  key={`${item.author}-${i}`}
                   onClick={() => goTo(i)}
-                  className="relative flex h-[14px] w-[14px] cursor-pointer items-center justify-center"
                   aria-label={`Go to testimonial ${i + 1}`}
+                  className="group relative h-[18px] flex-1 cursor-pointer"
                 >
-                  {isActive && (
-                    <svg className="absolute inset-0 h-[14px] w-[14px] -rotate-90">
-                      <circle cx="7" cy="7" r="5.5" fill="none" stroke="rgba(30,26,21,0.15)" strokeWidth="1.5" />
-                      <circle
-                        cx="7" cy="7" r="5.5" fill="none"
-                        stroke="#1e1a15" strokeWidth="1.5"
-                        strokeDasharray={`${2 * Math.PI * 5.5}`}
-                        strokeDashoffset={`${2 * Math.PI * 5.5 * (1 - progress / 100)}`}
-                        strokeLinecap="round"
-                        style={{ transition: 'stroke-dashoffset 0.05s linear' }}
-                      />
-                    </svg>
-                  )}
-                  <div
-                    className={`rounded-full transition-all duration-300 ${
-                      isActive ? 'h-[6px] w-[6px] bg-dark' : isPast ? 'h-[6px] w-[6px] bg-dark/40' : 'h-[6px] w-[6px] bg-dark/20'
-                    }`}
+                  <span className="absolute inset-x-0 top-[8px] h-[2px] bg-dark/15" />
+                  <span
+                    className="absolute left-0 top-[8px] h-[2px] bg-dark"
+                    style={{
+                      width: `${fill}%`,
+                      transition: i === active ? 'none' : 'width 0.3s ease',
+                    }}
                   />
-                  {!isActive && <div className="absolute inset-0 rounded-full border border-dark/15" />}
                 </button>
               )
             })}

@@ -8,6 +8,10 @@ const RETAIL = 'retail-agencies'
 
 export const heroImages: Record<string, string> = {
   'retail-agencies': '/images/persona/persona-retail-hero.webp',
+  'wholesale-brokers': '/images/persona/persona-wholesale-hero.webp',
+  'mgas-insurers': '/images/persona/persona-mgas-hero.webp',
+  'claims-tpas': '/images/persona/persona-claims-hero.webp',
+  reinsurers: '/images/persona/persona-reinsurers-hero.webp',
 }
 
 export const featureImages: Record<string, string[]> = {
@@ -16,6 +20,30 @@ export const featureImages: Record<string, string[]> = {
     '/images/persona/persona-retail-2.webp',
     '/images/persona/persona-retail-3.webp',
     '/images/persona/persona-retail-1.webp',
+  ],
+  'wholesale-brokers': [
+    '/images/persona/persona-wholesale-1.webp',
+    '/images/persona/persona-wholesale-2.webp',
+    '/images/persona/persona-wholesale-3.webp',
+    '/images/persona/persona-wholesale-1.webp',
+  ],
+  'mgas-insurers': [
+    '/images/persona/persona-mgas-1.webp',
+    '/images/persona/persona-mgas-2.webp',
+    '/images/persona/persona-mgas-3.webp',
+    '/images/persona/persona-mgas-1.webp',
+  ],
+  'claims-tpas': [
+    '/images/persona/persona-claims-1.webp',
+    '/images/persona/persona-claims-2.webp',
+    '/images/persona/persona-claims-3.webp',
+    '/images/persona/persona-claims-1.webp',
+  ],
+  reinsurers: [
+    '/images/persona/persona-reinsurers-1.webp',
+    '/images/persona/persona-reinsurers-2.webp',
+    '/images/persona/persona-reinsurers-3.webp',
+    '/images/persona/persona-reinsurers-1.webp',
   ],
 }
 
