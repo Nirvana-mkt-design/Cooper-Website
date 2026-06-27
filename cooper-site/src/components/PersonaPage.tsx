@@ -237,26 +237,14 @@ export default function PersonaPage() {
                       {persona.label}
                     </span>
                   </div>
-                  {persona.headlineAccent ? (
-                    <h1
-                      className="animate-fade-blur-in font-serif max-w-[560px]"
-                      style={{ animationDelay: '0.3s' }}
-                    >
-                      <span className="block text-[48px] leading-[1.0] tracking-[-1.44px] text-[#0a0a0a]">
-                        {persona.headlineLead}
-                      </span>
-                      <span className="block text-[48px] leading-[1.0] tracking-[-1.44px] text-[#0a0a0a]">
-                        {persona.headlineAccent}
-                      </span>
-                    </h1>
-                  ) : (
-                    <h1
-                      className="animate-fade-blur-in font-serif text-[48px] leading-[1.0] tracking-[-1.44px] text-[#0a0a0a] max-w-[560px]"
-                      style={{ animationDelay: '0.3s' }}
-                    >
-                      {persona.headline}
-                    </h1>
-                  )}
+                  <h1
+                    className="animate-fade-blur-in font-serif text-[48px] leading-[1.05] tracking-[-1.44px] text-[#0a0a0a] max-w-[620px]"
+                    style={{ animationDelay: '0.3s' }}
+                  >
+                    {persona.headlineAccent
+                      ? `${persona.headlineLead} ${persona.headlineAccent}`
+                      : persona.headline}
+                  </h1>
                 </div>
                 <div className="animate-fade-blur-in flex flex-wrap items-center gap-[12px]" style={{ animationDelay: '0.45s' }}>
                   <a
