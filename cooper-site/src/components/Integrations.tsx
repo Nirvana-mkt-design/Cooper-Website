@@ -6,6 +6,8 @@
    Layout reproduced from the "Idea V1" reference, Cooper content.
 ─────────────────────────────────────────────────────────────── */
 
+import CarrierWall from './CarrierWall'
+
 /* ── Cooper interlocked mark (currentColor) ── */
 function CooperMark({ className = '' }: { className?: string }) {
   return (
@@ -322,27 +324,7 @@ export default function Integrations() {
         </div>
 
         {/* ──────────── Customer logo wall ──────────── */}
-        <div className="mt-[24px] grid items-stretch gap-[24px] overflow-hidden rounded-[16px] border border-dark/[0.08] bg-cream-light p-[14px] md:grid-cols-[1fr_2fr]">
-          <div className="flex flex-col justify-between rounded-[14px] bg-cream/50 p-[28px]">
-            <p className="font-serif text-[24px] leading-[1.3] text-dark">
-              Trusted by forward-thinking insurance teams.
-            </p>
-            <a
-              href="#"
-              className="group mt-[24px] inline-flex items-center gap-[8px] font-grotesk text-[12px] font-medium uppercase tracking-[1.2px] text-dark/60 transition-colors hover:text-dark"
-            >
-              Read the case studies
-              <span className="transition-transform duration-300 group-hover:translate-x-[3px]">→</span>
-            </a>
-          </div>
-          <div className="grid grid-cols-3 gap-[1px] overflow-hidden rounded-[14px] bg-dark/[0.06] sm:grid-cols-4">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="grid aspect-[16/9] place-items-center bg-cream-light">
-                <CooperMark className="h-[24px] w-[24px] text-dark/15" />
-              </div>
-            ))}
-          </div>
-        </div>
+        <CarrierWall />
       </div>
     </section>
   )
