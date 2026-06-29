@@ -116,17 +116,10 @@ export default function CarrierWall() {
   return (
     <div className="mt-[24px] grid grid-cols-1 items-stretch gap-[24px] overflow-hidden rounded-[16px] border border-dark/[0.08] bg-cream-light p-[14px] md:grid-cols-[1fr_2fr]">
       {/* copy card */}
-      <div className="flex flex-col justify-between rounded-[14px] bg-cream/50 p-[28px]">
+      <div className="flex flex-col justify-center rounded-[14px] bg-cream/50 p-[28px]">
         <p className="font-serif text-[24px] leading-[1.3] text-dark">
-          Trusted by forward-thinking insurance teams.
+          Cooper works with all of your trusted carriers
         </p>
-        <a
-          href="#"
-          className="group mt-[24px] inline-flex items-center gap-[8px] font-grotesk text-[12px] font-medium uppercase tracking-[1.2px] text-dark/60 transition-colors hover:text-dark"
-        >
-          Read the case studies
-          <span className="transition-transform duration-300 group-hover:translate-x-[3px]">→</span>
-        </a>
       </div>
 
       {/* logo grid — the cells and dividers stay put; only the

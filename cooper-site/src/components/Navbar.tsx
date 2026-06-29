@@ -1,13 +1,7 @@
 import { useState, useEffect, useRef, type ComponentType } from 'react'
 import { Link } from 'react-router-dom'
 import CooperLogo from './CooperLogo'
-import {
-  Tray, MagnifyingGlass, Lightning,
-  Storefront, Handshake, Buildings, ChartLine, ClipboardText,
-  UsersThree, ChartBar, ShieldCheck,
-  Info, Envelope,
-  Newspaper, Package, Monitor,
-} from '@phosphor-icons/react'
+import { Info, Envelope } from '@phosphor-icons/react'
 
 /* ── Panel data ── */
 interface NavItem {
@@ -22,56 +16,6 @@ interface NavPanel {
   featured: { badge: string; title: string; desc: string; link: string; image: string }
 }
 
-const productPanel: NavPanel = {
-  cols: [
-    {
-      label: 'Capabilities',
-      items: [
-        { title: 'Intelligent Intake', desc: 'Submissions processed in seconds, any format, any carrier.', icon: Tray },
-        { title: 'Deep Insights', desc: 'Coverage gaps, policy changes, red flags, caught before they cost money.', icon: MagnifyingGlass },
-        { title: 'Workflow Automation', desc: 'Guidelines, correspondence, reports, your process at machine speed.', icon: Lightning },
-      ],
-    },
-    {
-      label: 'By role',
-      items: [
-        { title: 'Retail Agencies', desc: 'Cooper adapts to your workflow.', href: '/personas/retail-agencies', icon: Storefront },
-        { title: 'Wholesale Brokers', desc: 'Place more business faster with intelligent matching.', href: '/personas/wholesale-brokers', icon: Handshake },
-        { title: 'Insurers & MGAs', desc: 'Scale underwriting without scaling headcount.', href: '/personas/mgas-insurers', icon: Buildings },
-        { title: 'Reinsurers', desc: 'Optimize treaties and risk at portfolio scale.', href: '/personas/reinsurers', icon: ChartLine },
-        { title: 'Claims TPAs', desc: 'Streamline claims from intake to reporting.', href: '/personas/claims-tpas', icon: ClipboardText },
-      ],
-    },
-  ],
-  featured: {
-    badge: 'Featured',
-    title: 'Cooper for Submissions',
-    desc: 'See how teams process submissions 3x faster, from intake to bound policy, fully automated.',
-    link: 'Learn more',
-    image: '/images/persona/persona-retail-1.webp',
-  },
-}
-
-const customersPanel: NavPanel = {
-  cols: [
-    {
-      label: 'Customer stories',
-      items: [
-        { title: 'All Stories', desc: 'How insurance teams are using Cooper to work faster.', icon: UsersThree },
-        { title: 'Case Studies', desc: 'Detailed results and outcomes from real teams.', icon: ChartBar },
-        { title: 'Security & Compliance', desc: 'SOC 2 Type II, HIPAA, audit logs, and more.', icon: ShieldCheck },
-      ],
-    },
-  ],
-  featured: {
-    badge: 'Case study',
-    title: 'Nirvana Insurance',
-    desc: '"What took hours now takes seconds." See how Nirvana transformed their submission process.',
-    link: 'Read the story',
-    image: '/images/persona/persona-retail-2.webp',
-  },
-}
-
 const aboutPanel: NavPanel = {
   cols: [
     {
@@ -79,14 +23,6 @@ const aboutPanel: NavPanel = {
       items: [
         { title: 'About Cooper', desc: 'Our mission, team, and why we\'re building for insurance.', icon: Info },
         { title: 'Contact', desc: 'Get in touch with our team.', icon: Envelope },
-      ],
-    },
-    {
-      label: 'News & Press',
-      items: [
-        { title: 'Newsroom', desc: 'Latest announcements, launches, and company updates.', icon: Newspaper },
-        { title: 'Press Kit', desc: 'Logos, brand assets, and media resources.', icon: Package },
-        { title: 'In the Media', desc: 'Cooper in industry publications and coverage.', icon: Monitor },
       ],
     },
   ],
@@ -100,17 +36,20 @@ const aboutPanel: NavPanel = {
 }
 
 const panels: Record<string, NavPanel> = {
-  Product: productPanel,
-  Customers: customersPanel,
   About: aboutPanel,
 }
 
-const navLinks = [
-  { label: 'Product', hasDropdown: true },
-  { label: 'Customers', hasDropdown: true },
+interface NavLink {
+  label: string
+  hasDropdown?: boolean
+  href?: string
+  badge?: string
+}
+
+const navLinks: NavLink[] = [
+  { label: 'Product', href: '/#platform' },
   { label: 'About', hasDropdown: true },
-  { label: 'Blog', hasDropdown: false },
-  { label: 'Careers', hasDropdown: false, badge: "We're hiring" },
+  { label: 'Careers', badge: "We're hiring" },
 ]
 
 export default function Navbar({ variant = 'dark' }: { variant?: 'dark' | 'light' }) {
@@ -191,39 +130,54 @@ export default function Navbar({ variant = 'dark' }: { variant?: 'dark' | 'light
         </Link>
 
         <div className="hidden lg:flex items-center gap-1">
-          {navLinks.map((link) => (
-            <button
-              key={link.label}
-              className={`relative flex items-center gap-1.5 px-3 py-1.5 font-sans transition-colors cursor-pointer text-[16px] ${
-                isLight
-                  ? `text-dark/70 hover:text-dark ${openPanel === link.label ? 'text-dark' : ''}`
-                  : `text-white/90 hover:text-white ${openPanel === link.label ? 'text-white' : ''}`
-              }`}
-              onMouseEnter={() => link.hasDropdown ? handleEnter(link.label) : setOpenPanel(null)}
-            >
-              {link.label}
-              {/* Dashed underline on active/hover */}
-              <span
-                className={`absolute bottom-0 left-3 right-3 border-b border-dashed ${isLight ? 'border-dark/30' : 'border-white/50'} transition-opacity duration-200 ${
-                  openPanel === link.label ? 'opacity-100' : 'opacity-0'
-                }`}
-                style={{ bottom: '2px' }}
-              />
-              {link.hasDropdown && (
-                <svg
-                  width="8" height="5" viewBox="0 0 8 5" fill="none"
-                  className={`opacity-40 mt-px transition-transform duration-200 ${openPanel === link.label ? 'rotate-180' : ''}`}
-                >
-                  <path d="M1 1l3 3 3-3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              )}
-              {link.badge && (
-                <span className={`text-[12px] font-semibold tracking-[0.36px] rounded-full px-2 py-0.5 uppercase ml-1 ${isLight ? 'border border-dark/20 bg-dark/5 text-dark/70' : 'border border-white/40 bg-white/10 text-white'}`}>
-                  {link.badge}
-                </span>
-              )}
-            </button>
-          ))}
+          {navLinks.map((link) => {
+            const cls = `relative flex items-center gap-1.5 px-3 py-1.5 font-sans transition-colors cursor-pointer text-[16px] no-underline ${
+              isLight
+                ? `text-dark/70 hover:text-dark ${openPanel === link.label ? 'text-dark' : ''}`
+                : `text-white/90 hover:text-white ${openPanel === link.label ? 'text-white' : ''}`
+            }`
+            const inner = (
+              <>
+                {link.label}
+                {/* Dashed underline on active/hover */}
+                <span
+                  className={`absolute bottom-0 left-3 right-3 border-b border-dashed ${isLight ? 'border-dark/30' : 'border-white/50'} transition-opacity duration-200 ${
+                    openPanel === link.label ? 'opacity-100' : 'opacity-0'
+                  }`}
+                  style={{ bottom: '2px' }}
+                />
+                {link.hasDropdown && (
+                  <svg
+                    width="8" height="5" viewBox="0 0 8 5" fill="none"
+                    className={`opacity-40 mt-px transition-transform duration-200 ${openPanel === link.label ? 'rotate-180' : ''}`}
+                  >
+                    <path d="M1 1l3 3 3-3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                )}
+                {link.badge && (
+                  <span className={`text-[12px] font-semibold tracking-[0.36px] rounded-full px-2 py-0.5 uppercase ml-1 ${isLight ? 'border border-dark/20 bg-dark/5 text-dark/70' : 'border border-white/40 bg-white/10 text-white'}`}>
+                    {link.badge}
+                  </span>
+                )}
+              </>
+            )
+            if (link.href) {
+              return (
+                <a key={link.label} href={link.href} className={cls} onMouseEnter={() => setOpenPanel(null)}>
+                  {inner}
+                </a>
+              )
+            }
+            return (
+              <button
+                key={link.label}
+                className={cls}
+                onMouseEnter={() => link.hasDropdown ? handleEnter(link.label) : setOpenPanel(null)}
+              >
+                {inner}
+              </button>
+            )
+          })}
         </div>
 
         <div className="flex items-center gap-3">
