@@ -1,7 +1,12 @@
 import { useState, useEffect, useRef, type ComponentType } from 'react'
 import { Link } from 'react-router-dom'
 import CooperLogo from './CooperLogo'
-import { Info, Envelope } from '@phosphor-icons/react'
+import {
+  Storefront, Handshake, Buildings, ChartLine, ClipboardText,
+  UsersThree, ChartBar, ShieldCheck,
+  Info, Envelope,
+  Newspaper, Package, Monitor,
+} from '@phosphor-icons/react'
 
 /* ── Panel data ── */
 interface NavItem {
@@ -16,6 +21,58 @@ interface NavPanel {
   featured: { badge: string; title: string; desc: string; link: string; image: string }
 }
 
+const productPanel: NavPanel = {
+  cols: [
+    /* Capabilities column hidden for now — will be used later
+    {
+      label: 'Capabilities',
+      items: [
+        { title: 'Intelligent Intake', desc: 'Submissions processed in seconds, any format, any carrier.', icon: Tray },
+        { title: 'Deep Insights', desc: 'Coverage gaps, policy changes, red flags, caught before they cost money.', icon: MagnifyingGlass },
+        { title: 'Workflow Automation', desc: 'Guidelines, correspondence, reports, your process at machine speed.', icon: Lightning },
+      ],
+    },
+    */
+    {
+      label: 'By role',
+      items: [
+        { title: 'Retail Agencies', desc: 'Cooper adapts to your workflow.', href: '/personas/retail-agencies', icon: Storefront },
+        { title: 'Wholesale Brokers', desc: 'Place more business faster with intelligent matching.', href: '/personas/wholesale-brokers', icon: Handshake },
+        { title: 'Insurers & MGAs', desc: 'Scale underwriting without scaling headcount.', href: '/personas/mgas-insurers', icon: Buildings },
+        { title: 'Reinsurers', desc: 'Optimize treaties and risk at portfolio scale.', href: '/personas/reinsurers', icon: ChartLine },
+        { title: 'Claims TPAs', desc: 'Streamline claims from intake to reporting.', href: '/personas/claims-tpas', icon: ClipboardText },
+      ],
+    },
+  ],
+  featured: {
+    badge: 'Featured',
+    title: 'Cooper for Submissions',
+    desc: 'See how teams process submissions 3x faster, from intake to bound policy, fully automated.',
+    link: 'Learn more',
+    image: '/images/persona/persona-retail-1.webp',
+  },
+}
+
+const customersPanel: NavPanel = {
+  cols: [
+    {
+      label: 'Customer stories',
+      items: [
+        { title: 'All Stories', desc: 'How insurance teams are using Cooper to work faster.', icon: UsersThree },
+        { title: 'Case Studies', desc: 'Detailed results and outcomes from real teams.', icon: ChartBar },
+        { title: 'Security & Compliance', desc: 'SOC 2 Type II, HIPAA, audit logs, and more.', icon: ShieldCheck },
+      ],
+    },
+  ],
+  featured: {
+    badge: 'Case study',
+    title: 'Nirvana Insurance',
+    desc: '"What took hours now takes seconds." See how Nirvana transformed their submission process.',
+    link: 'Read the story',
+    image: '/images/persona/persona-retail-2.webp',
+  },
+}
+
 const aboutPanel: NavPanel = {
   cols: [
     {
@@ -23,6 +80,14 @@ const aboutPanel: NavPanel = {
       items: [
         { title: 'About Cooper', desc: 'Our mission, team, and why we\'re building for insurance.', icon: Info },
         { title: 'Contact', desc: 'Get in touch with our team.', icon: Envelope },
+      ],
+    },
+    {
+      label: 'News & Press',
+      items: [
+        { title: 'Newsroom', desc: 'Latest announcements, launches, and company updates.', icon: Newspaper },
+        { title: 'Press Kit', desc: 'Logos, brand assets, and media resources.', icon: Package },
+        { title: 'In the Media', desc: 'Cooper in industry publications and coverage.', icon: Monitor },
       ],
     },
   ],
@@ -36,20 +101,20 @@ const aboutPanel: NavPanel = {
 }
 
 const panels: Record<string, NavPanel> = {
+  Product: productPanel,
+  /* Customers and About dropdowns hidden for now — registered but not triggered
+     (navLinks below don't enable their dropdowns, so these never render) */
+  Customers: customersPanel,
   About: aboutPanel,
 }
 
-interface NavLink {
-  label: string
-  hasDropdown?: boolean
-  href?: string
-  badge?: string
-}
-
-const navLinks: NavLink[] = [
-  { label: 'Product', href: '/#platform' },
-  { label: 'About', hasDropdown: true },
-  { label: 'Careers', badge: "We're hiring" },
+const navLinks = [
+  { label: 'Product', hasDropdown: true },
+  // { label: 'Customers', hasDropdown: false },
+  { label: 'About', hasDropdown: false, href: '/about' },
+  /* Blog hidden for now — will be used later */
+  // { label: 'Blog', hasDropdown: false },
+  { label: 'Careers', hasDropdown: false, href: '/careers', badge: "We're hiring" },
 ]
 
 export default function Navbar({ variant = 'dark' }: { variant?: 'dark' | 'light' }) {
@@ -131,18 +196,17 @@ export default function Navbar({ variant = 'dark' }: { variant?: 'dark' | 'light
 
         <div className="hidden lg:flex items-center gap-1">
           {navLinks.map((link) => {
-            const cls = `relative flex items-center gap-1.5 px-3 py-1.5 font-sans transition-colors cursor-pointer text-[16px] no-underline ${
+            const cls = `group relative flex items-center gap-1.5 px-3 py-1.5 font-sans transition-colors cursor-pointer text-[16px] no-underline ${
               isLight
                 ? `text-dark/70 hover:text-dark ${openPanel === link.label ? 'text-dark' : ''}`
                 : `text-white/90 hover:text-white ${openPanel === link.label ? 'text-white' : ''}`
             }`
-            const inner = (
+            const content = (
               <>
                 {link.label}
-                {/* Dashed underline on active/hover */}
                 <span
                   className={`absolute bottom-0 left-3 right-3 border-b border-dashed ${isLight ? 'border-dark/30' : 'border-white/50'} transition-opacity duration-200 ${
-                    openPanel === link.label ? 'opacity-100' : 'opacity-0'
+                    openPanel === link.label ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
                   }`}
                   style={{ bottom: '2px' }}
                 />
@@ -161,20 +225,16 @@ export default function Navbar({ variant = 'dark' }: { variant?: 'dark' | 'light
                 )}
               </>
             )
-            if (link.href) {
+            if ('href' in link && link.href) {
               return (
-                <a key={link.label} href={link.href} className={cls} onMouseEnter={() => setOpenPanel(null)}>
-                  {inner}
-                </a>
+                <Link key={link.label} to={link.href} className={cls} onMouseEnter={() => setOpenPanel(null)}>
+                  {content}
+                </Link>
               )
             }
             return (
-              <button
-                key={link.label}
-                className={cls}
-                onMouseEnter={() => link.hasDropdown ? handleEnter(link.label) : setOpenPanel(null)}
-              >
-                {inner}
+              <button key={link.label} className={cls} onMouseEnter={() => link.hasDropdown ? handleEnter(link.label) : setOpenPanel(null)}>
+                {content}
               </button>
             )
           })}
@@ -207,7 +267,7 @@ export default function Navbar({ variant = 'dark' }: { variant?: 'dark' | 'light
             <div
               className="grid gap-0"
               style={{
-                gridTemplateColumns: panel.cols.length === 1 ? '1fr 320px' : `repeat(${panel.cols.length}, 1fr) 320px`,
+                gridTemplateColumns: panel.cols.length === 1 ? '1fr' : `repeat(${panel.cols.length}, 1fr)`,
               }}
             >
               {/* Columns */}
@@ -220,7 +280,7 @@ export default function Navbar({ variant = 'dark' }: { variant?: 'dark' | 'light
                   <div className={`font-grotesk font-medium text-[11px] tracking-[1.1px] uppercase mb-[16px] ${isLight ? 'text-dark/40' : 'text-white/40'}`}>
                     {col.label}
                   </div>
-                  <div className="flex flex-col gap-[2px]">
+                  <div className={`${panel.cols.length === 1 ? 'grid grid-cols-3 gap-x-[16px] gap-y-[2px]' : 'flex flex-col gap-[2px]'}`}>
                     {col.items.map((item) => {
                       const Icon = item.icon
                       const inner = (
@@ -258,22 +318,6 @@ export default function Navbar({ variant = 'dark' }: { variant?: 'dark' | 'light
                   </div>
                 </div>
               ))}
-
-              {/* Featured card */}
-              <div className={`pl-[32px] border-l ${isLight ? 'border-dark/[0.08]' : 'border-white/[0.08]'} flex flex-col`}>
-                <div className={`rounded-[8px] aspect-[16/10] mb-[16px] flex items-center justify-center border overflow-hidden relative ${isLight ? 'bg-dark/[0.04] border-dark/[0.08]' : 'bg-white/[0.06] border-white/[0.08]'}`}>
-                  <img src={panel.featured.image} alt={panel.featured.title} className="absolute inset-0 h-full w-full object-cover" />
-                </div>
-                <div className={`font-sans text-[14px] font-semibold mb-[6px] ${isLight ? 'text-dark' : 'text-white/90'}`}>
-                  {panel.featured.title}
-                </div>
-                <div className={`font-sans text-[12px] leading-[1.5] mb-[14px] ${isLight ? 'text-dark/40' : 'text-white/40'}`}>
-                  {panel.featured.desc}
-                </div>
-                <a href="#" className={`font-sans text-[12px] font-medium flex items-center gap-[4px] transition-colors no-underline mt-auto ${isLight ? 'text-dark/50 hover:text-dark' : 'text-white/50 hover:text-white'}`}>
-                  {panel.featured.link} <span>→</span>
-                </a>
-              </div>
             </div>
           </div>
         )}
