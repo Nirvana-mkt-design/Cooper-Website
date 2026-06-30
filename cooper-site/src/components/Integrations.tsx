@@ -74,9 +74,9 @@ const tools = [
   { src: '/images/logo-docs.webp', label: 'Google Docs' },
   { src: '/images/logo-dropbox.webp', label: 'Dropbox' },
   { src: '/images/logo-sharepoint.webp', label: 'SharePoint' },
-  { src: '/images/logo-drive.webp', label: 'Google Drive' },
-  { src: '/images/logo-slack.webp', label: 'Slack' },
-  { src: '/images/logo-gcloud.webp', label: 'Google Cloud' },
+  { src: '/images/carriers/statefarm.png', label: 'State Farm' },
+  { src: '/images/nirvana-logo.webp', label: 'Nirvana' },
+  { src: '/images/carriers/travelers.png', label: 'Travelers' },
   { src: '/images/logo-hawksoft.webp', label: 'HawkSoft' },
   { src: '/images/logo-epic.webp', label: 'Applied Epic' },
   { src: '/images/logo-ams360.webp', label: 'AMS360' },
@@ -104,18 +104,6 @@ const connectors = [
 ]
 
 /* ── Reusable bits ── */
-function PillButton() {
-  return (
-    <a
-      href="#integrations"
-      className="group inline-flex items-center gap-[10px] rounded-full border border-dark/15 bg-cream-light px-[22px] py-[13px] font-grotesk text-[13px] font-medium tracking-[0.3px] text-dark shadow-[0_4px_18px_-8px_rgba(30,26,21,0.2)] transition-all duration-300 hover:-translate-y-[1px] hover:border-dark/25 hover:shadow-[0_10px_28px_-10px_rgba(30,26,21,0.3)]"
-    >
-      Explore integrations
-      <span className="transition-transform duration-300 group-hover:translate-x-[3px]">→</span>
-    </a>
-  )
-}
-
 function CooperOrb({ size = 150 }: { size?: number }) {
   return (
     <div className="cooper-orb relative grid place-items-center" style={{ width: size, height: size }}>
@@ -144,26 +132,6 @@ function CooperOrb({ size = 150 }: { size?: number }) {
 }
 
 
-/* ── Feature cards ── */
-const features: { title: string; desc: string; image: string }[] = [
-  {
-    title: 'Triage every submission automatically.',
-    desc: 'Cooper reads inbound emails and attachments, extracts the details, and routes each submission to the right place — no manual sorting.',
-    image: '/images/integ-intake.webp',
-  },
-  {
-    title: 'One workspace for every policy.',
-    desc: 'Quotes, endorsements, and renewals tracked in a single source of truth your team already trusts.',
-    image: '/images/integ-policies.webp',
-  },
-  {
-    title: 'Built for every role on the team.',
-    desc: 'From producers to account managers, Cooper fits the way your agency already works.',
-    image: '/images/integ-roles.webp',
-  },
-]
-
-
 export default function Integrations() {
   return (
     <section id="integrations" className="bg-cream-light overflow-hidden px-[40px]">
@@ -179,10 +147,9 @@ export default function Integrations() {
             </h2>
           </div>
           <div className="lg:max-w-[360px] lg:pb-[6px]">
-            <p className="mb-[22px] font-sans text-[16.5px] leading-[1.55] text-dark/55">
+            <p className="font-sans text-[16.5px] leading-[1.55] text-dark/55">
               Cooper connects to your existing systems. No rip and replace. Your data stays where it lives.
             </p>
-            <PillButton />
           </div>
         </div>
 
@@ -239,9 +206,9 @@ export default function Integrations() {
               <div
                 key={s.label}
                 className="absolute flex items-center gap-[14px]"
-                style={{ left: 56, top: srcY[i], transform: 'translateY(-50%)' }}
+                style={{ left: 8, top: srcY[i], transform: 'translateY(-50%)' }}
               >
-                <span className="w-[72px] text-right font-serif text-[19px] text-dark/70">{s.label}</span>
+                <span className="w-[120px] whitespace-nowrap text-right font-serif text-[13.5px] leading-none text-dark/70">{s.label}</span>
                 <div className="flex items-center gap-[10px] rounded-[14px] border border-dark/[0.10] bg-cream-light px-[16px] py-[12px] shadow-[0_8px_26px_-14px_rgba(30,26,21,0.3)]">
                   <span className="text-accent-orange">
                     <SourceIcon name={s.icon} />
@@ -267,7 +234,7 @@ export default function Integrations() {
                   title={t.label}
                   className="grid h-[72px] w-[72px] place-items-center rounded-[18px] border border-dark/[0.08] bg-cream-light shadow-[0_8px_26px_-14px_rgba(30,26,21,0.32)] transition-transform duration-300 hover:-translate-y-[2px]"
                 >
-                  <img src={t.src} alt={t.label} className="h-[30px] w-[30px] object-contain" />
+                  <img src={t.src} alt={t.label} className="max-h-[28px] max-w-[50px] object-contain" />
                 </div>
               ))}
             </div>
@@ -298,29 +265,11 @@ export default function Integrations() {
                   title={t.label}
                   className="grid aspect-square place-items-center rounded-[16px] border border-dark/[0.08] bg-cream-light shadow-[0_8px_26px_-14px_rgba(30,26,21,0.32)]"
                 >
-                  <img src={t.src} alt={t.label} className="h-[26px] w-[26px] object-contain" />
+                  <img src={t.src} alt={t.label} className="max-h-[24px] max-w-[44px] object-contain" />
                 </div>
               ))}
             </div>
           </div>
-        </div>
-
-        {/* ──────────── Feature cards ──────────── */}
-        <div className="mt-[40px] grid gap-[24px] lg:grid-cols-3">
-          {features.map((f) => (
-            <div
-              key={f.title}
-              className="flex flex-col overflow-hidden rounded-[16px] border border-dark/[0.08] bg-cream-light shadow-[0_24px_60px_-48px_rgba(30,26,21,0.5)]"
-            >
-              <div className="relative m-[14px] mb-0 aspect-square overflow-hidden rounded-[16px] border border-dark/[0.06] bg-cream">
-                <img src={f.image} alt="" className="absolute inset-0 h-full w-full object-cover" />
-              </div>
-              <div className="flex flex-1 flex-col p-[24px]">
-                <h3 className="font-serif text-[21px] leading-[1.25] text-dark">{f.title}</h3>
-                <p className="mt-[12px] font-sans text-[14.5px] leading-[1.55] text-dark/55">{f.desc}</p>
-              </div>
-            </div>
-          ))}
         </div>
 
         {/* ──────────── Customer logo wall ──────────── */}
