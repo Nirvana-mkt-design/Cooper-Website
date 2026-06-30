@@ -2,7 +2,6 @@ import { useState, useEffect, useRef, type ComponentType } from 'react'
 import { Link } from 'react-router-dom'
 import CooperLogo from './CooperLogo'
 import {
-  Tray, MagnifyingGlass, Lightning,
   Storefront, Handshake, Buildings, ChartLine, ClipboardText,
   UsersThree, ChartBar, ShieldCheck,
   Info, Envelope,
@@ -103,9 +102,10 @@ const aboutPanel: NavPanel = {
 
 const panels: Record<string, NavPanel> = {
   Product: productPanel,
-  /* Customers and About dropdowns hidden for now — will be used later */
-  // Customers: customersPanel,
-  // About: aboutPanel,
+  /* Customers and About dropdowns hidden for now — registered but not triggered
+     (navLinks below don't enable their dropdowns, so these never render) */
+  Customers: customersPanel,
+  About: aboutPanel,
 }
 
 const navLinks = [
