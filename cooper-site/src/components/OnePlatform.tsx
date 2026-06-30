@@ -1,314 +1,51 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 
-/* ──────────────────────────────────────────────────────────────
-   OnePlatform — "One platform, every workflow".
-   Segmented tab control over three jobs Cooper finishes end to end:
-   build the submission, fill the portals, turn quotes into proposals.
-   Each panel pairs editorial copy with a clean product-UI diagram,
-   styled to match the real Cooper app (light cards, ochre accents).
-─────────────────────────────────────────────────────────────── */
-
-const ORANGE = '#d95611'
-
 const tabs = [
   {
-    id: 'submission',
-    tab: 'Build the submission',
-    eyebrow: 'Submissions',
-    title: 'Submission, built',
-    tagline: 'Forward the docs. Get a finished package.',
+    id: 'intake',
+    label: 'Intelligent intake',
+    title: 'Submissions processed in seconds, not hours',
     description:
-      'Send Cooper the email and attachments, or point it at your AMS and SharePoint. It reads every dec page, loss run, and application, fills the ACORD forms, and assembles the whole submission.',
+      "Emails, PDFs, applications, loss runs. Cooper reads everything that comes in, organizes it into your workflow, and tells you exactly what's missing before you have to chase it.",
     checks: [
-      'Pulls exposures, drivers, and prior losses into the right fields',
-      'Fills the ACORD forms and carrier supplements automatically',
-      'Flags only what is truly missing for you to confirm',
+      { bold: 'Any format, any carrier.', rest: 'Processed automatically' },
+      { bold: 'Key details structured and ready', rest: 'for your team instantly' },
+      { bold: 'Missing information flagged', rest: 'before it slows you down' },
     ],
   },
   {
-    id: 'portals',
-    tab: 'Fill the portals',
-    eyebrow: "Carrier portals · Cooper's edge",
-    title: 'Portals, filled',
-    tagline: "Cooper hits the markets, you don't.",
+    id: 'insights',
+    label: 'Deep insights',
+    title: 'Catch what matters before it costs money',
     description:
-      'Cooper logs into each carrier portal and enters the same risk across all of them. The real forms, uploads, and clicks. You stop re-keying identical data ten times.',
+      'Cooper reads policies, loss runs, and applications like a senior underwriter, surfacing coverage gaps, comparing terms across carriers, and catching the issues that would take your team hours to find.',
     checks: [
-      'Drives live carrier portals, not just PDFs',
-      'Submits one risk across every market in parallel',
-      'You watch progress while Cooper does the typing',
+      { bold: 'Side-by-side policy and quote', rest: 'comparison' },
+      { bold: 'Loss history trends', rest: 'and ratio analysis in seconds' },
+      { bold: 'Exclusions, limitations, and red flags', rest: 'surfaced automatically' },
     ],
   },
   {
-    id: 'proposals',
-    tab: 'Turn quotes into proposals',
-    eyebrow: 'Proposals',
-    title: 'Proposal, drafted',
-    tagline: 'Quotes in, client-ready proposal out.',
+    id: 'automation',
+    label: 'Workflow automation',
+    title: 'Your process, running at the speed of AI',
     description:
-      "As quotes come back, Cooper normalizes every carrier's terms into one comparison and drafts the proposal in your agency's format. Ready to send, not just ready to read.",
+      'Cooper plugs into the way you already work, verifying guidelines, drafting emails, generating reports, answering questions about your documents in plain English.',
     checks: [
-      'Normalizes mismatched quotes into one clean comparison',
-      'Flags coverage differences and silent downgrades',
-      'Drafts the client proposal in your template',
+      { bold: 'Compliance and guideline checks', rest: 'run automatically' },
+      { bold: 'Emails, summaries, and reports', rest: 'drafted with the right context' },
+      { bold: 'Ask Cooper anything,', rest: 'get answers from your documents instantly' },
     ],
   },
-] as const
+]
 
-const DURATION = 11000 // ms per tab
-
-/* ── shared bits ── */
-function Check({ className = '' }: { className?: string }) {
-  return (
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" className={`shrink-0 ${className}`} aria-hidden>
-      <circle cx="12" cy="12" r="11" fill={ORANGE} opacity="0.12" />
-      <path d="M7 12.5l3 3 7-7.5" stroke={ORANGE} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
-}
-
-function FlowArrow() {
-  return (
-    <svg viewBox="0 0 40 24" fill="none" className="h-[28px] w-[28px] text-accent-orange" aria-hidden>
-      <path d="M2 12h34M28 4l9 8-9 8" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
-}
-
-function HeadChip({ color, children }: { color: string; children: React.ReactNode }) {
-  return (
-    <span className="inline-flex items-center gap-[7px] rounded-full border border-dark/[0.1] bg-cream-light px-[11px] py-[5px] font-grotesk text-[11px] font-medium text-dark/65">
-      <span className="h-[7px] w-[7px] rounded-full" style={{ background: color }} />
-      {children}
-    </span>
-  )
-}
-
-const panelBase = 'rounded-[12px] border border-dark/[0.12] bg-cream/30 p-[14px]'
-const h5cls = 'mb-[10px] font-sans text-[11px] font-semibold uppercase tracking-[0.06em] text-dark/55'
-const cardWrap =
-  'flex min-h-[360px] flex-col gap-[14px] rounded-[18px] border border-dark/[0.1] bg-cream-light p-[22px] shadow-[0_24px_70px_-44px_rgba(30,26,21,0.55)]'
-
-function FileChip({ kind, name }: { kind: string; name: string }) {
-  return (
-    <div className="mb-[7px] flex items-center gap-[8px] rounded-[8px] border border-dark/[0.12] bg-white px-[10px] py-[7px] text-[12.5px] text-dark">
-      <span className="grid h-[18px] w-[18px] place-items-center rounded-[4px] bg-accent-orange font-grotesk text-[8px] font-bold text-white">
-        {kind}
-      </span>
-      {name}
-    </div>
-  )
-}
-
-function KV({ k, v }: { k: string; v: string }) {
-  return (
-    <div className="flex justify-between gap-[10px] border-b border-dashed border-dark/[0.18] py-[5px] text-[12.5px] last:border-b-0">
-      <span className="text-dark/55">{k}</span>
-      <b className="font-semibold text-dark">{v}</b>
-    </div>
-  )
-}
-
-/* ── diagrams ── */
-function SubmissionDiagram() {
-  return (
-    <div className={cardWrap}>
-      <div className="flex items-center justify-between gap-[10px]">
-        <span className="font-grotesk text-[12px] text-dark/50">Submission package</span>
-        <HeadChip color="#3f7d3f">Ready to send</HeadChip>
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_1.05fr] items-center gap-[14px]">
-        <div className={panelBase}>
-          <h5 className={h5cls}>Forwarded to Cooper</h5>
-          <FileChip kind="PDF" name="Dec page.pdf" />
-          <FileChip kind="PDF" name="Loss runs · 5 yr.pdf" />
-          <FileChip kind="EML" name="Submission email" />
-          <FileChip kind="XLS" name="Vehicle schedule.xls" />
-          <div className="mt-[6px] text-[11px] leading-[1.4] text-dark/45">
-            From dana@riversideins.com · ABC Trucking LLC · 4 files
-          </div>
-        </div>
-        <div className="grid place-items-center">
-          <FlowArrow />
-        </div>
-        <div className="rounded-[12px] border border-accent-orange/25 bg-accent-orange/[0.06] p-[14px]">
-          <h5 className={h5cls}>Filled by Cooper</h5>
-          <KV k="Named insured" v="ABC Trucking LLC" />
-          <KV k="Lines" v="Auto Liab · Cargo" />
-          <KV k="Effective" v="2026-06-25" />
-          <div className="mt-[10px] flex flex-col gap-[6px]">
-            {['ACORD application filled', 'Motor Truck Cargo supplement built', '5-yr loss summary built'].map((t) => (
-              <div key={t} className="flex items-center gap-[8px] text-[12.5px] text-dark/80">
-                <Check />
-                {t}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-      <div className="rounded-[12px] border border-dashed border-dark/[0.2] bg-white px-[14px] py-[12px] text-[12px] text-dark/60">
-        <b className="font-semibold text-accent-red">2 items need you</b> · MC# missing · garaging address unconfirmed
-      </div>
-    </div>
-  )
-}
-
-function PortalsDiagram() {
-  const fields = [
-    { label: 'Named insured', value: 'ABC Trucking LLC', typing: false },
-    { label: 'FEIN', value: '47-20••••', typing: false },
-    { label: 'Garaging ZIP', value: '60629', typing: false },
-    { label: 'Power units', value: '18', typing: true },
-  ]
-  return (
-    <div className={cardWrap}>
-      <div className="flex items-center justify-between gap-[10px]">
-        <span className="font-grotesk text-[12px] text-dark/50">Carrier portals · live</span>
-        <HeadChip color={ORANGE}>Cooper is driving</HeadChip>
-      </div>
-      <div className="overflow-hidden rounded-[12px] border border-dark/[0.12] bg-white">
-        <div className="flex items-center gap-[7px] border-b border-dark/[0.12] bg-cream/60 px-[12px] py-[9px]">
-          <span className="h-[9px] w-[9px] rounded-full bg-dark/20" />
-          <span className="h-[9px] w-[9px] rounded-full bg-dark/20" />
-          <span className="h-[9px] w-[9px] rounded-full bg-dark/20" />
-          <span className="ml-[8px] flex-1 truncate rounded-[6px] border border-dark/[0.12] bg-white px-[10px] py-[4px] font-grotesk text-[11px] text-dark/55">
-            portal.travelers.com › new-submission › commercial-auto
-          </span>
-        </div>
-        <div className="grid grid-cols-2 gap-x-[16px] gap-y-[10px] p-[14px]">
-          {fields.map((f) => (
-            <div key={f.label} className="text-[11.5px]">
-              <span className="mb-[3px] block font-grotesk text-[9.5px] uppercase tracking-[0.05em] text-dark/45">
-                {f.label}
-              </span>
-              <div className="rounded-[6px] border border-accent-orange bg-white px-[8px] py-[6px] text-dark shadow-[0_0_0_3px_rgba(217,86,17,0.12)]">
-                {f.value}
-                {f.typing && <span className="ml-[2px] inline-block h-[13px] w-[1px] -translate-y-[1px] animate-pulse bg-accent-orange align-middle" />}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className="flex flex-col gap-[8px]">
-        {[
-          { name: 'Travelers', state: 'submitted' as const },
-          { name: 'Chubb', state: 'submitted' as const },
-          { name: 'Nationwide', state: 'filling' as const },
-          { name: 'Sentry · Amtrust · Zurich', state: 'queued' as const },
-        ].map((q) => (
-          <div
-            key={q.name}
-            className="flex items-center justify-between rounded-[8px] border border-dark/[0.12] bg-white px-[11px] py-[8px] text-[12.5px]"
-          >
-            <span className="font-semibold text-dark">{q.name}</span>
-            {q.state === 'submitted' && <span className="text-[#3f7d3f]">✓ submitted</span>}
-            {q.state === 'filling' && (
-              <span className="flex items-center gap-[8px] text-dark/60">
-                <span className="h-[5px] w-[64px] overflow-hidden rounded-[3px] bg-dark/10">
-                  <span className="block h-full w-[78%] bg-accent-orange" />
-                </span>
-                filling 78%
-              </span>
-            )}
-            {q.state === 'queued' && <span className="text-dark/40">queued</span>}
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-function ProposalsDiagram() {
-  const quotes = [
-    { name: 'Travelers', price: '$42,180' },
-    { name: 'Chubb', price: '$39,750' },
-    { name: 'Nationwide', price: '$45,600' },
-  ]
-  const rows = [
-    { c: 'Travelers', p: '$42,180', d: '$2,500', g: '$100k', rec: false },
-    { c: 'Chubb', p: '$39,750', d: '$5,000', g: '$250k', rec: true },
-    { c: 'Nationwide', p: '$45,600', d: '$1,000', g: '$100k', rec: false },
-  ]
-  return (
-    <div className={cardWrap}>
-      <div className="flex items-center justify-between gap-[10px]">
-        <span className="font-grotesk text-[12px] text-dark/50">Quotes to proposal</span>
-        <HeadChip color="#3f7d3f">Drafted in your template</HeadChip>
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_1.15fr] items-center gap-[14px]">
-        <div className={panelBase}>
-          <h5 className={h5cls}>Quotes received</h5>
-          <div className="flex flex-col gap-[9px]">
-            {quotes.map((q) => (
-              <div
-                key={q.name}
-                className="flex items-center justify-between rounded-[9px] border border-dark/[0.12] bg-white px-[12px] py-[9px]"
-              >
-                <span className="text-[13px] font-semibold text-dark">{q.name}</span>
-                <span className="font-serif text-[17px] text-dark">{q.price}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="grid place-items-center">
-          <FlowArrow />
-        </div>
-        <div className="rounded-[12px] border border-dark/[0.12] bg-white p-[14px]">
-          <h5 className={h5cls}>Client proposal · ABC Trucking</h5>
-          <table className="w-full border-collapse text-[11.5px]">
-            <thead>
-              <tr>
-                {['Carrier', 'Premium', 'Deductible', 'Cargo'].map((h) => (
-                  <th
-                    key={h}
-                    className="border-b border-dark/[0.12] px-[8px] py-[6px] text-left font-grotesk text-[9.5px] uppercase tracking-[0.05em] text-dark/50"
-                  >
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((r) => (
-                <tr key={r.c}>
-                  <td className="border-b border-dark/[0.08] px-[8px] py-[6px] text-dark/75">
-                    {r.rec ? <b className="font-semibold text-dark">{r.c}</b> : r.c}
-                  </td>
-                  <td className="border-b border-dark/[0.08] px-[8px] py-[6px] text-dark/75">
-                    {r.rec ? <b className="font-semibold text-dark">{r.p}</b> : r.p}
-                  </td>
-                  <td className="border-b border-dark/[0.08] px-[8px] py-[6px] text-dark/75">{r.d}</td>
-                  <td className="border-b border-dark/[0.08] px-[8px] py-[6px] text-dark/75">{r.g}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <div className="mt-[10px] flex items-start gap-[8px] text-[12.5px] text-dark/70">
-            <Check className="mt-[1px]" />
-            <span>
-              <b className="font-semibold text-dark">Recommended: Chubb</b> · lowest premium and best cargo, at a higher $5k deductible
-            </span>
-          </div>
-          <div className="mt-[8px] text-[11px] text-dark/45">
-            Drafted in Riverside Insurance Group's template · review before sending
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function Diagram({ id }: { id: string }) {
-  if (id === 'submission') return <SubmissionDiagram />
-  if (id === 'portals') return <PortalsDiagram />
-  return <ProposalsDiagram />
-}
+const DURATION = 15000 // ms per tab
 
 export default function OnePlatform() {
   const [activeIdx, setActiveIdx] = useState(0)
   const [progress, setProgress] = useState(0)
   const [paused, setPaused] = useState(false)
-  const startRef = useRef(0)
+  const startRef = useRef(Date.now())
   const rafRef = useRef<number>(0)
   const [animKey, setAnimKey] = useState(0)
   const active = tabs[activeIdx]
@@ -317,97 +54,162 @@ export default function OnePlatform() {
     setActiveIdx((prev) => (prev + 1) % tabs.length)
     setAnimKey((k) => k + 1)
     setProgress(0)
-    startRef.current = performance.now()
+    startRef.current = Date.now()
   }, [])
 
+  // Animation frame loop for smooth progress bar
   useEffect(() => {
     if (paused) return
-    startRef.current = performance.now() - (progress / 100) * DURATION
+
+    startRef.current = Date.now() - (progress / 100) * DURATION
+
     const tick = () => {
-      const elapsed = performance.now() - startRef.current
+      const elapsed = Date.now() - startRef.current
       const pct = Math.min((elapsed / DURATION) * 100, 100)
       setProgress(pct)
-      if (pct >= 100) goNext()
-      else rafRef.current = requestAnimationFrame(tick)
+      if (pct >= 100) {
+        goNext()
+      } else {
+        rafRef.current = requestAnimationFrame(tick)
+      }
     }
     rafRef.current = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(rafRef.current)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paused, activeIdx, goNext])
 
   const handleTabClick = (idx: number) => {
     setActiveIdx(idx)
     setAnimKey((k) => k + 1)
     setProgress(0)
-    startRef.current = performance.now()
+    startRef.current = Date.now()
     setPaused(true)
-    setTimeout(() => setPaused(false), DURATION)
+    setTimeout(() => setPaused(false), 15000)
   }
 
   return (
-    <section id="platform" className="scroll-mt-[90px] bg-cream py-[100px]">
-      <div className="mx-auto max-w-[1440px] px-5 md:px-10 lg:px-[62px]">
-        <h2 className="mb-[44px] text-center font-serif text-[26px] md:text-[34px] lg:text-[38px] leading-[1.2] text-dark">
+    <section className="bg-cream py-[100px]">
+      <div className="max-w-[1440px] mx-auto px-[62px]">
+        {/* Heading */}
+        <h2 className="font-serif text-[38px] leading-[1.2] text-dark text-center mb-[60px]">
           One platform, every workflow
         </h2>
 
-        {/* Segmented tab control */}
-        <div className="mx-auto mb-[40px] flex max-w-[760px] gap-[4px] rounded-[12px] border border-dark/[0.12] bg-cream-light p-[5px]">
-          {tabs.map((tab, i) => (
-            <button
-              key={tab.id}
-              onClick={() => handleTabClick(i)}
-              className={`relative flex-1 overflow-hidden rounded-[8px] px-[6px] md:px-[10px] py-[11px] font-grotesk text-[10px] leading-[1.2] md:text-[11px] lg:text-[12.5px] font-semibold uppercase tracking-[0.04em] transition-colors duration-200 cursor-pointer ${
-                activeIdx === i ? 'bg-dark text-cream-light' : 'bg-transparent text-dark/45 hover:text-dark/70'
-              }`}
-            >
-              {tab.tab}
-              {activeIdx === i && (
-                <span
-                  className="absolute bottom-0 left-0 h-[2px] bg-accent-orange"
-                  style={{ width: `${progress}%` }}
-                />
-              )}
-            </button>
-          ))}
-        </div>
-
-        {/* Active panel */}
+        {/* Card */}
         <div
-          key={`panel-${animKey}`}
-          className="grid grid-cols-1 items-center gap-8 lg:gap-[48px] lg:grid-cols-[0.92fr_1.15fr]"
+          className="bg-cream-light border-4 border-black/[0.02] overflow-hidden relative max-h-[755px]"
+          style={{ boxShadow: '0px 7.5px 69.6px -20px rgba(0,0,0,0.33)' }}
         >
-          {/* Copy */}
-          <div>
-            <p className="mb-[14px] font-grotesk text-[13px] font-medium uppercase tracking-[1.4px] text-accent-orange animate-fade-in">
-              {active.eyebrow}
-            </p>
-            <h3 className="mb-[8px] font-serif text-[22px] md:text-[28px] lg:text-[34px] leading-[1.1] text-dark animate-fade-in" style={{ animationDelay: '0.05s' }}>
-              {active.title}
-            </h3>
-            <p className="mb-[18px] font-serif text-[17px] lg:text-[20px] leading-[1.3] text-accent-orange animate-fade-blur-in" style={{ animationDelay: '0.12s' }}>
-              {active.tagline}
-            </p>
-            <p className="mb-[24px] max-w-[44ch] font-sans text-[16.5px] leading-[1.55] text-dark/60 animate-fade-blur-in" style={{ animationDelay: '0.2s' }}>
-              {active.description}
-            </p>
-            <ul className="flex flex-col gap-[12px]">
-              {active.checks.map((c, i) => (
-                <li
-                  key={c}
-                  className="flex items-start gap-[10px] font-sans text-[14.5px] leading-[1.4] text-dark/85 animate-fade-blur-in"
-                  style={{ animationDelay: `${0.3 + i * 0.1}s` }}
-                >
-                  <Check className="mt-[2px]" />
-                  {c}
-                </li>
-              ))}
-            </ul>
+          {/* Tab bar */}
+          <div className="flex">
+            {tabs.map((tab, i) => (
+              <button
+                key={tab.id}
+                onClick={() => handleTabClick(i)}
+                className={`relative flex-1 h-[73px] flex items-center justify-center border-b border-r border-black/[0.12] font-grotesk font-medium text-[14.5px] tracking-[1.45px] uppercase cursor-pointer transition-colors overflow-hidden ${
+                  activeIdx === i
+                    ? 'text-dark bg-cream-light'
+                    : 'text-dark/40 bg-cream-light hover:text-dark/60'
+                } last:border-r-0`}
+              >
+                {/* Progress line on top */}
+                <span
+                  className="absolute top-0 left-0 h-[3px] bg-accent-orange"
+                  style={{
+                    width: activeIdx === i ? `${progress}%` : '0%',
+                    transition: activeIdx === i ? 'none' : 'width 0.3s ease',
+                  }}
+                />
+                {tab.label}
+              </button>
+            ))}
           </div>
 
-          {/* Diagram */}
-          <div className="animate-fade-blur-in" style={{ animationDelay: '0.15s' }}>
-            <Diagram id={active.id} />
+          {/* Content */}
+          <div className="grid grid-cols-2 h-[682px] overflow-hidden">
+            {/* Left text */}
+            <div className="px-[62px] pt-[80px] pb-[60px] flex flex-col overflow-hidden h-[682px]" key={`text-${animKey}`}>
+              {/* Cooper icon — orange */}
+              <svg width="42" height="42" viewBox="0 0 84 84" fill="none" className="mb-[24px] shrink-0 animate-fade-in" style={{ animationDelay: '0.05s' }}>
+                <path fillRule="evenodd" clipRule="evenodd" d="M60.0615 0C72.8642 0.000149885 83.2434 10.3788 83.2435 23.1815L83.2416 23.4811C83.1479 30.88 79.5864 37.442 74.1093 41.621C79.6604 45.8563 83.2435 52.5399 83.2435 60.061L83.2416 60.3607C83.0811 73.0254 72.7642 83.2428 60.0615 83.243L59.7619 83.2411C52.3632 83.1473 45.8009 79.5862 41.622 74.1093C37.3866 79.6603 30.7026 83.2429 23.1815 83.243L22.8818 83.2411C10.2172 83.0805 7.73898e-05 72.7637 0 60.061C4.11592e-05 52.5405 3.58211 45.8573 9.13223 41.622C3.58171 37.3866 7.63667e-06 30.7023 0 23.1815C7.00685e-05 10.3787 10.3787 7.00776e-05 23.1815 0C30.7026 4.03379e-05 37.3861 3.58279 41.6215 9.13367C45.8568 3.58276 52.5404 4.1168e-05 60.0615 0ZM18.6642 46.9719C13.2366 48.8446 9.33768 53.9971 9.33763 60.061C9.3377 67.7067 15.5358 73.9052 23.1815 73.9054C29.5238 73.9053 34.8689 69.6397 36.5073 63.8212C36.5133 63.8224 36.5195 63.8234 36.5255 63.8246C27.8285 62.0864 20.8884 55.4832 18.6642 46.9719ZM63.598 46.6742C61.5421 54.9938 54.9941 61.5414 46.6747 63.598C48.2377 69.5303 53.6383 73.9053 60.0615 73.9054C67.7072 73.9052 73.9058 67.7067 73.9059 60.061C73.9058 53.6377 69.5306 48.2371 63.598 46.6742ZM41.0933 27.2504C33.4476 27.2505 27.2496 33.4486 27.2495 41.0943C27.2495 48.7401 33.4476 54.9386 41.0933 54.9386C48.7392 54.9386 54.9377 48.7401 54.9377 41.0943C54.9376 33.4485 48.7391 27.2505 41.0933 27.2504ZM64.2686 41.6225C64.2725 41.4469 64.2758 41.2708 64.2758 41.0943L64.2734 41.394C64.2724 41.4702 64.2703 41.5464 64.2686 41.6225ZM60.0615 9.33762C53.9972 9.33768 48.8444 13.2371 46.9719 18.6651C46.9635 18.6629 46.9549 18.6606 46.9464 18.6584C55.4854 20.8798 62.1083 27.847 63.8332 36.5751C63.8288 36.5524 63.8253 36.5295 63.8207 36.5068C69.6397 34.8687 73.9058 29.5241 73.9059 23.1815C73.9058 15.5358 67.7072 9.33777 60.0615 9.33762ZM36.1884 18.4338C34.2509 13.1266 29.1592 9.33768 23.1815 9.33762C15.5357 9.33769 9.3377 15.5357 9.33763 23.1815C9.33764 29.1593 13.1266 34.2509 18.4338 36.1883C20.3441 27.3232 27.323 20.3437 36.1884 18.4338Z" fill="#d95611"/>
+              </svg>
+              <h3 className="font-serif text-[38px] leading-[1.15] text-dark mb-[28px] max-w-[445px] animate-fade-in" style={{ animationDelay: '0.15s' }}>
+                {active.title}
+              </h3>
+              <p className="font-sans text-[17.8px] leading-[1.5] text-dark/70 max-w-[491px] mb-[44px] animate-fade-blur-in" style={{ animationDelay: '0.25s' }}>
+                {active.description}
+              </p>
+              <div className="flex flex-col gap-[24px]">
+                {active.checks.map((check, i) => (
+                  <div key={i} className="flex items-start gap-[12px] animate-fade-blur-in" style={{ animationDelay: `${0.4 + i * 0.12}s` }}>
+                    <img src="/images/check-circle.svg" alt="" className="w-[22px] h-[22px] mt-[1px] shrink-0" />
+                    <p className="font-sans text-[16px] leading-[1.4] text-dark">
+                      <span className="font-medium">{check.bold}</span><br />
+                      <span className="text-dark/50">{check.rest}</span>
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right — layered background + UI overlay */}
+            <div className="relative border-l border-black/[0.12] overflow-hidden">
+              {/* Background video */}
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="absolute inset-0 w-full h-full object-cover"
+              >
+                <source src="/images/platform-bg-video-compressed.mp4" type="video/mp4" />
+              </video>
+              <div className="absolute inset-0 mix-blend-hard-light" style={{ backgroundImage: 'linear-gradient(-89.4deg, rgba(186,67,9,0.36) 35%, rgba(186,67,9,0) 70%)' }} />
+              <div className="absolute inset-0 mix-blend-hard-light" style={{ backgroundImage: 'linear-gradient(241.6deg, rgba(186,186,9,0) 43%, rgba(186,89,9,0.43) 57%)' }} />
+              <div className="absolute inset-0 mix-blend-soft-light" style={{ background: 'radial-gradient(ellipse at 90% -15%, rgba(55,27,19,0) 46%, rgba(55,27,19,0.56) 100%)' }} />
+              <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 100% 110%, rgba(55,27,19,0) 46%, rgba(55,27,19,0.52) 100%)' }} />
+
+              {/* UI Elements — animated layers, centered as a group */}
+              <div className="absolute inset-0 z-10 flex items-center justify-center">
+                <div className="relative w-[420px] h-[560px]" key={`ui-${animKey}`}>
+                  {/* 1: Icon cards + badge */}
+                  <img
+                    src="/images/1.webp"
+                    alt=""
+                    width="220"
+                    height="200"
+                    className="absolute top-0 left-[10px] w-[220px] animate-fade-blur-in"
+                    style={{ animationDelay: '0.1s' }}
+                  />
+                  {/* 2: Status pills */}
+                  <img
+                    src="/images/2.webp"
+                    alt=""
+                    width="185"
+                    height="120"
+                    className="absolute top-[15px] left-[230px] w-[185px] animate-fade-blur-in"
+                    style={{ animationDelay: '0.25s' }}
+                  />
+                  {/* 3: Incoming Documents card */}
+                  <img
+                    src="/images/3.webp"
+                    alt=""
+                    width="370"
+                    height="320"
+                    className="absolute top-[110px] left-0 w-[370px] animate-fade-blur-in"
+                    style={{ animationDelay: '0.4s' }}
+                  />
+                  {/* 4: Missing elements alert */}
+                  <img
+                    src="/images/4.webp"
+                    alt=""
+                    width="340"
+                    height="100"
+                    className="absolute top-[430px] left-[60px] w-[340px] animate-fade-blur-in"
+                    style={{ animationDelay: '0.55s' }}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
