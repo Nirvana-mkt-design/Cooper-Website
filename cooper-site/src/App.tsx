@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import HowCooperHelps from './components/HowCooperHelps'
@@ -16,6 +16,25 @@ import PersonaPage from './components/PersonaPage'
 import AboutPage from './components/AboutPage'
 import CareersPage from './components/CareersPage'
 import CareerRolePage from './components/CareerRolePage'
+
+// Reset scroll to the top on every route change so a new page never opens
+// at the scroll height of the previous one. Honors #hash anchors when present.
+function ScrollToTop() {
+  const { pathname, hash } = useLocation()
+
+  useEffect(() => {
+    if (hash) {
+      const el = document.getElementById(hash.slice(1))
+      if (el) {
+        el.scrollIntoView()
+        return
+      }
+    }
+    window.scrollTo(0, 0)
+  }, [pathname, hash])
+
+  return null
+}
 
 function RevealSection({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
   const ref = useRef<HTMLDivElement>(null)
@@ -86,13 +105,16 @@ function HomePage() {
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/demo" element={<DemoPage />} />
-      <Route path="/about" element={<AboutPage />} />
-      <Route path="/careers" element={<CareersPage />} />
-      <Route path="/careers/:roleId" element={<CareerRolePage />} />
-      <Route path="/personas/:slug" element={<PersonaPage />} />
-    </Routes>
+    <>
+      <ScrollToTop />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/demo" element={<DemoPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/careers" element={<CareersPage />} />
+        <Route path="/careers/:roleId" element={<CareerRolePage />} />
+        <Route path="/personas/:slug" element={<PersonaPage />} />
+      </Routes>
+    </>
   )
 }
