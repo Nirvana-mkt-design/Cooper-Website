@@ -265,7 +265,7 @@ export default function AboutPage() {
                     Come teach an<br />industry to a coworker.
                   </h2>
                   <Link
-                    to="#"
+                    to="/careers"
                     className="inline-block w-fit font-sans font-medium text-[15px] text-dark bg-white rounded-[6px] px-[28px] py-[12px] hover:bg-cream-light transition-colors no-underline animate-fade-blur-in"
                     style={{ animationDelay: '0.25s' }}
                   >

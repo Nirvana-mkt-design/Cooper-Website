@@ -114,7 +114,7 @@ const navLinks = [
   { label: 'About', hasDropdown: false, href: '/about' },
   /* Blog hidden for now — will be used later */
   // { label: 'Blog', hasDropdown: false },
-  { label: 'Careers', hasDropdown: false, badge: "We're hiring" },
+  { label: 'Careers', hasDropdown: false, href: '/careers', badge: "We're hiring" },
 ]
 
 export default function Navbar({ variant = 'dark' }: { variant?: 'dark' | 'light' }) {
@@ -196,7 +196,7 @@ export default function Navbar({ variant = 'dark' }: { variant?: 'dark' | 'light
 
         <div className="hidden lg:flex items-center gap-1">
           {navLinks.map((link) => {
-            const cls = `relative flex items-center gap-1.5 px-3 py-1.5 font-sans transition-colors cursor-pointer text-[16px] no-underline ${
+            const cls = `group relative flex items-center gap-1.5 px-3 py-1.5 font-sans transition-colors cursor-pointer text-[16px] no-underline ${
               isLight
                 ? `text-dark/70 hover:text-dark ${openPanel === link.label ? 'text-dark' : ''}`
                 : `text-white/90 hover:text-white ${openPanel === link.label ? 'text-white' : ''}`
@@ -206,7 +206,7 @@ export default function Navbar({ variant = 'dark' }: { variant?: 'dark' | 'light
                 {link.label}
                 <span
                   className={`absolute bottom-0 left-3 right-3 border-b border-dashed ${isLight ? 'border-dark/30' : 'border-white/50'} transition-opacity duration-200 ${
-                    openPanel === link.label ? 'opacity-100' : 'opacity-0'
+                    openPanel === link.label ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
                   }`}
                   style={{ bottom: '2px' }}
                 />
