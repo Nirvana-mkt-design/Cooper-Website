@@ -71,12 +71,11 @@ function AnimatedColumn({ colDef, colIdx }: { colDef: [number, number, boolean, 
 
 export default function HowCooperHelps() {
   const iconX = COLUMNS[ICON_COL_IDX][0] + CELL_SIZE / 2
-  const sectionHeight = 560
   const iconVOffset = COLUMNS[ICON_COL_IDX][3]
   const iconY = iconVOffset + ICON_ROW_IDX * ROW_SPACING + CELL_SIZE / 2 + 25
 
   return (
-    <section className="relative bg-cream-light overflow-hidden" style={{ height: sectionHeight }}>
+    <section className="relative bg-cream-light overflow-hidden h-auto py-[64px] md:py-[80px] lg:py-0 lg:h-[560px]">
       {/* Diagonal fade — triangular mask from top-left to bottom-right */}
       <div
         className="absolute inset-0 z-25 pointer-events-none"
@@ -90,13 +89,13 @@ export default function HowCooperHelps() {
       />
 
       {/* Text content — above everything */}
-      <div className="absolute inset-0 z-30 flex items-center px-[62px]">
+      <div className="relative lg:absolute lg:inset-0 z-30 flex items-center px-5 md:px-10 lg:px-[62px]">
         <div className="max-w-[1440px] mx-auto w-full">
           <div className="max-w-[640px]">
             <p className="font-grotesk font-medium text-[14.5px] tracking-[1.45px] uppercase text-dark/50 mb-[28px]">
               How Cooper helps
             </p>
-            <h2 className="font-serif text-[38px] leading-[1.2] text-dark mb-[28px]">
+            <h2 className="font-serif text-[26px] md:text-[34px] lg:text-[38px] leading-[1.2] text-dark mb-[28px]">
               Your AI coworker for the<br />entire insurance workflow
             </h2>
             <p className="font-sans text-[17.8px] leading-[1.5] text-dark/50" style={{ maxWidth: 620 }}>
@@ -108,7 +107,7 @@ export default function HowCooperHelps() {
 
       {/* Shape grid — right side, shifted so icon is near right edge */}
       <div
-        className="absolute top-[20px] bottom-0 overflow-hidden"
+        className="hidden lg:block absolute top-[20px] bottom-0 overflow-hidden"
         style={{ left: '46%', right: '-60px' }}
       >
         {COLUMNS.map((colDef, i) => (

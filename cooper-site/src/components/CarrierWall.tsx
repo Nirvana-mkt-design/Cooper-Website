@@ -124,7 +124,7 @@ export default function CarrierWall() {
 
       {/* logo grid — the cells and dividers stay put; only the
           logos inside fade out / in together as the set swaps */}
-      <div className="grid grid-cols-3 gap-[1px] overflow-hidden rounded-[14px] bg-dark/[0.06] sm:grid-cols-4 lg:grid-cols-6">
+      <div className="grid grid-cols-2 gap-[1px] overflow-hidden rounded-[14px] bg-dark/[0.06] sm:grid-cols-3 lg:grid-cols-6">
         {current.map((carrier, cell) => (
           <div key={cell} className="relative grid aspect-[4/3] place-items-center bg-cream-light">
             <div

@@ -136,20 +136,20 @@ export default function AboutPage() {
 
 
         {/* Content */}
-        <div className="relative z-10 max-w-[1440px] mx-auto px-[62px] w-full pt-[200px] pb-[120px] min-h-screen flex flex-col justify-between">
+        <div className="relative z-10 max-w-[1440px] mx-auto px-5 md:px-10 lg:px-[62px] w-full pt-[200px] pb-[120px] min-h-screen flex flex-col justify-between">
           {/* Top — headline */}
           <div className="max-w-[645px]">
             <span className="font-grotesk font-medium text-[11px] tracking-[1.4px] uppercase text-cream-light mb-[16px] block animate-fade-blur-in">
               About Cooper
             </span>
-            <h1 className="font-serif text-[64px] leading-[68px] tracking-[-1.44px] text-cream-light animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
+            <h1 className="font-serif text-[40px] leading-[44px] md:text-[64px] md:leading-[68px] lg:text-[64px] lg:leading-[68px] tracking-[-1.44px] text-cream-light animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
               We're building the coworker insurance has been missing.
             </h1>
           </div>
 
           {/* Bottom-right — body text */}
-          <div className="flex justify-end mt-[80px]">
-            <p className="font-sans text-[17.8px] leading-[1.5] text-cream-light max-w-[465px] animate-fade-blur-in" style={{ animationDelay: '0.2s' }}>
+          <div className="flex lg:justify-end mt-[80px]">
+            <p className="font-sans text-[17.8px] leading-[1.5] text-cream-light max-w-full lg:max-w-[465px] animate-fade-blur-in" style={{ animationDelay: '0.2s' }}>
               Cooper is AI built for commercial insurance. Not another platform with menus and fixed workflows, but a teammate that does the document-heavy work the way your best people do, and adapts to how your shop actually runs.
             </p>
           </div>
@@ -161,7 +161,7 @@ export default function AboutPage() {
           ══════════════════════════════════════════════ */}
       <RevealSection>
         <section className="bg-cream relative overflow-hidden">
-          <div className="max-w-[1440px] mx-auto px-[85px] pt-[110px] pb-[0px] relative">
+          <div className="max-w-[1440px] mx-auto px-5 md:px-12 lg:px-[85px] pt-[110px] pb-[0px] relative">
             {/* Cooper icon */}
             <div className="mb-[48px] animate-fade-blur-in">
               <img
@@ -173,16 +173,16 @@ export default function AboutPage() {
             </div>
 
             {/* 2-col: heading left, principles right */}
-            <div className="grid grid-cols-[440px_1fr] gap-[80px] items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-[440px_1fr] gap-10 lg:gap-[80px] items-start">
               {/* Left — heading */}
-              <div className="sticky top-[120px]">
-                <h2 className="font-serif text-[40px] leading-[44.8px] text-dark animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
+              <div className="static lg:sticky lg:top-[120px]">
+                <h2 className="font-serif text-[26px] leading-[32px] md:text-[34px] md:leading-[40px] lg:text-[40px] lg:leading-[44.8px] text-dark animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
                   A few principles we don't compromise on.
                 </h2>
               </div>
 
               {/* Right — stacked principles with scroll-linked opacity */}
-              <div className="flex flex-col gap-[120px]">
+              <div className="flex flex-col gap-[64px] lg:gap-[120px]">
                 {principles.map((p) => (
                   <PrincipleItem key={p.title} title={p.title} desc={p.desc} />
                 ))}
@@ -192,7 +192,7 @@ export default function AboutPage() {
           </div>
           {/* Image at bottom-right — flush to right edge */}
           <div className="flex justify-end mt-[80px] animate-fade-in" style={{ animationDelay: '0.2s' }}>
-            <div className="w-[898px] aspect-[898/530] overflow-hidden relative mr-[-85px]">
+            <div className="w-full max-w-full lg:w-[898px] aspect-[898/530] overflow-hidden relative mr-0 lg:mr-[-85px]">
               <img
                 src="/images/about/principles-photo.jpg"
                 alt="Team at work"
@@ -208,19 +208,19 @@ export default function AboutPage() {
           ══════════════════════════════════════════════ */}
       <RevealSection>
         <section className="bg-cream-light">
-          <div className="max-w-[1440px] mx-auto px-[85px] py-[100px]">
+          <div className="max-w-[1440px] mx-auto px-5 md:px-12 lg:px-[85px] py-[100px]">
             {/* Label + Heading on same line */}
-            <div className="flex items-start gap-[24px] mb-[56px]">
-              <span className="font-grotesk font-medium text-[14px] tracking-[1.4px] uppercase text-accent-orange pt-[12px] shrink-0 animate-fade-blur-in">
+            <div className="flex flex-col md:flex-row md:items-start gap-3 md:gap-[24px] mb-[56px]">
+              <span className="font-grotesk font-medium text-[14px] tracking-[1.4px] uppercase text-accent-orange md:pt-[12px] shrink-0 animate-fade-blur-in">
                 Our Investors
               </span>
-              <h2 className="font-serif text-[40px] leading-[44.8px] text-dark max-w-[756px] animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
+              <h2 className="font-serif text-[26px] leading-[32px] md:text-[34px] md:leading-[40px] lg:text-[40px] lg:leading-[44.8px] text-dark max-w-[756px] animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
                 Backed by investors who have built category-defining companies.
               </h2>
             </div>
 
             {/* Investor cards */}
-            <div className="grid grid-cols-3 gap-[20px]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[20px]">
               {investors.map((inv, i) => (
                 <div
                   key={inv.name}
@@ -244,8 +244,8 @@ export default function AboutPage() {
           ══════════════════════════════════════════════ */}
       <RevealSection>
         <section className="bg-cream-light">
-          <div className="max-w-[1440px] mx-auto px-[85px] py-[48px]">
-            <div className="relative overflow-hidden rounded-[30px]" style={{ height: '420px' }}>
+          <div className="max-w-[1440px] mx-auto px-5 md:px-12 lg:px-[85px] py-[48px]">
+            <div className="relative overflow-hidden rounded-[30px] h-auto lg:h-[420px]">
               {/* Background image with Cooper logo shapes */}
               <img
                 src="/images/about/careers-cta-bg.png"
@@ -255,14 +255,14 @@ export default function AboutPage() {
               />
 
               {/* Content — 2 col */}
-              <div className="relative z-10 h-full flex items-center px-[72px]">
+              <div className="relative z-10 h-full flex flex-col lg:flex-row items-start lg:items-center gap-8 lg:gap-0 px-5 md:px-10 lg:px-[72px] py-12 lg:py-0">
                 {/* Left — heading + button */}
                 <div className="flex-1">
                   <span className="font-grotesk font-medium text-[11px] tracking-[1.4px] uppercase text-cream-light mb-[16px] block animate-fade-blur-in">
                     Careers
                   </span>
-                  <h2 className="font-serif text-[42px] leading-[1.15] text-white mb-[36px] animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
-                    Come teach an<br />industry to a coworker.
+                  <h2 className="font-serif text-[26px] md:text-[34px] lg:text-[42px] leading-[1.15] text-white mb-[36px] animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
+                    Come teach an<br className="hidden lg:block" /> industry to a coworker.
                   </h2>
                   <Link
                     to="/careers"
@@ -274,8 +274,8 @@ export default function AboutPage() {
                 </div>
 
                 {/* Right — body text */}
-                <div className="flex-1 flex justify-end">
-                  <p className="font-sans text-[15px] leading-[24.75px] text-white/80 max-w-[380px] animate-fade-blur-in" style={{ animationDelay: '0.2s' }}>
+                <div className="flex-1 flex lg:justify-end w-full">
+                  <p className="font-sans text-[15px] leading-[24.75px] text-white/80 max-w-full lg:max-w-[380px] animate-fade-blur-in" style={{ animationDelay: '0.2s' }}>
                     We're a small team giving Cooper the judgment of a great insurance professional. If that's your kind of problem, we're hiring across engineering, design, and go-to-market.
                   </p>
                 </div>

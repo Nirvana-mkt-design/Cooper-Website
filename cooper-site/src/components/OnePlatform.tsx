@@ -117,7 +117,7 @@ function SubmissionDiagram() {
         <span className="font-grotesk text-[12px] text-dark/50">Submission package</span>
         <HeadChip color="#3f7d3f">Ready to send</HeadChip>
       </div>
-      <div className="grid grid-cols-[1fr_auto_1.05fr] items-center gap-[14px]">
+      <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_1.05fr] items-center gap-[14px]">
         <div className={panelBase}>
           <h5 className={h5cls}>Forwarded to Cooper</h5>
           <FileChip kind="PDF" name="Dec page.pdf" />
@@ -235,7 +235,7 @@ function ProposalsDiagram() {
         <span className="font-grotesk text-[12px] text-dark/50">Quotes to proposal</span>
         <HeadChip color="#3f7d3f">Drafted in your template</HeadChip>
       </div>
-      <div className="grid grid-cols-[1fr_auto_1.15fr] items-center gap-[14px]">
+      <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_1.15fr] items-center gap-[14px]">
         <div className={panelBase}>
           <h5 className={h5cls}>Quotes received</h5>
           <div className="flex flex-col gap-[9px]">
@@ -346,8 +346,8 @@ export default function OnePlatform() {
 
   return (
     <section id="platform" className="scroll-mt-[90px] bg-cream py-[100px]">
-      <div className="mx-auto max-w-[1440px] px-[62px]">
-        <h2 className="mb-[44px] text-center font-serif text-[38px] leading-[1.2] text-dark">
+      <div className="mx-auto max-w-[1440px] px-5 md:px-10 lg:px-[62px]">
+        <h2 className="mb-[44px] text-center font-serif text-[26px] md:text-[34px] lg:text-[38px] leading-[1.2] text-dark">
           One platform, every workflow
         </h2>
 
@@ -357,7 +357,7 @@ export default function OnePlatform() {
             <button
               key={tab.id}
               onClick={() => handleTabClick(i)}
-              className={`relative flex-1 overflow-hidden rounded-[8px] px-[10px] py-[11px] font-grotesk text-[12.5px] font-semibold uppercase tracking-[0.04em] transition-colors duration-200 cursor-pointer ${
+              className={`relative flex-1 overflow-hidden rounded-[8px] px-[6px] md:px-[10px] py-[11px] font-grotesk text-[10px] leading-[1.2] md:text-[11px] lg:text-[12.5px] font-semibold uppercase tracking-[0.04em] transition-colors duration-200 cursor-pointer ${
                 activeIdx === i ? 'bg-dark text-cream-light' : 'bg-transparent text-dark/45 hover:text-dark/70'
               }`}
             >
@@ -375,17 +375,17 @@ export default function OnePlatform() {
         {/* Active panel */}
         <div
           key={`panel-${animKey}`}
-          className="grid items-center gap-[48px] lg:grid-cols-[0.92fr_1.15fr]"
+          className="grid grid-cols-1 items-center gap-8 lg:gap-[48px] lg:grid-cols-[0.92fr_1.15fr]"
         >
           {/* Copy */}
           <div>
             <p className="mb-[14px] font-grotesk text-[13px] font-medium uppercase tracking-[1.4px] text-accent-orange animate-fade-in">
               {active.eyebrow}
             </p>
-            <h3 className="mb-[8px] font-serif text-[34px] leading-[1.1] text-dark animate-fade-in" style={{ animationDelay: '0.05s' }}>
+            <h3 className="mb-[8px] font-serif text-[22px] md:text-[28px] lg:text-[34px] leading-[1.1] text-dark animate-fade-in" style={{ animationDelay: '0.05s' }}>
               {active.title}
             </h3>
-            <p className="mb-[18px] font-serif text-[20px] leading-[1.3] text-accent-orange animate-fade-blur-in" style={{ animationDelay: '0.12s' }}>
+            <p className="mb-[18px] font-serif text-[17px] lg:text-[20px] leading-[1.3] text-accent-orange animate-fade-blur-in" style={{ animationDelay: '0.12s' }}>
               {active.tagline}
             </p>
             <p className="mb-[24px] max-w-[44ch] font-sans text-[16.5px] leading-[1.55] text-dark/60 animate-fade-blur-in" style={{ animationDelay: '0.2s' }}>

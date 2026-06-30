@@ -10,7 +10,7 @@ const roles = [
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden h-[897px]">
+    <section className="relative overflow-hidden h-auto pb-[48px] lg:pb-0 lg:h-[897px]">
       {/* Background video */}
       <div className="absolute inset-0">
         <video
@@ -39,7 +39,7 @@ export default function Hero() {
 
       {/* Frosted glassmorphism bar at bottom — dreamy fade */}
       <div
-        className="absolute bottom-0 left-0 right-0 h-[350px] z-[5]"
+        className="absolute bottom-0 left-0 right-0 h-[180px] lg:h-[350px] z-[5]"
         style={{
           backdropFilter: 'blur(39.85px)',
           WebkitBackdropFilter: 'blur(39.85px)',
@@ -50,12 +50,12 @@ export default function Hero() {
       />
 
       {/* Content */}
-      <div className="relative z-10 max-w-[1440px] mx-auto px-[62px] pt-[254px]">
+      <div className="relative z-10 max-w-[1440px] mx-auto px-5 md:px-10 lg:px-[62px] pt-[120px] md:pt-[180px] lg:pt-[254px]">
         <div className="max-w-[794px]">
           <p className="animate-fade-blur-in font-grotesk font-medium text-[14.5px] tracking-[1.45px] uppercase text-[#fffcf1]/80 mb-[20px]" style={{ animationDelay: '0.2s' }}>
             Built for Insurance Professionals
           </p>
-          <h1 className="font-serif text-[96px] leading-[1.05] text-cream-light mb-[20px]" style={{ textIndent: '-5px' }}>
+          <h1 className="font-serif text-[40px] md:text-[64px] lg:text-[96px] leading-[1.05] text-cream-light mb-[20px]" style={{ textIndent: '-5px' }}>
             <span className="animate-fade-blur-in block" style={{ animationDelay: '0.5s' }}>More business. </span>
             <span className="animate-fade-blur-in block" style={{ animationDelay: '0.8s' }}>Less busywork.</span>
           </h1>
@@ -66,12 +66,12 @@ export default function Hero() {
       </div>
 
       {/* Built For bar at bottom */}
-      <div className="absolute bottom-[20px] left-0 right-0 z-10 max-w-[1440px] mx-auto px-[62px]">
-        <div className="flex items-center gap-[52px]">
-          <span className="animate-fade-blur-in font-serif text-[36px] leading-[1.2] text-cream-light shrink-0" style={{ animationDelay: '1.4s' }}>
+      <div className="relative mt-[48px] lg:mt-0 lg:absolute lg:bottom-[20px] left-0 right-0 z-10 max-w-[1440px] mx-auto px-5 md:px-10 lg:px-[62px]">
+        <div className="flex flex-col items-start gap-4 lg:flex-row lg:items-center lg:gap-[52px]">
+          <span className="animate-fade-blur-in font-serif text-[26px] md:text-[34px] lg:text-[36px] leading-[1.2] text-cream-light shrink-0" style={{ animationDelay: '1.4s' }}>
             Built<br />For
           </span>
-          <div className="flex items-center gap-[52px] font-serif text-[24px] leading-[1.2] text-cream-light">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-3 lg:gap-[52px] font-serif text-[18px] md:text-[20px] lg:text-[24px] leading-[1.2] text-cream-light">
             {roles.map((role) => (
               <Link
                 key={role.slug}

@@ -58,7 +58,7 @@ export default function CareerRolePage() {
       {/* ══════════════════════════════════════════════
           BREADCRUMB + HEADER
           ══════════════════════════════════════════════ */}
-      <div className="max-w-[1440px] mx-auto px-[85px] pt-[120px]">
+      <div className="max-w-[1440px] mx-auto px-5 md:px-12 lg:px-[85px] pt-[120px]">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-[8px] mb-[40px] animate-fade-blur-in">
           <Link to="/" className="font-sans text-[13px] text-dark/40 hover:text-dark/70 no-underline transition-colors">
@@ -74,7 +74,7 @@ export default function CareerRolePage() {
 
         {/* Title + meta tags */}
         <div className="mb-[48px]">
-          <h1 className="font-serif text-[52px] leading-[56px] tracking-[-1px] text-dark mb-[20px] animate-fade-blur-in" style={{ animationDelay: '0.05s' }}>
+          <h1 className="font-serif text-[32px] leading-[36px] md:text-[44px] md:leading-[48px] lg:text-[52px] lg:leading-[56px] tracking-[-1px] text-dark mb-[20px] animate-fade-blur-in" style={{ animationDelay: '0.05s' }}>
             {role.title}
           </h1>
           <div className="flex items-center gap-[12px] flex-wrap animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
@@ -111,8 +111,8 @@ export default function CareerRolePage() {
       {/* ══════════════════════════════════════════════
           CONTENT — sidebar + main body
           ══════════════════════════════════════════════ */}
-      <div className="max-w-[1440px] mx-auto px-[85px] pb-[100px]">
-        <div className="grid grid-cols-[1fr_320px] gap-[64px] items-start">
+      <div className="max-w-[1440px] mx-auto px-5 md:px-12 lg:px-[85px] pb-[100px]">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-10 lg:gap-[64px] items-start">
           {/* ── Main content ── */}
           <div className="animate-fade-blur-in" style={{ animationDelay: '0.15s' }}>
             {/* About the role */}
@@ -180,8 +180,8 @@ export default function CareerRolePage() {
           </div>
 
           {/* ── Sidebar ── */}
-          <div className="sticky top-[100px] animate-fade-blur-in" style={{ animationDelay: '0.2s' }}>
-            <div className="rounded-[20px] p-[32px]" style={{ backgroundColor: '#1D1A17' }}>
+          <div className="static lg:sticky lg:top-[100px] w-full animate-fade-blur-in" style={{ animationDelay: '0.2s' }}>
+            <div className="rounded-[20px] p-5 lg:p-[32px]" style={{ backgroundColor: '#1D1A17' }}>
               {/* Apply button */}
               <a
                 href={`mailto:careers@askcooper.ai?subject=Application: ${role.title}`}

@@ -102,7 +102,7 @@ function FeatureBlock({
 
   const text = (
     <div className={isReversed ? 'lg:pl-[40px]' : 'lg:pr-[40px]'}>
-      <h3 className="font-serif text-[32px] leading-[1.05] tracking-[-0.4px] text-[#0a0a0a] mb-[24px]">
+      <h3 className="font-serif text-[22px] md:text-[28px] lg:text-[32px] leading-[1.05] tracking-[-0.4px] text-[#0a0a0a] mb-[24px]">
         {feature.title}
       </h3>
       <p className="font-sans text-[18px] leading-[1.55] text-[#6b6b6b] max-w-[440px]">
@@ -164,8 +164,8 @@ export default function PersonaPage() {
     return (
       <div className="min-h-screen bg-cream-light">
         <Navbar />
-        <div className="max-w-[1440px] mx-auto px-[60px] pt-[200px] pb-[120px] text-center">
-          <h1 className="font-serif text-[48px] text-dark mb-[16px]">Page not found</h1>
+        <div className="max-w-[1440px] mx-auto px-5 md:px-10 lg:px-[60px] pt-[120px] md:pt-[160px] lg:pt-[200px] pb-[80px] lg:pb-[120px] text-center">
+          <h1 className="font-serif text-[28px] md:text-[40px] lg:text-[48px] text-dark mb-[16px]">Page not found</h1>
           <p className="font-sans text-[17px] text-dark/50 mb-[32px]">
             The persona you are looking for does not exist.
           </p>
@@ -222,7 +222,7 @@ export default function PersonaPage() {
 
       {/* ── Hero ── */}
       <section className="bg-cream-light">
-        <div className="mx-auto max-w-[1440px] px-[60px] pt-[150px]">
+        <div className="mx-auto max-w-[1440px] px-5 md:px-10 lg:px-[60px] pt-[110px] md:pt-[130px] lg:pt-[150px]">
           <div className="flex flex-col gap-[60px]">
             {/* text row */}
             <div className="grid grid-cols-1 items-start gap-[40px] lg:grid-cols-[minmax(0,1fr)_minmax(0,540px)] lg:gap-[80px]">
@@ -238,7 +238,7 @@ export default function PersonaPage() {
                     </span>
                   </div>
                   <h1
-                    className="animate-fade-blur-in font-serif text-[48px] leading-[1.05] tracking-[-1.44px] text-[#0a0a0a] max-w-[620px]"
+                    className="animate-fade-blur-in font-serif text-[28px] md:text-[40px] lg:text-[48px] leading-[1.05] tracking-[-1.44px] text-[#0a0a0a] max-w-[620px]"
                     style={{ animationDelay: '0.3s' }}
                   >
                     {persona.headlineAccent
@@ -280,11 +280,11 @@ export default function PersonaPage() {
       {/* ── Stats band ── */}
       <RevealOnScroll>
         <section className="bg-cream-light">
-          <div className="mx-auto max-w-[1440px] px-[60px] pb-[80px] pt-[64px]">
+          <div className="mx-auto max-w-[1440px] px-5 md:px-10 lg:px-[60px] pb-[80px] pt-[64px]">
             <div className="flex flex-col flex-wrap gap-[48px] sm:flex-row sm:justify-end sm:gap-[56px]">
               {stats.map((s) => (
                 <div key={s.label} className="max-w-[300px]">
-                  <div className="font-serif text-[72px] leading-[0.95] tracking-[-2px] text-[#0d1016] sm:text-[88px] sm:tracking-[-2.64px]">
+                  <div className="font-serif text-[44px] leading-[0.95] tracking-[-2px] text-[#0d1016] sm:text-[72px] lg:text-[88px] sm:tracking-[-2.64px]">
                     <CountUp value={s.value} />
                   </div>
                   <p className="mt-[14px] font-sans text-[15px] leading-[1.4] text-[#6b6b6b]">{s.label}</p>
@@ -299,7 +299,7 @@ export default function PersonaPage() {
       {persona.roleBalance && (
         <RevealOnScroll>
           <section className="bg-cream-light">
-            <div className="mx-auto max-w-[1440px] px-[60px] pb-[80px]">
+            <div className="mx-auto max-w-[1440px] px-5 md:px-10 lg:px-[60px] pb-[80px]">
               <div className="grid grid-cols-1 gap-[24px] md:grid-cols-2">
                 {persona.roleBalance.map((col) => (
                   <div
@@ -330,7 +330,7 @@ export default function PersonaPage() {
 
       {/* ── Feature sections ── */}
       <section id="features" className="scroll-mt-[100px] bg-cream-light pb-[100px]">
-        <div className="mx-auto flex max-w-[1440px] flex-col gap-[120px] px-[60px]">
+        <div className="mx-auto flex max-w-[1440px] flex-col gap-[120px] px-5 md:px-10 lg:px-[60px]">
           {persona.features.map((feature, index) => (
             <FeatureBlock
               key={index}
@@ -359,8 +359,8 @@ export default function PersonaPage() {
             </video>
             <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(30,26,21,0.3) 0%, rgba(30,26,21,0.7) 100%)' }} />
           </div>
-          <div className="relative z-10 max-w-[1440px] mx-auto px-[60px] text-center">
-            <h2 className="font-serif text-[42px] leading-[1.2] text-cream-light mb-[16px]">
+          <div className="relative z-10 max-w-[1440px] mx-auto px-5 md:px-10 lg:px-[60px] text-center">
+            <h2 className="font-serif text-[26px] md:text-[34px] lg:text-[42px] leading-[1.2] text-cream-light mb-[16px]">
               {persona.demoHeadline ?? 'Ready to see Cooper in action?'}
             </h2>
             <p className="font-sans text-[17px] leading-[1.6] text-cream-light/60 max-w-[460px] mx-auto mb-[32px]">
@@ -379,7 +379,7 @@ export default function PersonaPage() {
       {/* Other Personas Navigation */}
       <RevealOnScroll>
         <section className="bg-cream-light py-[100px]">
-          <div className="max-w-[1440px] mx-auto px-[60px]">
+          <div className="max-w-[1440px] mx-auto px-5 md:px-10 lg:px-[60px]">
             <p className="font-grotesk font-medium text-[12px] tracking-[1.2px] uppercase text-dark/40 mb-[40px]">
               Built for every role
             </p>
@@ -397,7 +397,7 @@ export default function PersonaPage() {
                       {personaIcons[p.slug]}
                     </div>
                     <div className="flex flex-col gap-[4px]">
-                      <span className="font-serif text-[28px] leading-[1.3] text-dark group-hover:text-accent-orange transition-colors">
+                      <span className="font-serif text-[22px] md:text-[28px] leading-[1.3] text-dark group-hover:text-accent-orange transition-colors">
                         {p.name}
                       </span>
                       <span className="font-sans text-[15px] text-dark/40 group-hover:text-dark/60 transition-colors">

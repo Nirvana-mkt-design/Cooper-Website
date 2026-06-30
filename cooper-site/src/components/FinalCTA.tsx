@@ -22,7 +22,7 @@ export default function FinalCTA() {
   }, [])
 
   return (
-    <section className="relative h-[631px] overflow-hidden bg-cream">
+    <section className="relative min-h-[500px] lg:h-[631px] overflow-hidden bg-cream">
       {/* Background gradient strips — orange pattern from Figma */}
       <div className="absolute inset-0">
         {/* Row 1 */}
@@ -51,7 +51,7 @@ export default function FinalCTA() {
       />
 
       {/* Content */}
-      <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-[62px]">
+      <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-5 md:px-10 lg:px-[62px] py-[64px] lg:py-0">
         {/* Cooper icon */}
         <img
           src="/images/cooper-icon.svg"
@@ -61,9 +61,9 @@ export default function FinalCTA() {
         />
 
         {/* Heading with slot-machine rotating word */}
-        <h2 className="font-serif text-[38px] leading-[1.2] text-cream-light mb-[20px] flex items-baseline justify-center gap-[12px]">
+        <h2 className="font-serif text-[26px] md:text-[34px] lg:text-[38px] leading-[1.2] text-cream-light mb-[20px] flex flex-wrap items-baseline justify-center gap-x-[12px]">
           <span>Stop doing</span>
-          <span className="inline-block overflow-hidden relative" style={{ height: '1.2em', minWidth: '180px' }}>
+          <span className="inline-block overflow-hidden relative min-w-[120px] sm:min-w-[180px]" style={{ height: '1.2em' }}>
             <span
               key={key}
               className="inline-block"
