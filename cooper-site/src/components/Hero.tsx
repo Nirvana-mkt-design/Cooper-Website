@@ -55,7 +55,7 @@ export default function Hero() {
           <p className="animate-fade-blur-in font-grotesk font-medium text-[14.5px] tracking-[1.45px] uppercase text-[#fffcf1]/80 mb-[20px]" style={{ animationDelay: '0.2s' }}>
             Built for Insurance Professionals
           </p>
-          <h1 className="font-serif text-[96px] leading-[1.05] text-cream-light mb-[20px]">
+          <h1 className="font-serif text-[96px] leading-[1.05] text-cream-light mb-[20px]" style={{ textIndent: '-5px' }}>
             <span className="animate-fade-blur-in block" style={{ animationDelay: '0.5s' }}>More business. </span>
             <span className="animate-fade-blur-in block" style={{ animationDelay: '0.8s' }}>Less busywork.</span>
           </h1>

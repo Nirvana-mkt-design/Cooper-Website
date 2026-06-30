@@ -6,6 +6,7 @@ import HowCooperHelps from './components/HowCooperHelps'
 import OnePlatform from './components/OnePlatform'
 import Metrics from './components/Metrics'
 import BuiltForEveryRole from './components/BuiltForEveryRole'
+import InvestorStrip from './components/InvestorStrip'
 import Integrations from './components/Integrations'
 import SecurityCompliance from './components/SecurityCompliance'
 import FinalCTA from './components/FinalCTA'
@@ -63,6 +64,9 @@ function HomePage() {
       <RevealSection>
         <BuiltForEveryRole />
       </RevealSection>
+      <RevealSection>
+        <InvestorStrip />
+      </RevealSection>
       {/* <RevealSection>
         <TeamSection />
       </RevealSection> */}
@@ -70,10 +74,10 @@ function HomePage() {
         <Integrations />
       </RevealSection>
       <RevealSection>
-        <SecurityCompliance />
+        <FinalCTA />
       </RevealSection>
       <RevealSection>
-        <FinalCTA />
+        <SecurityCompliance />
       </RevealSection>
       <Footer />
     </div>
