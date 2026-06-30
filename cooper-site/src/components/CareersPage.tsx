@@ -247,14 +247,14 @@ export default function CareersPage() {
         />
 
         {/* Content */}
-        <div className="relative z-10 max-w-[1440px] mx-auto px-[85px] pt-[200px] pb-[120px] min-h-screen flex flex-col justify-end">
+        <div className="relative z-10 max-w-[1440px] mx-auto px-5 md:px-12 lg:px-[85px] pt-[200px] pb-[120px] min-h-screen flex flex-col justify-end">
           <span className="font-grotesk font-medium text-[11px] tracking-[1.4px] uppercase text-cream-light/70 mb-[16px] block animate-fade-blur-in">
             Careers at Cooper
           </span>
-          <h1 className="font-serif text-[64px] leading-[68px] tracking-[-1.44px] text-white max-w-[700px] mb-[32px] animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
+          <h1 className="font-serif text-[40px] leading-[44px] md:text-[64px] md:leading-[68px] lg:text-[64px] lg:leading-[68px] tracking-[-1.44px] text-white max-w-[700px] mb-[32px] animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
             Come teach an industry to a coworker.
           </h1>
-          <p className="font-sans text-[18px] leading-[1.6] text-white/80 max-w-[540px] mb-[40px] animate-fade-blur-in" style={{ animationDelay: '0.2s' }}>
+          <p className="font-sans text-[18px] leading-[1.6] text-white/80 max-w-full lg:max-w-[540px] mb-[40px] animate-fade-blur-in" style={{ animationDelay: '0.2s' }}>
             We're a small team giving Cooper the judgment of a great insurance professional. If that's your kind of problem, we'd love to meet you.
           </p>
           <a
@@ -272,12 +272,12 @@ export default function CareersPage() {
           ══════════════════════════════════════════════ */}
       <RevealSection>
         <section id="open-roles" className="bg-cream-light scroll-mt-[80px]">
-          <div className="max-w-[1440px] mx-auto px-[85px] py-[100px]">
-            <div className="flex items-start gap-[24px] mb-[64px]">
-              <span className="font-grotesk font-medium text-[14px] tracking-[1.4px] uppercase text-accent-orange pt-[12px] shrink-0 animate-fade-blur-in">
+          <div className="max-w-[1440px] mx-auto px-5 md:px-12 lg:px-[85px] py-[100px]">
+            <div className="flex flex-col md:flex-row md:items-start gap-3 md:gap-[24px] mb-[64px]">
+              <span className="font-grotesk font-medium text-[14px] tracking-[1.4px] uppercase text-accent-orange md:pt-[12px] shrink-0 animate-fade-blur-in">
                 Open Roles
               </span>
-              <h2 className="font-serif text-[40px] leading-[44.8px] text-dark max-w-[600px] animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
+              <h2 className="font-serif text-[26px] leading-[32px] md:text-[34px] md:leading-[40px] lg:text-[40px] lg:leading-[44.8px] text-dark max-w-[600px] animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
                 Find your place at Cooper.
               </h2>
             </div>
@@ -294,7 +294,7 @@ export default function CareersPage() {
                       <Link
                         key={role.id}
                         to={`/careers/${role.id}`}
-                        className="group flex items-center justify-between py-[20px] border-b border-dark/[0.06] no-underline transition-colors hover:bg-cream/50 px-[16px] -mx-[16px] rounded-[8px] animate-fade-blur-in"
+                        className="group flex flex-col gap-3 md:flex-row md:items-center md:justify-between py-[20px] border-b border-dark/[0.06] no-underline transition-colors hover:bg-cream/50 px-[16px] -mx-[16px] rounded-[8px] animate-fade-blur-in"
                         style={{ animationDelay: `${0.2 + i * 0.06}s` }}
                       >
                         <div className="flex items-center gap-[16px]">
@@ -305,7 +305,7 @@ export default function CareersPage() {
                             {role.department}
                           </span>
                         </div>
-                        <div className="flex items-center gap-[24px]">
+                        <div className="flex items-center flex-wrap gap-x-[16px] gap-y-2 md:gap-[24px]">
                           <span className="font-sans text-[14px] text-dark/40">{role.location}</span>
                           <span className="font-sans text-[14px] text-dark/40">{role.type}</span>
                           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-dark/30 group-hover:text-accent-orange group-hover:translate-x-1 transition-all">

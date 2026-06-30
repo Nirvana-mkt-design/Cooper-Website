@@ -134,15 +134,15 @@ function CooperOrb({ size = 150 }: { size?: number }) {
 
 export default function Integrations() {
   return (
-    <section id="integrations" className="bg-cream-light overflow-hidden px-[40px]">
-      <div className="mx-auto max-w-[1440px] px-[40px] py-[96px]">
+    <section id="integrations" className="bg-cream-light overflow-hidden px-5 sm:px-6 lg:px-[40px]">
+      <div className="mx-auto max-w-[1440px] px-0 sm:px-4 lg:px-[40px] py-[64px] lg:py-[96px]">
         {/* ── Header (two columns) ── */}
         <div className="flex flex-col gap-[24px] lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-[620px]">
             <p className="mb-[18px] font-grotesk text-[13px] font-medium uppercase tracking-[1.6px] text-accent-orange">
               Integrations
             </p>
-            <h2 className="font-serif text-[40px] leading-[1.12] text-dark sm:text-[48px]">
+            <h2 className="font-serif text-[32px] leading-[1.12] text-dark md:text-[44px] lg:text-[48px]">
               Works with the tools you already use
             </h2>
           </div>
@@ -258,7 +258,7 @@ export default function Integrations() {
                 </div>
               ))}
             </div>
-            <div className="grid max-w-[460px] grid-cols-4 gap-[14px] sm:grid-cols-6">
+            <div className="grid max-w-[460px] grid-cols-3 gap-[14px] sm:grid-cols-4 lg:grid-cols-6">
               {tools.map((t) => (
                 <div
                   key={t.label}

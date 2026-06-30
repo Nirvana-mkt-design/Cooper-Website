@@ -53,7 +53,7 @@ export function FileChip({ name, meta }: { name: string; meta?: string }) {
         </svg>
       </span>
       <div className="min-w-0 flex-1 leading-tight">
-        <div className="truncate font-sans text-[12.5px] font-semibold text-dark">{name}</div>
+        <div className="truncate font-sans text-[11px] md:text-[12.5px] font-semibold text-dark">{name}</div>
         {meta && <div className="font-sans text-[10.5px] uppercase tracking-[0.03em] text-dark/40">{meta}</div>}
       </div>
     </div>
@@ -115,7 +115,7 @@ export function DiffRow({ cells, header = false, accentIdx }: { cells: ReactNode
       {cells.map((c, i) => (
         <span
           key={i}
-          className={header ? 'font-grotesk text-[9.5px] uppercase tracking-[0.05em] text-dark/45' : 'font-sans text-[12px] text-dark/70'}
+          className={header ? 'font-grotesk text-[8.5px] md:text-[9.5px] uppercase tracking-[0.05em] text-dark/45' : 'font-sans text-[11px] md:text-[12px] text-dark/70'}
           style={!header && accentIdx === i ? { color: '#d95611', fontWeight: 600 } : undefined}
         >
           {c}
@@ -139,9 +139,9 @@ export function Bar({ label, pct, value, alert = false }: { label: string; pct: 
 
 export function TwoCol({ left, right }: { left: ReactNode; right: ReactNode }) {
   return (
-    <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-[10px]">
+    <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] items-center gap-[10px]">
       <Stack gap={6}>{left}</Stack>
-      <span className="text-[18px] leading-none text-accent-orange">→</span>
+      <span className="hidden md:block text-[18px] leading-none text-accent-orange">→</span>
       <div>{right}</div>
     </div>
   )

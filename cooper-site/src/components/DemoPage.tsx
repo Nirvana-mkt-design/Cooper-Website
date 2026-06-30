@@ -44,9 +44,9 @@ export default function DemoPage() {
   }
 
   return (
-    <div className="min-h-screen bg-cream-light flex">
+    <div className="min-h-screen bg-cream-light flex flex-col lg:flex-row">
       {/* ── Left side: Form ── */}
-      <div className="flex-1 flex flex-col px-[80px] py-[48px] max-w-[680px]">
+      <div className="w-full lg:flex-1 flex flex-col px-5 md:px-12 lg:px-[80px] py-[48px] max-w-full lg:max-w-[680px]">
         {/* Logo + back */}
         <div className="flex items-center gap-[16px] mb-[60px]">
           <Link to="/" className="flex items-center gap-[8px] no-underline">
@@ -63,7 +63,7 @@ export default function DemoPage() {
         <div className="flex-1">
           {!submitted ? (
             <>
-              <h1 className="font-serif text-[36px] leading-[1.2] text-dark mb-[12px]">
+              <h1 className="font-serif text-[26px] md:text-[34px] lg:text-[36px] leading-[1.2] text-dark mb-[12px]">
                 Book a Cooper demo
               </h1>
               <p className="font-sans text-[16px] leading-[1.6] text-dark/50 mb-[40px] max-w-[440px]">
@@ -143,7 +143,7 @@ export default function DemoPage() {
                   <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
                 </svg>
               </div>
-              <h2 className="font-serif text-[28px] text-dark mb-[12px]">You're all set, {name.split(' ')[0]}!</h2>
+              <h2 className="font-serif text-[22px] md:text-[28px] text-dark mb-[12px]">You're all set, {name.split(' ')[0]}!</h2>
               <p className="font-sans text-[16px] text-dark/50 mb-[32px] max-w-[380px]">
                 We'll reach out to <strong className="text-dark/70">{email}</strong> shortly to schedule your personalized demo.
               </p>
@@ -171,7 +171,7 @@ export default function DemoPage() {
       </div>
 
       {/* ── Right side: Social proof ── */}
-      <div className="flex-1 bg-cream relative overflow-hidden flex flex-col justify-center px-[60px] py-[48px]">
+      <div className="w-full lg:flex-1 bg-cream relative overflow-hidden flex flex-col justify-center px-5 md:px-10 lg:px-[60px] py-[48px]">
         {/* Decorative accent bar at top */}
         <div className="absolute top-0 left-0 right-0 h-[4px] bg-accent-orange" />
 
@@ -180,10 +180,10 @@ export default function DemoPage() {
           <p className="font-grotesk font-medium text-[11px] tracking-[1.1px] uppercase text-dark/40 mb-[24px]">
             Impact
           </p>
-          <div className="flex gap-[40px]">
+          <div className="flex flex-wrap gap-6 md:gap-[40px]">
             {stats.map((s) => (
               <div key={s.value}>
-                <div className="font-serif text-[36px] text-dark leading-[1]">{s.value}</div>
+                <div className="font-serif text-[28px] md:text-[36px] text-dark leading-[1]">{s.value}</div>
                 <div className="font-sans text-[13px] text-dark/40 mt-[6px]">{s.label}</div>
               </div>
             ))}

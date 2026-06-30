@@ -67,7 +67,7 @@ export default function PersonaTestimonial({ testimonials }: { testimonials: Tes
 
   return (
     <section className="bg-cream-light py-[120px]">
-      <div className="mx-auto max-w-[1440px] px-[60px]">
+      <div className="mx-auto max-w-[1440px] px-5 md:px-10 lg:px-[60px]">
         <div
           key={`row-${animKey}`}
           className="grid grid-cols-1 items-start gap-[40px] lg:grid-cols-[260px_1fr] lg:gap-[80px]"
@@ -93,7 +93,7 @@ export default function PersonaTestimonial({ testimonials }: { testimonials: Tes
 
         {/* segmented progress bar (only when more than one) */}
         {multiple && (
-          <div className="mt-[72px] flex gap-[14px]">
+          <div className="mt-10 md:mt-14 lg:mt-[72px] flex gap-[14px]">
             {testimonials.map((item, i) => {
               const fill = i < active ? 100 : i === active ? progress : 0
               return (

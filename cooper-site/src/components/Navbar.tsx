@@ -6,6 +6,7 @@ import {
   UsersThree, ChartBar, ShieldCheck,
   Info, Envelope,
   Newspaper, Package, Monitor,
+  List, X, CaretDown,
 } from '@phosphor-icons/react'
 
 /* ── Panel data ── */
@@ -121,6 +122,8 @@ export default function Navbar({ variant = 'dark' }: { variant?: 'dark' | 'light
   const isLight = variant === 'light'
   const [scrolled, setScrolled] = useState(false)
   const [openPanel, setOpenPanel] = useState<string | null>(null)
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const [mobileSub, setMobileSub] = useState<string | null>(null)
   const closeTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
@@ -128,6 +131,25 @@ export default function Navbar({ variant = 'dark' }: { variant?: 'dark' | 'light
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
+
+  // Lock body scroll while the mobile menu is open, close it on Escape, and
+  // close it if the viewport grows to desktop width.
+  useEffect(() => {
+    if (!mobileOpen) return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setMobileOpen(false) }
+    const onResize = () => { if (window.innerWidth >= 1024) setMobileOpen(false) }
+    window.addEventListener('keydown', onKey)
+    window.addEventListener('resize', onResize)
+    return () => {
+      document.body.style.overflow = prev
+      window.removeEventListener('keydown', onKey)
+      window.removeEventListener('resize', onResize)
+    }
+  }, [mobileOpen])
+
+  const closeMobile = () => { setMobileOpen(false); setMobileSub(null) }
 
   const handleEnter = (label: string) => {
     if (closeTimeout.current) clearTimeout(closeTimeout.current)
@@ -152,7 +174,9 @@ export default function Navbar({ variant = 'dark' }: { variant?: 'dark' | 'light
       onMouseLeave={handleLeave}
     >
       {/* ── Background ── */}
-      {isLight ? (
+      {mobileOpen ? (
+        <div className="absolute inset-0 bg-cream-light" />
+      ) : isLight ? (
         <div className="absolute inset-0 bg-cream-light" style={{ borderBottom: scrolled || isOpen ? '1px solid rgba(30,26,21,0.1)' : '1px solid rgba(30,26,21,0.08)' }} />
       ) : (scrolled || isOpen) ? (
         <div
@@ -189,9 +213,9 @@ export default function Navbar({ variant = 'dark' }: { variant?: 'dark' | 'light
       )}
 
       {/* ── Nav bar content ── */}
-      <div className="relative z-10 max-w-[1440px] mx-auto flex items-center justify-between h-[72px] px-[62px]">
-        <Link to="/" className="no-underline">
-          <CooperLogo dark={isLight} className={`origin-left transition-transform duration-300 ${scrolled || isLight ? 'scale-100' : 'scale-[1.8]'}`} />
+      <div className="relative z-10 max-w-[1440px] mx-auto flex items-center justify-between h-[72px] px-5 md:px-10 lg:px-[62px]">
+        <Link to="/" className="no-underline" onClick={closeMobile}>
+          <CooperLogo dark={isLight || mobileOpen} className={`origin-left transition-transform duration-300 ${scrolled || isLight || mobileOpen ? 'scale-100' : 'scale-[1.3] sm:scale-[1.5] lg:scale-[1.8]'}`} />
         </Link>
 
         <div className="hidden lg:flex items-center gap-1">
@@ -240,12 +264,94 @@ export default function Navbar({ variant = 'dark' }: { variant?: 'dark' | 'light
           })}
         </div>
 
-        <div className="flex items-center gap-3">
-          <Link to="/demo" className={`font-sans text-[16px] rounded-[5px] px-5 py-2.5 transition-colors cursor-pointer no-underline ${isLight ? 'text-cream-light bg-dark hover:bg-dark/90 border border-dark' : 'text-white border border-white/40 bg-white/10 hover:bg-white/20'}`}>
+        <div className="flex items-center gap-2 sm:gap-3">
+          <Link to="/demo" className={`hidden sm:inline-flex font-sans text-[16px] rounded-[5px] px-5 py-2.5 transition-colors cursor-pointer no-underline ${isLight ? 'text-cream-light bg-dark hover:bg-dark/90 border border-dark' : 'text-white border border-white/40 bg-white/10 hover:bg-white/20'}`}>
             Request a Demo
           </Link>
+          <button
+            type="button"
+            aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={mobileOpen}
+            onClick={() => setMobileOpen((v) => !v)}
+            className={`lg:hidden flex items-center justify-center w-10 h-10 -mr-2 rounded-[6px] transition-colors ${isLight || mobileOpen ? 'text-dark hover:bg-dark/5' : 'text-white hover:bg-white/10'}`}
+          >
+            {mobileOpen ? <X size={26} weight="light" /> : <List size={26} weight="light" />}
+          </button>
         </div>
       </div>
+
+      {/* ── Mobile menu overlay ── */}
+      {mobileOpen && (
+        <div className="lg:hidden fixed inset-x-0 top-[72px] bottom-0 z-40 bg-cream-light overflow-y-auto animate-fade-in">
+          <div className="px-5 py-4 flex flex-col">
+            {navLinks.map((link) => {
+              const sub = link.hasDropdown ? panels[link.label] : null
+              if (sub) {
+                const open = mobileSub === link.label
+                return (
+                  <div key={link.label} className="border-b border-dark/10">
+                    <button
+                      type="button"
+                      onClick={() => setMobileSub(open ? null : link.label)}
+                      aria-expanded={open}
+                      className="w-full flex items-center justify-between py-4 font-sans text-[22px] text-dark"
+                    >
+                      {link.label}
+                      <CaretDown size={20} weight="light" className={`transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+                    </button>
+                    <div className="grid transition-[grid-template-rows] duration-300 ease-out" style={{ gridTemplateRows: open ? '1fr' : '0fr' }}>
+                      <div className="overflow-hidden">
+                        <div className="flex flex-col pb-3">
+                          {sub.cols.flatMap((c) => c.items).map((item) => {
+                            const Icon = item.icon
+                            const row = (
+                              <div className="flex items-start gap-3 py-2.5">
+                                {Icon && <span className="mt-[2px] shrink-0 text-dark/40"><Icon size={20} weight="thin" /></span>}
+                                <span>
+                                  <span className="block font-sans text-[16px] font-semibold text-dark">{item.title}</span>
+                                  <span className="block font-sans text-[13px] leading-snug text-dark/45">{item.desc}</span>
+                                </span>
+                              </div>
+                            )
+                            return 'href' in item && item.href ? (
+                              <Link key={item.title} to={item.href} className="no-underline pl-1" onClick={closeMobile}>{row}</Link>
+                            ) : (
+                              <a key={item.title} href="#" className="no-underline pl-1" onClick={closeMobile}>{row}</a>
+                            )
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )
+              }
+              return (
+                <Link
+                  key={link.label}
+                  to={'href' in link && link.href ? link.href : '#'}
+                  onClick={closeMobile}
+                  className="flex items-center gap-2 py-4 border-b border-dark/10 font-sans text-[22px] text-dark no-underline"
+                >
+                  {link.label}
+                  {link.badge && (
+                    <span className="text-[11px] font-semibold tracking-[0.36px] rounded-full px-2 py-0.5 uppercase border border-dark/20 bg-dark/5 text-dark/70">
+                      {link.badge}
+                    </span>
+                  )}
+                </Link>
+              )
+            })}
+
+            <Link
+              to="/demo"
+              onClick={closeMobile}
+              className="mt-6 inline-flex items-center justify-center font-sans text-[16px] rounded-[6px] px-5 py-3.5 bg-dark text-cream-light no-underline"
+            >
+              Request a Demo
+            </Link>
+          </div>
+        </div>
+      )}
 
       {/* ── Mega menu panel (inside same nav) ── */}
       <div

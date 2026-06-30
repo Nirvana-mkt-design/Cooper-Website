@@ -31,11 +31,11 @@ const investors: Investor[] = [
 export default function InvestorStrip() {
   return (
     <section className="bg-cream-light py-[80px]">
-      <div className="mx-auto max-w-[1440px] px-[62px]">
+      <div className="mx-auto max-w-[1440px] px-5 md:px-10 lg:px-[62px]">
         <p className="mb-[44px] text-center font-grotesk text-[14.5px] font-medium uppercase tracking-[1.45px] text-dark/45">
           Backed by category-defining investors
         </p>
-        <div className="flex flex-wrap items-center justify-center gap-x-[88px] gap-y-[40px]">
+        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-8 sm:gap-x-10 sm:gap-y-[40px] lg:gap-x-[88px]">
           {investors.map((inv) => (
             <a
               key={inv.name}
