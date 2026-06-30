@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
@@ -22,7 +22,9 @@ import CareerRolePage from './components/CareerRolePage'
 function ScrollToTop() {
   const { pathname, hash } = useLocation()
 
-  useEffect(() => {
+  // useLayoutEffect runs before paint, so the new page never flashes at the
+  // previous scroll position.
+  useLayoutEffect(() => {
     if (hash) {
       const el = document.getElementById(hash.slice(1))
       if (el) {
@@ -30,7 +32,13 @@ function ScrollToTop() {
         return
       }
     }
+    // Jump instantly to the top, bypassing the global `scroll-behavior: smooth`
+    // (which would otherwise animate the page upward instead of starting there).
+    const html = document.documentElement
+    const prev = html.style.scrollBehavior
+    html.style.scrollBehavior = 'auto'
     window.scrollTo(0, 0)
+    html.style.scrollBehavior = prev
   }, [pathname, hash])
 
   return null
