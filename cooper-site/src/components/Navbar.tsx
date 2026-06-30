@@ -24,6 +24,7 @@ interface NavPanel {
 
 const productPanel: NavPanel = {
   cols: [
+    /* Capabilities column hidden for now — will be used later
     {
       label: 'Capabilities',
       items: [
@@ -32,6 +33,7 @@ const productPanel: NavPanel = {
         { title: 'Workflow Automation', desc: 'Guidelines, correspondence, reports, your process at machine speed.', icon: Lightning },
       ],
     },
+    */
     {
       label: 'By role',
       items: [
@@ -101,15 +103,17 @@ const aboutPanel: NavPanel = {
 
 const panels: Record<string, NavPanel> = {
   Product: productPanel,
-  Customers: customersPanel,
-  About: aboutPanel,
+  /* Customers and About dropdowns hidden for now — will be used later */
+  // Customers: customersPanel,
+  // About: aboutPanel,
 }
 
 const navLinks = [
   { label: 'Product', hasDropdown: true },
-  { label: 'Customers', hasDropdown: true },
-  { label: 'About', hasDropdown: true },
-  { label: 'Blog', hasDropdown: false },
+  // { label: 'Customers', hasDropdown: false },
+  { label: 'About', hasDropdown: false, href: '/about' },
+  /* Blog hidden for now — will be used later */
+  // { label: 'Blog', hasDropdown: false },
   { label: 'Careers', hasDropdown: false, badge: "We're hiring" },
 ]
 
@@ -191,39 +195,49 @@ export default function Navbar({ variant = 'dark' }: { variant?: 'dark' | 'light
         </Link>
 
         <div className="hidden lg:flex items-center gap-1">
-          {navLinks.map((link) => (
-            <button
-              key={link.label}
-              className={`relative flex items-center gap-1.5 px-3 py-1.5 font-sans transition-colors cursor-pointer text-[16px] ${
-                isLight
-                  ? `text-dark/70 hover:text-dark ${openPanel === link.label ? 'text-dark' : ''}`
-                  : `text-white/90 hover:text-white ${openPanel === link.label ? 'text-white' : ''}`
-              }`}
-              onMouseEnter={() => link.hasDropdown ? handleEnter(link.label) : setOpenPanel(null)}
-            >
-              {link.label}
-              {/* Dashed underline on active/hover */}
-              <span
-                className={`absolute bottom-0 left-3 right-3 border-b border-dashed ${isLight ? 'border-dark/30' : 'border-white/50'} transition-opacity duration-200 ${
-                  openPanel === link.label ? 'opacity-100' : 'opacity-0'
-                }`}
-                style={{ bottom: '2px' }}
-              />
-              {link.hasDropdown && (
-                <svg
-                  width="8" height="5" viewBox="0 0 8 5" fill="none"
-                  className={`opacity-40 mt-px transition-transform duration-200 ${openPanel === link.label ? 'rotate-180' : ''}`}
-                >
-                  <path d="M1 1l3 3 3-3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              )}
-              {link.badge && (
-                <span className={`text-[12px] font-semibold tracking-[0.36px] rounded-full px-2 py-0.5 uppercase ml-1 ${isLight ? 'border border-dark/20 bg-dark/5 text-dark/70' : 'border border-white/40 bg-white/10 text-white'}`}>
-                  {link.badge}
-                </span>
-              )}
-            </button>
-          ))}
+          {navLinks.map((link) => {
+            const cls = `relative flex items-center gap-1.5 px-3 py-1.5 font-sans transition-colors cursor-pointer text-[16px] no-underline ${
+              isLight
+                ? `text-dark/70 hover:text-dark ${openPanel === link.label ? 'text-dark' : ''}`
+                : `text-white/90 hover:text-white ${openPanel === link.label ? 'text-white' : ''}`
+            }`
+            const content = (
+              <>
+                {link.label}
+                <span
+                  className={`absolute bottom-0 left-3 right-3 border-b border-dashed ${isLight ? 'border-dark/30' : 'border-white/50'} transition-opacity duration-200 ${
+                    openPanel === link.label ? 'opacity-100' : 'opacity-0'
+                  }`}
+                  style={{ bottom: '2px' }}
+                />
+                {link.hasDropdown && (
+                  <svg
+                    width="8" height="5" viewBox="0 0 8 5" fill="none"
+                    className={`opacity-40 mt-px transition-transform duration-200 ${openPanel === link.label ? 'rotate-180' : ''}`}
+                  >
+                    <path d="M1 1l3 3 3-3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                )}
+                {link.badge && (
+                  <span className={`text-[12px] font-semibold tracking-[0.36px] rounded-full px-2 py-0.5 uppercase ml-1 ${isLight ? 'border border-dark/20 bg-dark/5 text-dark/70' : 'border border-white/40 bg-white/10 text-white'}`}>
+                    {link.badge}
+                  </span>
+                )}
+              </>
+            )
+            if ('href' in link && link.href) {
+              return (
+                <Link key={link.label} to={link.href} className={cls} onMouseEnter={() => setOpenPanel(null)}>
+                  {content}
+                </Link>
+              )
+            }
+            return (
+              <button key={link.label} className={cls} onMouseEnter={() => link.hasDropdown ? handleEnter(link.label) : setOpenPanel(null)}>
+                {content}
+              </button>
+            )
+          })}
         </div>
 
         <div className="flex items-center gap-3">
@@ -253,7 +267,7 @@ export default function Navbar({ variant = 'dark' }: { variant?: 'dark' | 'light
             <div
               className="grid gap-0"
               style={{
-                gridTemplateColumns: panel.cols.length === 1 ? '1fr 320px' : `repeat(${panel.cols.length}, 1fr) 320px`,
+                gridTemplateColumns: panel.cols.length === 1 ? '1fr' : `repeat(${panel.cols.length}, 1fr)`,
               }}
             >
               {/* Columns */}
@@ -266,7 +280,7 @@ export default function Navbar({ variant = 'dark' }: { variant?: 'dark' | 'light
                   <div className={`font-grotesk font-medium text-[11px] tracking-[1.1px] uppercase mb-[16px] ${isLight ? 'text-dark/40' : 'text-white/40'}`}>
                     {col.label}
                   </div>
-                  <div className="flex flex-col gap-[2px]">
+                  <div className={`${panel.cols.length === 1 ? 'grid grid-cols-3 gap-x-[16px] gap-y-[2px]' : 'flex flex-col gap-[2px]'}`}>
                     {col.items.map((item) => {
                       const Icon = item.icon
                       const inner = (
@@ -304,22 +318,6 @@ export default function Navbar({ variant = 'dark' }: { variant?: 'dark' | 'light
                   </div>
                 </div>
               ))}
-
-              {/* Featured card */}
-              <div className={`pl-[32px] border-l ${isLight ? 'border-dark/[0.08]' : 'border-white/[0.08]'} flex flex-col`}>
-                <div className={`rounded-[8px] aspect-[16/10] mb-[16px] flex items-center justify-center border overflow-hidden relative ${isLight ? 'bg-dark/[0.04] border-dark/[0.08]' : 'bg-white/[0.06] border-white/[0.08]'}`}>
-                  <img src={panel.featured.image} alt={panel.featured.title} className="absolute inset-0 h-full w-full object-cover" />
-                </div>
-                <div className={`font-sans text-[14px] font-semibold mb-[6px] ${isLight ? 'text-dark' : 'text-white/90'}`}>
-                  {panel.featured.title}
-                </div>
-                <div className={`font-sans text-[12px] leading-[1.5] mb-[14px] ${isLight ? 'text-dark/40' : 'text-white/40'}`}>
-                  {panel.featured.desc}
-                </div>
-                <a href="#" className={`font-sans text-[12px] font-medium flex items-center gap-[4px] transition-colors no-underline mt-auto ${isLight ? 'text-dark/50 hover:text-dark' : 'text-white/50 hover:text-white'}`}>
-                  {panel.featured.link} <span>→</span>
-                </a>
-              </div>
             </div>
           </div>
         )}

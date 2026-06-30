@@ -12,6 +12,7 @@ import FinalCTA from './components/FinalCTA'
 import Footer from './components/Footer'
 import DemoPage from './components/DemoPage'
 import PersonaPage from './components/PersonaPage'
+import AboutPage from './components/AboutPage'
 
 function RevealSection({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
   const ref = useRef<HTMLDivElement>(null)
@@ -82,6 +83,7 @@ export default function App() {
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/demo" element={<DemoPage />} />
+      <Route path="/about" element={<AboutPage />} />
       <Route path="/personas/:slug" element={<PersonaPage />} />
     </Routes>
   )
