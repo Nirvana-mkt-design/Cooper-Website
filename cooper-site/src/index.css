@@ -29,6 +29,9 @@
 @utility animate-marquee-right {
   animation: marquee-right 30s linear infinite;
 }
+@utility animate-marquee-slow {
+  animation: marquee-left 200s linear infinite;
+}
 
 @keyframes shapes-up {
   0% { transform: translateY(0); }
@@ -89,6 +92,34 @@
 
 @utility animate-fade-in {
   animation: fade-in 1s ease-out both;
+}
+
+@keyframes headline-accent {
+  0% {
+    color: #0a0a0a;
+    background-size: 0% 2px;
+  }
+  45% {
+    color: #0a0a0a;
+    background-size: 0% 2px;
+  }
+  60% {
+    color: #d95611;
+    background-size: 8% 2px;
+  }
+  100% {
+    color: #d95611;
+    background-size: 100% 2px;
+  }
+}
+
+@utility animate-headline-accent {
+  background-image: repeating-linear-gradient(to right, #d95611 0, #d95611 5px, transparent 5px, transparent 11px);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 2px;
+  padding-bottom: 8px;
+  animation: headline-accent 2.4s ease-out both;
 }
 
 @keyframes cooper-glow {

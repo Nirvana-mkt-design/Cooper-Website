@@ -30,35 +30,73 @@ function RevealSection({ children, delay = 0 }: { children: React.ReactNode; del
   )
 }
 
+/* ── Word-by-word blur reveal ── */
+function BlurWords({
+  text,
+  active,
+  startDelay = 0,
+  stepMs = 28,
+}: {
+  text: string
+  active: boolean
+  startDelay?: number
+  stepMs?: number
+}) {
+  const words = text.split(' ')
+  return (
+    <>
+      {words.map((word, i) => (
+        <span
+          key={i}
+          className="inline-block"
+          style={{
+            opacity: active ? 1 : 0,
+            filter: active ? 'blur(0px)' : 'blur(12px)',
+            transform: active ? 'translateY(0)' : 'translateY(6px)',
+            transition: active
+              ? `opacity 0.65s ease ${startDelay + i * stepMs}ms, filter 0.65s ease ${startDelay + i * stepMs}ms, transform 0.65s ease ${startDelay + i * stepMs}ms`
+              : 'opacity 0.25s ease, filter 0.25s ease, transform 0.25s ease',
+          }}
+        >
+          {word}&nbsp;
+        </span>
+      ))}
+    </>
+  )
+}
+
 /* ── Scroll-linked principle item ── */
 function PrincipleItem({ title, desc }: { title: string; desc: string }) {
   const ref = useRef<HTMLDivElement>(null)
   const [active, setActive] = useState(false)
+  const revealed = useRef(false)
 
   useEffect(() => {
     const el = ref.current
     if (!el) return
     const observer = new IntersectionObserver(
-      ([entry]) => setActive(entry.isIntersecting),
+      ([entry]) => {
+        if (entry.isIntersecting && !revealed.current) {
+          revealed.current = true
+          setActive(true)
+          observer.unobserve(el)
+        }
+      },
       { threshold: 0.5 }
     )
     observer.observe(el)
     return () => observer.disconnect()
   }, [])
 
+  const titleWordCount = title.split(' ').length
+
   return (
     <div ref={ref} className="max-w-[672px]">
-      <h3
-        className="font-serif text-[22px] leading-[27.5px] text-accent-orange mb-[16px] transition-opacity duration-500"
-        style={{ opacity: active ? 1 : 0.4 }}
-      >
-        {title}
+      <h3 className="font-serif text-[22px] leading-[27.5px] text-accent-orange mb-[16px]">
+        <BlurWords text={title} active={active} startDelay={0} stepMs={45} />
       </h3>
-      <p
-        className="font-sans text-[24px] leading-[28.8px] tracking-[-0.24px] text-dark transition-opacity duration-500"
-        style={{ opacity: active ? 1 : 0.4 }}
-      >
-        {desc}
+      <p className="font-sans text-[24px] leading-[28.8px] tracking-[-0.24px] text-dark/55">
+        <BlurWords text={desc} active={active} startDelay={titleWordCount * 45 + 60} stepMs={22} />
       </p>
     </div>
   )
@@ -71,8 +109,8 @@ const principles = [
     desc: 'We benchmark against the best insurance employee, not against other tools. Every decision starts with how a person handles the work today, and how they\'d handle it with a hundred people at their disposal.',
   },
   {
-    title: 'Domain knowledge is the moat.',
-    desc: 'We pair the general expertise of how insurance works with the specific way each agency, carrier, and MGA actually operates. The first gets us in the door. The second makes us hard to replace.',
+    title: 'Built by insurance professionals.',
+    desc: 'We pair deep expertise in how insurance works with the specific way each agency, carrier, and MGA actually operates. That combination is what makes Cooper feel like it was made for your shop, because it was.',
   },
   {
     title: 'Careful before fast.',
@@ -80,12 +118,6 @@ const principles = [
   },
 ]
 
-/* ── Investors ── */
-const investors = [
-  { name: 'Valor Equity Partners', image: '/images/about/investor-1.png' },
-  { name: 'Lightspeed', image: '/images/about/investor-2.png' },
-  { name: 'General Catalyst', image: '/images/about/investor-3.png' },
-]
 
 export default function AboutPage() {
   return (
@@ -204,42 +236,6 @@ export default function AboutPage() {
       </RevealSection>
 
       {/* ══════════════════════════════════════════════
-          INVESTORS — label + heading inline, 3 cards
-          ══════════════════════════════════════════════ */}
-      <RevealSection>
-        <section className="bg-cream-light">
-          <div className="max-w-[1440px] mx-auto px-5 md:px-12 lg:px-[85px] py-[100px]">
-            {/* Label + Heading on same line */}
-            <div className="flex flex-col md:flex-row md:items-start gap-3 md:gap-[24px] mb-[56px]">
-              <span className="font-grotesk font-medium text-[14px] tracking-[1.4px] uppercase text-accent-orange md:pt-[12px] shrink-0 animate-fade-blur-in">
-                Our Investors
-              </span>
-              <h2 className="font-serif text-[26px] leading-[32px] md:text-[34px] md:leading-[40px] lg:text-[40px] lg:leading-[44.8px] text-dark max-w-[756px] animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
-                Backed by investors who have built category-defining companies.
-              </h2>
-            </div>
-
-            {/* Investor cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[20px]">
-              {investors.map((inv, i) => (
-                <div
-                  key={inv.name}
-                  className="animate-fade-blur-in"
-                  style={{ animationDelay: `${0.2 + i * 0.12}s` }}
-                >
-                  <img
-                    src={inv.image}
-                    alt={inv.name}
-                    className="w-full h-auto rounded-[16px]"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      </RevealSection>
-
-      {/* ══════════════════════════════════════════════
           CAREERS CTA — contained rounded card
           ══════════════════════════════════════════════ */}
       <RevealSection>
@@ -262,7 +258,7 @@ export default function AboutPage() {
                     Careers
                   </span>
                   <h2 className="font-serif text-[26px] md:text-[34px] lg:text-[42px] leading-[1.15] text-white mb-[36px] animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
-                    Come teach an<br className="hidden lg:block" /> industry to a coworker.
+                    Join the team rewriting how insurance gets done.
                   </h2>
                   <Link
                     to="/careers"
@@ -276,7 +272,7 @@ export default function AboutPage() {
                 {/* Right — body text */}
                 <div className="flex-1 flex lg:justify-end w-full">
                   <p className="font-sans text-[15px] leading-[24.75px] text-white/80 max-w-full lg:max-w-[380px] animate-fade-blur-in" style={{ animationDelay: '0.2s' }}>
-                    We're a small team giving Cooper the judgment of a great insurance professional. If that's your kind of problem, we're hiring across engineering, design, and go-to-market.
+                    We're a small, focused team on a mission to give every insurance professional the best coworker they've ever had. If hard problems and high stakes are your environment, we'd love to meet you.
                   </p>
                 </div>
               </div>

@@ -22,32 +22,12 @@ export default function FinalCTA() {
   }, [])
 
   return (
-    <section className="relative min-h-[500px] lg:h-[631px] overflow-hidden bg-cream">
-      {/* Background gradient strips — orange pattern from Figma */}
-      <div className="absolute inset-0">
-        {/* Row 1 */}
-        <div className="absolute top-0 left-0 w-1/2 h-[158px]" style={{ background: 'linear-gradient(90deg, rgb(218,76,7) 0%, rgba(215,100,3,0.5) 50%, rgba(221,133,8,0) 100%)' }} />
-        <div className="absolute top-0 left-1/2 w-1/2 h-[158px]" style={{ background: 'linear-gradient(90deg, rgb(218,76,7) 0%, rgba(215,100,3,0.5) 50%, rgba(221,133,8,0) 100%)' }} />
-        {/* Row 2 — flipped */}
-        <div className="absolute top-[158px] left-0 w-1/2 h-[158px]" style={{ background: 'linear-gradient(90deg, rgb(218,76,7) 0%, rgba(215,100,3,0.5) 50%, rgba(221,133,8,0) 100%)', transform: 'scaleY(-1) rotate(180deg)' }} />
-        <div className="absolute top-[158px] left-1/2 w-1/2 h-[158px]" style={{ background: 'linear-gradient(90deg, rgb(218,76,7) 0%, rgba(215,100,3,0.5) 50%, rgba(221,133,8,0) 100%)', transform: 'scaleY(-1) rotate(180deg)' }} />
-        {/* Row 3 */}
-        <div className="absolute top-[316px] left-0 w-1/2 h-[158px]" style={{ background: 'linear-gradient(90deg, rgb(218,76,7) 0%, rgba(215,100,3,0.5) 50%, rgba(221,133,8,0) 100%)' }} />
-        <div className="absolute top-[316px] left-1/2 w-1/2 h-[158px]" style={{ background: 'linear-gradient(90deg, rgb(218,76,7) 0%, rgba(215,100,3,0.5) 50%, rgba(221,133,8,0) 100%)' }} />
-        {/* Row 4 — flipped */}
-        <div className="absolute top-[473px] left-0 w-1/2 h-[158px]" style={{ background: 'linear-gradient(90deg, rgb(218,76,7) 0%, rgba(215,100,3,0.5) 50%, rgba(221,133,8,0) 100%)', transform: 'scaleY(-1) rotate(180deg)' }} />
-        <div className="absolute top-[473px] left-1/2 w-1/2 h-[158px]" style={{ background: 'linear-gradient(90deg, rgb(218,76,7) 0%, rgba(215,100,3,0.5) 50%, rgba(221,133,8,0) 100%)', transform: 'scaleY(-1) rotate(180deg)' }} />
-      </div>
-
-      {/* Glassmorphism overlay */}
-      <div
-        className="absolute inset-0"
-        style={{
-          backdropFilter: 'blur(28.7px)',
-          WebkitBackdropFilter: 'blur(28.7px)',
-          background: 'linear-gradient(90deg, rgba(105,48,19,0.09), rgba(105,48,19,0.09)), linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.04))',
-          borderBottom: '0.5px solid rgba(255,255,255,0.7)',
-        }}
+    <section className="relative min-h-[500px] lg:h-[631px] overflow-hidden">
+      {/* Background image */}
+      <img
+        src="/images/final-cta-bg.png"
+        alt=""
+        className="absolute inset-0 w-full h-full object-cover"
       />
 
       {/* Content */}
@@ -60,23 +40,24 @@ export default function FinalCTA() {
           style={{ filter: 'brightness(0) invert(1)' }}
         />
 
-        {/* Heading with slot-machine rotating word */}
-        <h2 className="font-serif text-[26px] md:text-[34px] lg:text-[38px] leading-[1.2] text-cream-light mb-[20px] flex flex-wrap items-baseline justify-center gap-x-[12px]">
-          <span>Stop doing</span>
-          <span className="inline-block overflow-hidden relative min-w-[120px] sm:min-w-[180px]" style={{ height: '1.2em' }}>
+        {/* Heading: line 1 static, line 2 rotating word */}
+        <h2 className="font-serif text-[26px] md:text-[34px] lg:text-[38px] leading-[1.2] text-cream-light mb-[20px] text-center">
+          <span>No more manual </span>
+          {/* Rotating word — inline after the static text */}
+          <span
+            className="inline-block overflow-hidden align-bottom"
+            style={{ height: '1.25em', minWidth: '160px' }}
+          >
             <span
               key={key}
-              className="inline-block"
-              style={{
-                animation: 'slot-roll-in 0.5s ease-out forwards',
-              }}
+              className="relative inline-block"
+              style={{ animation: 'slot-roll-in 0.5s ease-out forwards' }}
             >
               {rotatingWords[currentIdx]}
+              {/* Dashed underline tracks word width */}
+              <span className="absolute bottom-[3px] left-0 right-0 h-0 border-b border-dashed border-cream-light/50" />
             </span>
-            {/* Dashed underline */}
-            <span className="absolute bottom-[2px] left-0 right-0 h-0 border-b border-dashed border-cream-light/50" />
           </span>
-          <span>manually</span>
         </h2>
 
         {/* Subtitle */}

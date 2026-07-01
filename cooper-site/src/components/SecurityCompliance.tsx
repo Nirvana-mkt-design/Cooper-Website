@@ -26,9 +26,9 @@ export default function SecurityCompliance() {
                 <img
                   src={badge.icon}
                   alt=""
-                  className="w-[48px] h-[48px] object-contain mb-[16px] opacity-30"
+                  className="w-[56px] h-[56px] object-contain mb-[16px] opacity-90"
                 />
-                <span className="font-grotesk font-medium text-[12px] tracking-[1.2px] uppercase text-cream-light/30 text-center">
+                <span className="font-grotesk font-medium text-[12px] tracking-[1.2px] uppercase text-cream-light/80 text-center">
                   {badge.label}
                 </span>
               </div>

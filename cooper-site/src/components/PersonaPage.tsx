@@ -4,10 +4,13 @@ import { useParams, Link } from 'react-router-dom'
 import { personas, getPersonaBySlug } from '../data/personas'
 import type { Feature } from '../data/personas'
 import { getHeroImage, getFeatureImages, getStatsBand } from '../data/personaMedia'
-import { vignettes, roletags } from './persona/vignettes'
+import { vignettes } from './persona/vignettes'
 import Navbar from './Navbar'
 import PersonaTestimonial from './PersonaTestimonial'
 import Footer from './Footer'
+
+/* All testimonials pooled across every persona — used by the shared component */
+const allPersonaTestimonials = personas.flatMap((p) => p.testimonials)
 
 function RevealOnScroll({ children, delay = 0 }: { children: ReactNode; delay?: number }) {
   const ref = useRef<HTMLDivElement>(null)
@@ -90,13 +93,11 @@ function FeatureBlock({
   index,
   image,
   vignette,
-  roletag,
 }: {
   feature: Feature
   index: number
   image: string
   vignette?: ReactNode
-  roletag?: string
 }) {
   const isReversed = index % 2 === 1
 
@@ -108,18 +109,17 @@ function FeatureBlock({
       <p className="font-sans text-[18px] leading-[1.55] text-[#6b6b6b] max-w-[440px]">
         {feature.description}
       </p>
-      {roletag && (
-        <span className="mt-[22px] inline-flex items-center gap-[8px] rounded-full border border-dark/[0.12] bg-cream/60 px-[13px] py-[6px] font-grotesk text-[10.5px] font-semibold uppercase tracking-[0.08em] text-dark/55">
-          <span className="h-[5px] w-[5px] rounded-full bg-accent-orange" />
-          {roletag}
-        </span>
-      )}
     </div>
   )
 
   const photo = (
     <div className="relative h-[320px] overflow-hidden bg-[#fbfbf9] sm:h-[460px] lg:h-[540px]">
-      <img src={image} alt="" className="absolute inset-0 h-full w-full object-cover" />
+      <img
+        src={image}
+        alt=""
+        className="absolute inset-0 h-full w-full object-cover"
+        style={{ filter: 'blur(3px)', transform: 'scale(1.04)' }}
+      />
       {vignette && <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-black/5 to-black/10" />}
       {vignette && (
         <div className="absolute inset-0 flex items-center justify-center p-[20px]">
@@ -186,7 +186,6 @@ export default function PersonaPage() {
   const featureImages = getFeatureImages(persona.slug)
   const stats = getStatsBand(persona.slug)
   const vigs = vignettes[persona.slug]
-  const tags = roletags[persona.slug]
 
   const personaIcons: Record<string, ReactNode> = {
     'retail-agencies': (
@@ -241,9 +240,23 @@ export default function PersonaPage() {
                     className="animate-fade-blur-in font-serif text-[28px] md:text-[40px] lg:text-[48px] leading-[1.05] tracking-[-1.44px] text-[#0a0a0a] max-w-[620px]"
                     style={{ animationDelay: '0.3s' }}
                   >
-                    {persona.headlineAccent
-                      ? `${persona.headlineLead} ${persona.headlineAccent}`
-                      : persona.headline}
+                    {persona.headlineAccent ? (
+                      <>
+                        {persona.headlineLead.split('. ').map((part, i, arr) => (
+                          <span key={i} className="block">
+                            {part}{i < arr.length - 1 ? '.' : ''}
+                          </span>
+                        ))}
+                        <span
+                          className="animate-headline-accent inline-block"
+                          style={{ animationDelay: '1.5s' }}
+                        >
+                          {persona.headlineAccent}
+                        </span>
+                      </>
+                    ) : (
+                      persona.headline
+                    )}
                   </h1>
                 </div>
                 <div className="animate-fade-blur-in flex flex-wrap items-center gap-[12px]" style={{ animationDelay: '0.45s' }}>
@@ -271,7 +284,11 @@ export default function PersonaPage() {
 
             {/* hero image */}
             <div className="animate-fade-blur-in aspect-[16/9] w-full overflow-hidden bg-[#fbfbf9]" style={{ animationDelay: '0.5s' }}>
-              <img src={heroImage} alt="" className="h-full w-full object-cover" />
+              <img
+                src={heroImage}
+                alt=""
+                className="h-full w-full object-cover"
+              />
             </div>
           </div>
         </div>
@@ -306,7 +323,7 @@ export default function PersonaPage() {
                     key={col.label}
                     className="rounded-[16px] border border-dark/[0.1] bg-cream-light/60 p-[32px]"
                   >
-                    <div className="mb-[12px] font-grotesk text-[11px] font-semibold uppercase tracking-[0.12em] text-accent-orange">
+                    <div className="mb-[12px] font-grotesk text-[11px] font-medium uppercase tracking-[1.4px] text-accent-orange">
                       {col.label}
                     </div>
                     <h3 className="mb-[20px] font-serif text-[24px] leading-[1.15] text-[#0a0a0a]">
@@ -338,15 +355,14 @@ export default function PersonaPage() {
               index={index}
               image={featureImages[index % featureImages.length]}
               vignette={vigs?.[index]}
-              roletag={tags?.[index]}
             />
           ))}
         </div>
       </section>
 
-      {/* Testimonial */}
+      {/* Testimonial — same pooled list on every persona page */}
       <RevealOnScroll>
-        <PersonaTestimonial testimonials={persona.testimonials} />
+        <PersonaTestimonial testimonials={allPersonaTestimonials} />
       </RevealOnScroll>
 
       {/* CTA Section */}

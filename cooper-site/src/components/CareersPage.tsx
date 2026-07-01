@@ -30,6 +30,36 @@ function RevealSection({ children, delay = 0 }: { children: React.ReactNode; del
   )
 }
 
+/* ── Team photos for marquee ── */
+const teamPhotos = [
+  '/images/careers/IMG_2940.jpg',
+  '/images/careers/IMG_5227.jpg',
+  '/images/careers/IMG_2941.jpg',
+  '/images/careers/IMG_7892.jpg',
+  '/images/careers/IMG_2942.jpg',
+  '/images/careers/IMG_3044.jpg',
+  '/images/careers/IMG_7951.jpg',
+  '/images/careers/IMG_2943.jpg',
+  '/images/careers/IMG_8809.jpg',
+  '/images/careers/IMG_3113.jpg',
+  '/images/careers/IMG_2953.jpg',
+  '/images/careers/IMG_9381.jpg',
+  '/images/careers/IMG_3224.jpg',
+  '/images/careers/IMG_2954.jpg',
+  '/images/careers/IMG_3225.jpg',
+  '/images/careers/IMG_3423.jpg',
+  '/images/careers/IMG_3462.jpg',
+  '/images/careers/image (1).png',
+  '/images/careers/WhatsApp Image 2026-06-22 at 15.35.21.jpeg',
+]
+
+/* ── Investors ── */
+const investors = [
+  { name: 'Valor Equity Partners', image: '/images/about/investor-1.png' },
+  { name: 'Lightspeed', image: '/images/about/investor-2.png' },
+  { name: 'General Catalyst', image: '/images/about/investor-3.png' },
+]
+
 /* ── Roles data ── */
 export interface Role {
   id: string
@@ -252,7 +282,7 @@ export default function CareersPage() {
             Careers at Cooper
           </span>
           <h1 className="font-serif text-[40px] leading-[44px] md:text-[64px] md:leading-[68px] lg:text-[64px] lg:leading-[68px] tracking-[-1.44px] text-white max-w-[700px] mb-[32px] animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
-            Come teach an industry to a coworker.
+            Come help Cooper grow.
           </h1>
           <p className="font-sans text-[18px] leading-[1.6] text-white/80 max-w-full lg:max-w-[540px] mb-[40px] animate-fade-blur-in" style={{ animationDelay: '0.2s' }}>
             We're a small team giving Cooper the judgment of a great insurance professional. If that's your kind of problem, we'd love to meet you.
@@ -266,6 +296,87 @@ export default function CareersPage() {
           </a>
         </div>
       </section>
+
+      {/* ══════════════════════════════════════════════
+          MISSION INTRO — 2-col heading + body
+          ══════════════════════════════════════════════ */}
+      <RevealSection>
+        <section className="bg-cream-light">
+          <div className="max-w-[1440px] mx-auto px-5 md:px-12 lg:px-[85px] py-[100px] lg:py-[120px]">
+            <div className="grid grid-cols-1 lg:grid-cols-[440px_1fr] gap-10 lg:gap-[80px] items-start">
+              {/* Left — heading */}
+              <div className="lg:sticky lg:top-[120px]">
+                <h2 className="font-serif text-[30px] leading-[36px] md:text-[40px] md:leading-[46px] lg:text-[48px] lg:leading-[52px] tracking-[-0.5px] text-dark animate-fade-blur-in">
+                  We're building something insurance has never had.
+                </h2>
+              </div>
+
+              {/* Right — body paragraphs */}
+              <div className="flex flex-col gap-[28px] animate-fade-blur-in" style={{ animationDelay: '0.15s' }}>
+                <p className="font-sans text-[18px] leading-[1.7] text-dark/70">
+                  Insurance runs on relationships, expertise, and judgment built over decades. But the paperwork — the ACORDs, the submissions, the loss runs, the policy checks — doesn't require any of that. It just steals time from the work that does.
+                </p>
+                <p className="font-sans text-[18px] leading-[1.7] text-dark/70">
+                  Cooper is the coworker that handles all of it. Not a form tool, not an RPA script. A teammate that reads documents the way a great employee would, adapts to how your shop actually runs, and gets sharper the longer it works alongside your team.
+                </p>
+                <p className="font-sans text-[18px] leading-[1.7] text-dark/70">
+                  We benchmark against the best insurance professional in the room, not against other software. That's what makes this hard. It's also what makes it worth building.
+                </p>
+                <p className="font-sans text-[18px] leading-[1.7] text-dark">
+                  If you want to spend the next few years on a problem that matters deeply to the people it serves, you're in the right place.<br />
+                  Everyone here gets to leave a mark.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </RevealSection>
+
+      {/* ══════════════════════════════════════════════
+          PHOTO STRIP — slow continuous marquee, pauses on hover
+          ══════════════════════════════════════════════ */}
+      <section className="bg-cream-light overflow-hidden pb-[80px] group/strip">
+        <div className="flex gap-[10px] w-max animate-marquee-slow group-hover/strip:[animation-play-state:paused]">
+          {[...teamPhotos, ...teamPhotos].map((src, i) => (
+            <div
+              key={i}
+              className="h-[220px] md:h-[260px] shrink-0 overflow-hidden rounded-[6px] transition-transform duration-700 ease-out group-hover/strip:scale-[0.98]"
+              style={{ aspectRatio: '4/3' }}
+            >
+              <img
+                src={src}
+                alt=""
+                className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover/strip:scale-[1.04]"
+              />
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════
+          INVESTORS
+          ══════════════════════════════════════════════ */}
+      <RevealSection>
+        <section className="bg-cream-light">
+          <div className="max-w-[1440px] mx-auto px-5 md:px-12 lg:px-[85px] py-[100px]">
+            <div className="flex flex-col md:flex-row md:items-start gap-3 md:gap-[24px] mb-[56px]">
+              <span className="font-grotesk font-medium text-[14px] tracking-[1.4px] uppercase text-accent-orange md:pt-[12px] shrink-0 animate-fade-blur-in">
+                Our Investors
+              </span>
+              <h2 className="font-serif text-[26px] leading-[32px] md:text-[34px] md:leading-[40px] lg:text-[40px] lg:leading-[44.8px] text-dark max-w-[756px] animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
+                Backed by investors who have built category-defining companies.
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[20px]">
+              {investors.map((inv, i) => (
+                <div key={inv.name} className="animate-fade-blur-in" style={{ animationDelay: `${0.2 + i * 0.12}s` }}>
+                  <img src={inv.image} alt={inv.name} className="w-full h-auto rounded-[16px] opacity-50" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      </RevealSection>
 
       {/* ══════════════════════════════════════════════
           OPEN ROLES
