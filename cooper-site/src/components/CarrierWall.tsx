@@ -30,20 +30,20 @@ const SET_A: Carrier[] = [
   { name: 'Progressive', src: '/images/carriers/progressive.png' },
 ]
 
-/* Set B — a second wave of real carriers that swaps in. */
+/* Set B — a second wave of commercial P&C carriers that swaps in. */
 const SET_B: Carrier[] = [
   { name: 'AIG', src: '/images/carriers/aig.png' },
-  { name: 'Allstate', src: '/images/carriers/allstate.png' },
-  { name: 'State Farm', src: '/images/carriers/statefarm.png' },
   { name: 'Berkley', src: '/images/carriers/berkley.png' },
   { name: 'Cincinnati', src: '/images/carriers/cincinnati.png' },
   { name: 'The Hanover', src: '/images/carriers/hanover.png' },
   { name: 'Hiscox', src: '/images/carriers/hiscox.png' },
   { name: 'AXA', src: '/images/carriers/axa.png' },
   { name: 'Allianz', src: '/images/carriers/allianz.png' },
-  { name: 'GEICO', src: '/images/carriers/geico.png' },
-  { name: 'Erie', src: '/images/carriers/erie.png' },
-  { name: 'MetLife', src: '/images/carriers/metlife.png' },
+  { name: 'Philadelphia', word: true },
+  { name: 'Starr', word: true },
+  { name: 'RLI', word: true },
+  { name: 'Tokio Marine', word: true },
+  { name: 'Employers', word: true },
 ]
 
 const SETS: Carrier[][] = [SET_A, SET_B]
@@ -70,12 +70,12 @@ function Logo({ carrier }: { carrier: Carrier }) {
         src={carrier.src}
         alt={carrier.name}
         loading="lazy"
-        className="max-h-[32px] w-auto max-w-[72%] object-contain opacity-[0.5] grayscale"
+        className="max-h-[44px] w-auto max-w-[78%] object-contain opacity-[0.5] grayscale"
       />
     )
   }
   return (
-    <span className="font-grotesk text-[14px] font-medium tracking-[0.2px] text-dark/35">
+    <span className="font-grotesk text-[16px] font-medium tracking-[0.2px] text-dark/35">
       {carrier.name}
     </span>
   )
@@ -116,24 +116,17 @@ export default function CarrierWall() {
   return (
     <div className="mt-[24px] grid grid-cols-1 items-stretch gap-[24px] overflow-hidden rounded-[16px] border border-dark/[0.08] bg-cream-light p-[14px] md:grid-cols-[1fr_2fr]">
       {/* copy card */}
-      <div className="flex flex-col justify-between rounded-[14px] bg-cream/50 p-[28px]">
+      <div className="flex flex-col justify-center rounded-[14px] bg-cream/50 p-[28px]">
         <p className="font-serif text-[24px] leading-[1.3] text-dark">
-          Trusted by forward-thinking insurance teams.
+          Cooper works with all of your trusted carriers
         </p>
-        <a
-          href="#"
-          className="group mt-[24px] inline-flex items-center gap-[8px] font-grotesk text-[12px] font-medium uppercase tracking-[1.2px] text-dark/60 transition-colors hover:text-dark"
-        >
-          Read the case studies
-          <span className="transition-transform duration-300 group-hover:translate-x-[3px]">→</span>
-        </a>
       </div>
 
       {/* logo grid — the cells and dividers stay put; only the
           logos inside fade out / in together as the set swaps */}
-      <div className="grid grid-cols-3 gap-[1px] overflow-hidden rounded-[14px] bg-dark/[0.06] sm:grid-cols-4 lg:grid-cols-6">
+      <div className="grid grid-cols-2 gap-[1px] overflow-hidden rounded-[14px] bg-dark/[0.06] sm:grid-cols-3 lg:grid-cols-6">
         {current.map((carrier, cell) => (
-          <div key={cell} className="relative grid aspect-[4/3] place-items-center bg-cream-light">
+          <div key={cell} className="relative grid place-items-center bg-cream-light min-h-[90px] lg:min-h-[110px]">
             <div
               className="flex items-center justify-center px-[8%] transition-[opacity,filter] ease-out"
               style={{

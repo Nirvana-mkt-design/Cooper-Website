@@ -1,17 +1,48 @@
-import { useEffect, useRef } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { useEffect, useLayoutEffect, useRef } from 'react'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import HowCooperHelps from './components/HowCooperHelps'
 import OnePlatform from './components/OnePlatform'
 import Metrics from './components/Metrics'
 import BuiltForEveryRole from './components/BuiltForEveryRole'
+import InvestorStrip from './components/InvestorStrip'
 import Integrations from './components/Integrations'
 import SecurityCompliance from './components/SecurityCompliance'
 import FinalCTA from './components/FinalCTA'
 import Footer from './components/Footer'
 import DemoPage from './components/DemoPage'
 import PersonaPage from './components/PersonaPage'
+import AboutPage from './components/AboutPage'
+import CareersPage from './components/CareersPage'
+import CareerRolePage from './components/CareerRolePage'
+
+// Reset scroll to the top on every route change so a new page never opens
+// at the scroll height of the previous one. Honors #hash anchors when present.
+function ScrollToTop() {
+  const { pathname, hash } = useLocation()
+
+  // useLayoutEffect runs before paint, so the new page never flashes at the
+  // previous scroll position.
+  useLayoutEffect(() => {
+    if (hash) {
+      const el = document.getElementById(hash.slice(1))
+      if (el) {
+        el.scrollIntoView()
+        return
+      }
+    }
+    // Jump instantly to the top, bypassing the global `scroll-behavior: smooth`
+    // (which would otherwise animate the page upward instead of starting there).
+    const html = document.documentElement
+    const prev = html.style.scrollBehavior
+    html.style.scrollBehavior = 'auto'
+    window.scrollTo(0, 0)
+    html.style.scrollBehavior = prev
+  }, [pathname, hash])
+
+  return null
+}
 
 function RevealSection({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
   const ref = useRef<HTMLDivElement>(null)
@@ -60,6 +91,7 @@ function HomePage() {
       <RevealSection>
         <BuiltForEveryRole />
       </RevealSection>
+
       {/* <RevealSection>
         <TeamSection />
       </RevealSection> */}
@@ -67,10 +99,10 @@ function HomePage() {
         <Integrations />
       </RevealSection>
       <RevealSection>
-        <SecurityCompliance />
+        <FinalCTA />
       </RevealSection>
       <RevealSection>
-        <FinalCTA />
+        <SecurityCompliance />
       </RevealSection>
       <Footer />
     </div>
@@ -79,10 +111,16 @@ function HomePage() {
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/demo" element={<DemoPage />} />
-      <Route path="/personas/:slug" element={<PersonaPage />} />
-    </Routes>
+    <>
+      <ScrollToTop />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/demo" element={<DemoPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/careers" element={<CareersPage />} />
+        <Route path="/careers/:roleId" element={<CareerRolePage />} />
+        <Route path="/personas/:slug" element={<PersonaPage />} />
+      </Routes>
+    </>
   )
 }

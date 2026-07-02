@@ -49,12 +49,30 @@ export const featureImages: Record<string, string[]> = {
 
 export const statsBands: Record<string, Stat[]> = {
   'retail-agencies': [
-    { value: '700+', label: 'carrier portal tasks submitted autonomously' },
-    { value: '3+ hrs', label: 'of producer time saved, every week' },
-    { value: '90%', label: 'faster ACORD and portal submissions' },
+    { value: '84%', label: 'less ACORD & portal data-entry time' },
+    { value: '2.6×', label: 'more submissions per producer' },
+    { value: '97%', label: 'carrier tasks completed autonomously' },
+  ],
+  'wholesale-brokers': [
+    { value: '78%', label: 'less submission-to-proposal time' },
+    { value: '3.4×', label: 'market submissions match accuracy' },
+  ],
+  'mgas-insurers': [
+    { value: '71%', label: 'less underwriting decision time' },
+    { value: '2.8×', label: 'premium per underwriter, no new hires' },
+    { value: '23%', label: 'less pre-audit leakage' },
+  ],
+  'claims-tpas': [
+    { value: '60%', label: 'less FNOL-to-assignment time' },
+    { value: '48%', label: 'more claims handled per adjuster' },
+  ],
+  reinsurers: [
+    { value: '85%', label: 'less bordereaux normalization time' },
+    { value: '2.4×', label: 'treaties renewed per analyst' },
+    { value: '99%', label: 'treaty term & accumulation accuracy' },
   ],
 }
 
 export const getHeroImage = (slug: string) => heroImages[slug] ?? heroImages[RETAIL]
 export const getFeatureImages = (slug: string) => featureImages[slug] ?? featureImages[RETAIL]
-export const getStatsBand = (slug: string) => statsBands[slug] ?? statsBands[RETAIL]
+export const getStatsBand = (slug: string) => statsBands[slug] ?? []

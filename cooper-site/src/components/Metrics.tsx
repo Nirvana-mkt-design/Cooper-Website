@@ -1,18 +1,19 @@
 import { useState, useEffect, useRef } from 'react'
 
 const metrics = [
-  { end: 3, suffix: '+ hrs', label: 'Producer time saved', note: 'every week' },
-  { end: 700, suffix: '+', label: 'Carrier portal tasks', note: 'submitted autonomously' },
-  { end: 12, suffix: 'X', label: 'ACORD & portal submissions', note: 'completed faster' },
+  { end: 8.5, decimals: 1, suffix: ' hrs', label: 'Selling time back per producer', note: 'every week' },
+  { end: 95, decimals: 0, suffix: '%', label: 'Fewer manual re-entry errors', note: 'from day one' },
+  { end: 12, decimals: 0, suffix: '×', label: 'Faster submission-to-market', note: 'end to end' },
 ]
 
-function useCountUp(end: number, duration: number, start: boolean) {
+function useCountUp(end: number, duration: number, start: boolean, decimals = 0) {
   const [value, setValue] = useState(0)
 
   useEffect(() => {
     if (!start) return
     let startTime: number | null = null
     let raf: number
+    const factor = Math.pow(10, decimals)
 
     const tick = (timestamp: number) => {
       if (!startTime) startTime = timestamp
@@ -20,7 +21,7 @@ function useCountUp(end: number, duration: number, start: boolean) {
       const progress = Math.min(elapsed / duration, 1)
       // ease-out cubic
       const eased = 1 - Math.pow(1 - progress, 3)
-      setValue(Math.round(eased * end))
+      setValue(Math.round(eased * end * factor) / factor)
       if (progress < 1) {
         raf = requestAnimationFrame(tick)
       }
@@ -28,7 +29,7 @@ function useCountUp(end: number, duration: number, start: boolean) {
 
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
-  }, [end, duration, start])
+  }, [end, duration, start, decimals])
 
   return value
 }
@@ -48,12 +49,13 @@ function AnimatedMetric({ metric, delay }: { metric: typeof metrics[0]; delay: n
     return () => observer.disconnect()
   }, [delay])
 
-  const count = useCountUp(metric.end, 1800, visible)
+  const count = useCountUp(metric.end, 1800, visible, metric.decimals)
+  const display = visible ? count.toFixed(metric.decimals) : (0).toFixed(metric.decimals)
 
   return (
     <div ref={ref} className="flex flex-col gap-[16px] items-center text-center flex-1">
-      <span className={`font-serif text-[96px] leading-[1] text-cream-light transition-opacity duration-500 ${visible ? 'opacity-100' : 'opacity-0'}`}>
-        {visible ? `${count}${metric.suffix}` : `0${metric.suffix}`}
+      <span className={`font-serif text-[40px] md:text-[64px] lg:text-[96px] leading-[1] text-cream-light transition-opacity duration-500 ${visible ? 'opacity-100' : 'opacity-0'}`}>
+        {display}{metric.suffix}
       </span>
       <span className={`font-grotesk font-medium text-[14.5px] tracking-[1.45px] uppercase text-cream-light leading-[1.5] transition-opacity duration-500 ${visible ? 'opacity-100' : 'opacity-0'}`} style={{ transitionDelay: '0.3s' }}>
         {metric.label}
@@ -67,7 +69,7 @@ function AnimatedMetric({ metric, delay }: { metric: typeof metrics[0]; delay: n
 
 export default function Metrics() {
   return (
-    <section className="relative h-[516px] overflow-hidden">
+    <section className="relative h-auto lg:h-[516px] overflow-hidden">
       {/* Background layers from Figma */}
       <div className="absolute inset-0">
         {/* Base dark color */}
@@ -104,20 +106,20 @@ export default function Metrics() {
       />
 
       {/* Content */}
-      <div className="relative z-10 max-w-[1440px] mx-auto px-[138px] pt-[50px] pb-[50px]">
+      <div className="relative z-10 max-w-[1440px] mx-auto px-5 md:px-16 lg:px-[138px] pt-[64px] md:pt-[50px] pb-[64px] md:pb-[50px]">
         <div className="flex flex-col gap-[50px]">
           {/* Heading */}
           <div className="flex flex-col gap-[28px] max-w-[483px]">
             <p className="font-grotesk font-medium text-[14.5px] tracking-[1.45px] uppercase text-cream-light leading-[1.5]">
               Impact
             </p>
-            <h2 className="font-serif text-[48px] leading-[1.2] text-cream-light">
+            <h2 className="font-serif text-[32px] md:text-[44px] lg:text-[48px] leading-[1.2] text-cream-light">
               Measurable results from day one
             </h2>
           </div>
 
           {/* Metrics row */}
-          <div className="flex items-start justify-between w-full">
+          <div className="flex flex-col gap-[40px] md:flex-row md:items-start md:justify-between md:gap-0 w-full">
             {metrics.map((m, i) => (
               <AnimatedMetric key={m.label} metric={m} delay={i * 200} />
             ))}
