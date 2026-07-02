@@ -68,7 +68,7 @@ export default function FinalCTA() {
         </p>
 
         {/* Button */}
-        <button className="font-sans font-medium text-[16px] text-dark bg-white rounded-[5px] px-[28px] py-[12px] hover:bg-cream-light transition-colors cursor-pointer">
+        <button className="font-sans font-medium text-[16px] text-dark bg-white rounded-[5px] px-[28px] py-[12px] hover:bg-cream hover:scale-[1.03] transition-all duration-200 cursor-pointer">
           Request a Demo
         </button>
       </div>

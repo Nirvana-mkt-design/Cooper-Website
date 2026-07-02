@@ -75,7 +75,7 @@ export const personas: Persona[] = [
       {
         title: 'Stop typing the same data twice',
         description:
-          'Cooper reads your dec pages, loss runs, and emails, then writes the details straight into Applied Epic, AMS360, or HawkSoft, and into every carrier portal. You review instead of retype.',
+          'Cooper reads your dec pages, loss runs, and emails, then writes the details straight into Applied Epic, AMS360, HawkSoft, or whatever system you use, and into every carrier portal. You review instead of retype.',
       },
       {
         title: 'Walk into every meeting quote-ready',
@@ -85,7 +85,7 @@ export const personas: Persona[] = [
       {
         title: 'Never miss a renewal or a coverage change',
         description:
-          'Cooper tracks every renewal date, reads the actual policy forms, and flags the sublimit or exclusion changes that matter. You get a plain-language comparison drafted and ready for your client.',
+          'Cooper tracks every renewal date, reads the actual policy forms, and flags the sublimit or exclusion changes that matter. You get a plain-language comparison drafted and ready for your\u00a0client.',
       },
       {
         title: 'Certificates that check themselves',
@@ -152,7 +152,7 @@ export const personas: Persona[] = [
       {
         title: 'Placement and compliance, together',
         description:
-          'Cooper tracks binding authority, pre-fills binders and invoices, and prepares each state\'s surplus-lines filing on time. Now, placement and compliance move together instead of one waiting on the other.',
+          'Cooper issues the binder, files surplus-lines tax and stamping, and attaches the diligent-search affidavit, so placement and compliance happen in one step instead of two.',
       },
     ],
     testimonialQuote:
@@ -189,22 +189,22 @@ export const personas: Persona[] = [
       {
         title: 'Underwrite by your guidelines, every time',
         description:
-          'Cooper checks each risk against your program\'s own guidelines and referral rules, then clears, refers, or declines with the reason attached. Every decision lines up with the authority you were given.',
+          'Cooper runs every submission against your underwriting guidelines, clears what\'s clean, and refers the rest with the reason attached, so the same standard applies on every account.',
       },
       {
         title: 'Price risks consistently at scale',
         description:
-          'Cooper pulls exposure and prior-loss detail, applies your rating logic, and benchmarks against similar accounts you\'ve already written. Underwriters spend time on judgment, not assembly.',
+          'Cooper applies your rating logic the same way every time and benchmarks each account against similar risks, so pricing stays consistent no matter who is at the desk.',
       },
       {
         title: 'Catch leakage before the audit does',
         description:
-          'Cooper applies the right rates, rules, and forms for each program automatically and flags anything drifting outside authority, so you stay audit-ready with a full trail behind every bind.',
+          'Cooper checks that the right rates and forms were applied on every program and flags anything bound outside authority, so leakage surfaces with you, not with your carrier\'s audit.',
       },
       {
         title: 'Bordereaux that build themselves',
         description:
-          'Cooper assembles each carrier\'s bordereaux in their exact format, reconciled against your bound policies. Reporting ties out and goes out on time, no more rebuilding spreadsheets.',
+          'Cooper compiles each reporting period into the carrier\'s bordereaux format, reconciled against the bound policies, so the report goes out on time without the month-end scramble.',
       },
     ],
     testimonialQuote:
@@ -241,22 +241,22 @@ export const personas: Persona[] = [
       {
         title: 'Every claim starts clean',
         description:
-          'Cooper takes the loss notice from any channel (phone, email, portal, fax), organizes it into a clean file, matches it to the right policy, and acknowledges within your client\'s SLA window.',
+          'Cooper takes first notice of loss from phone, email, portal, or fax, matches it to the policy, and opens a structured claim file, acknowledged within SLA every time.',
       },
       {
         title: 'Surface subrogation and recovery signals',
         description:
-          'Cooper reads each new loss for subrogation and recovery potential, flags the files worth a referral, and shows what it found. Cooper flags, the adjuster decides.',
+          'Cooper reads the file and flags possible subrogation, third-party involvement, and prior-loss patterns early, so recovery opportunities surface while they still matter. Cooper flags, the adjuster decides.',
       },
       {
         title: 'Coverage calls backed by the actual policy',
         description:
-          'Cooper reads the specific policy against the facts of each loss, lays out limits, deductibles, and exclusions that apply, and shows the contract language, so adjusters make the right call, fast.',
+          'Cooper reads the specific policy against the facts of each loss, lays out limits, deductibles, and exclusions that apply, and shows the contract language, so adjusters make the right call,\u00a0fast.',
       },
       {
         title: 'Reporting that\'s always ready',
         description:
-          'Cooper keeps file notes and diaries current, suggests reserves based on your claims history, and produces loss runs and large-loss reports on demand. Nothing goes stale.',
+          'Cooper keeps loss runs, large-loss reports, reserves, and diaries current, so the report a carrier or client asks for is ready on demand instead of cobbled together.',
       },
     ],
     testimonialQuote:
@@ -293,22 +293,22 @@ export const personas: Persona[] = [
       {
         title: 'Clean cedent data from day one',
         description:
-          'Cooper maps each cedent\'s file into your standard format, flags gaps and inconsistencies, and delivers clean, usable data, so your analysts start working instead of cleaning.',
+          'Cooper maps every cedent\'s bordereaux into your standard schema, flags the gaps, and hands back a usable file, so you start on clean data instead of spending days fixing spreadsheets.',
       },
       {
         title: 'See concentration before it\'s a problem',
         description:
-          'Cooper aggregates exposure by peril, geography, and insured across your entire portfolio and checks it against your tolerances, so you spot accumulation building well ahead of time.',
+          'Cooper tracks accumulation by peril and region across the whole portfolio and alerts you when exposure crosses tolerance, so concentration is something you see coming, not something you discover after an event.',
       },
       {
         title: 'Hold cedents to the terms you negotiated',
         description:
-          'Cooper reads your treaty and facultative wordings, checks cedent statements and claims against the right contract, and flags anything off-contract, so the terms actually stick.',
+          'Cooper checks ceded claims against the treaty wording, the event definition and hours clause, and flags anything ceded off-contract, so the terms you negotiated are the terms that get\u00a0applied.',
       },
       {
         title: 'Renewal season on prepared files',
         description:
-          'Cooper assembles experience and exposure history for each renewing treaty, lines it up with your modeled output, and drafts the pricing view, so the season runs on prepared files, not scrambles.',
+          'Cooper assembles experience and exposure history for each renewing treaty, lines it up with your modeled output, and drafts the pricing view, so the season runs on prepared files, not\u00a0scrambles.',
       },
     ],
     testimonialQuote:

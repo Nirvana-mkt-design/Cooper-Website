@@ -268,7 +268,7 @@ export default function PersonaPage() {
                     to="/demo"
                     className="inline-flex w-fit items-center rounded-[8px] bg-[#1e1a15] px-[32px] py-[14px] font-sans text-[16px] font-medium text-cream-light no-underline transition-opacity hover:opacity-90"
                   >
-                    Request a Demo
+                    {persona.ctaText}
                   </Link>
                 </div>
               </div>

@@ -289,7 +289,7 @@ export default function CareersPage() {
           </p>
           <a
             href="#open-roles"
-            className="inline-block w-fit font-sans font-medium text-[15px] text-dark bg-white rounded-[6px] px-[28px] py-[12px] hover:bg-cream-light transition-colors no-underline animate-fade-blur-in"
+            className="inline-block w-fit font-sans font-medium text-[15px] text-dark bg-white rounded-[6px] px-[28px] py-[12px] hover:bg-cream hover:scale-[1.03] transition-all duration-200 no-underline animate-fade-blur-in"
             style={{ animationDelay: '0.3s' }}
           >
             View open roles

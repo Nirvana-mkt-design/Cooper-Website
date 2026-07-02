@@ -9,21 +9,14 @@ const OK = '#3f7a45'
 const WARN = '#b4561a'
 const NO = '#b23b3b'
 
-/* Floating panel — mirrors the Cooper app (dotted canvas, near-square corners, no title bar) */
+/* Floating panel — mirrors the Cooper app home-card style (flat, sharp, no dots) */
 export function VigWindow({ title, children }: { title: string; children: ReactNode }) {
   return (
     <div
       aria-label={title}
-      className="overflow-hidden rounded-[8px] border border-dark/[0.08] bg-cream-light shadow-[0_34px_80px_-28px_rgba(20,17,12,0.6)] ring-1 ring-black/[0.02]"
+      className="overflow-hidden rounded-[6px] border border-[#E2D9CF] bg-white/[0.94] shadow-[0_34px_80px_-28px_rgba(20,17,12,0.6)]"
     >
-      <div
-        className="p-[18px]"
-        style={{
-          backgroundColor: '#faf7ef',
-          backgroundImage: 'radial-gradient(rgba(30,26,21,0.05) 1px, transparent 1px)',
-          backgroundSize: '15px 15px',
-        }}
-      >
+      <div className="p-[18px]" style={{ backgroundColor: '#faf7ef' }}>
         {children}
       </div>
     </div>
@@ -44,8 +37,8 @@ export function FileChip({ name, meta }: { name: string; meta?: string }) {
   const ext = name.split('.').pop()?.toLowerCase() ?? ''
   const color = FILE_COLORS[ext] ?? '#6b675f'
   return (
-    <div className="flex items-center gap-[9px] rounded-[8px] border border-dark/[0.10] bg-white px-[10px] py-[8px] shadow-[0_1px_2px_rgba(30,26,21,0.04)]">
-      <span className="grid h-[26px] w-[26px] shrink-0 place-items-center rounded-[6px]" style={{ background: color }}>
+    <div className="flex items-center gap-[9px] rounded-none border-b border-[#E2D9CF] bg-transparent px-[11px] py-[8px] last:border-b-0">
+      <span className="grid h-[26px] w-[26px] shrink-0 place-items-center rounded-[5px]" style={{ background: color }}>
         <svg viewBox="0 0 24 24" className="h-[13px] w-[13px]" fill="none" stroke="#fff" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
           <path d="M14 2v6h6" />
@@ -80,11 +73,11 @@ export function St({ kind, children }: { kind: StKind; children: ReactNode }) {
 export function Row({ children, attn = false, className = '' }: { children: ReactNode; attn?: boolean; className?: string }) {
   return (
     <div
-      className={`flex items-center justify-between gap-[10px] rounded-[6px] border px-[11px] py-[8px] font-sans text-[12.5px] text-dark/70 ${className}`}
+      className={`flex items-center justify-between gap-[10px] border-b px-[11px] py-[8px] font-sans text-[12.5px] text-dark/70 last:border-b-0 ${className}`}
       style={
         attn
-          ? { background: 'rgba(217,86,17,0.07)', borderColor: 'rgba(217,86,17,0.28)', borderLeft: '3px solid #d95611', paddingLeft: 9 }
-          : { background: '#fff', borderColor: 'rgba(30,26,21,0.10)' }
+          ? { background: 'rgba(217,86,17,0.06)', borderColor: '#E2D9CF', borderLeft: '3px solid #d95611', paddingLeft: 9 }
+          : { background: 'transparent', borderColor: '#E2D9CF' }
       }
     >
       {children}
@@ -102,7 +95,7 @@ export function Stack({ children, gap = 7 }: { children: ReactNode; gap?: number
 
 export function KV({ k, v, accent = false }: { k: string; v: ReactNode; accent?: boolean }) {
   return (
-    <div className="flex justify-between gap-[10px] border-b border-dashed border-dark/15 py-[5px] font-sans text-[12.5px] last:border-0">
+    <div className="flex justify-between gap-[10px] border-b border-[#E2D9CF] py-[5px] font-sans text-[12.5px] last:border-0">
       <span className="text-dark/55">{k}</span>
       <b className="font-semibold" style={{ color: accent ? '#d95611' : '#1e1a15' }}>{v}</b>
     </div>
@@ -111,7 +104,7 @@ export function KV({ k, v, accent = false }: { k: string; v: ReactNode; accent?:
 
 export function DiffRow({ cells, header = false, accentIdx }: { cells: ReactNode[]; header?: boolean; accentIdx?: number }) {
   return (
-    <div className="grid grid-cols-[1.4fr_0.8fr_0.8fr] items-center border-b border-dark/[0.08] py-[6px] last:border-0">
+    <div className="grid grid-cols-[1.4fr_0.8fr_0.8fr] items-center border-b border-[#E2D9CF] py-[6px] last:border-0">
       {cells.map((c, i) => (
         <span
           key={i}
@@ -169,7 +162,7 @@ export const vignettes: Record<string, ReactNode[]> = {
         }
         right={
           <>
-            <KV k="Named insured" v="ABC Trucking" />
+            <KV k="Named insured" v="Maplewood Manufacturing" />
             <KV k="Submission ID" v="SUB-4471902" />
             <KV k="Eff. date" v="2026-06-25" />
           </>
@@ -186,16 +179,16 @@ export const vignettes: Record<string, ReactNode[]> = {
       </Stack>
     </VigWindow>,
     <VigWindow title="Renewal · coverage diff">
-      <Row className="mb-[10px]"><B>Renews in 23 days · 2026-07-16</B><St kind="warn">● upcoming</St></Row>
+      <Row className="mb-[10px]"><B>Renews in 16 days · 2026-07-16</B><St kind="warn">● upcoming</St></Row>
       <DiffRow header cells={['Term', 'Expiring', 'Renewal']} />
-      <DiffRow cells={['Wind/hail deduct.', '$5,000', '$25,000']} accentIdx={2} />
+      <DiffRow cells={['Wind/hail deduct.', '2% TIV', '5% TIV']} accentIdx={2} />
       <DiffRow cells={['Equipment sublimit', '$250k', '$100k']} accentIdx={2} />
       <DiffRow cells={['Liability limit', '$1M', '$1M']} />
       <Row attn className="mt-[10px]"><B>2 silent downgrades · client summary drafted</B><St kind="ok">✓</St></Row>
     </VigWindow>,
     <VigWindow title="Certificate queue">
       <Stack>
-        <Row><B>COI · 14 Wells Fargo (AI)</B><St kind="ok">✓ issued</St></Row>
+        <Row><B>COI · Wells Fargo (additional insured)</B><St kind="ok">✓ issued</St></Row>
         <Row><B>COI · Waiver of subro</B><St kind="ok">✓ issued</St></Row>
         <Row><B>COI · primary &amp; non-contrib.</B><St kind="no">✗ not on policy</St></Row>
         <Row attn><B>1 exception needs you · 2 shipped</B><St kind="warn">● review</St></Row>
@@ -207,7 +200,7 @@ export const vignettes: Record<string, ReactNode[]> = {
     <VigWindow title="Inbox triage">
       <Stack>
         <Row><B>Cedar Logistics · Property</B><St kind="ok">✓ in appetite · complete</St></Row>
-        <Row><B>Harbor Foods · GL</B><St kind="warn">● missing SOV + loss runs</St></Row>
+        <Row><B>Harbor Foods · GL</B><St kind="warn">● missing loss runs + GL supplement</St></Row>
         <Row><B>Pinewood Mfg · WC</B><St kind="no">✗ out of appetite</St></Row>
       </Stack>
     </VigWindow>,
@@ -298,7 +291,7 @@ export const vignettes: Record<string, ReactNode[]> = {
     </VigWindow>,
     <VigWindow title="Reports · on demand">
       <Stack>
-        <Row><B>Loss run · Acme account</B><St kind="ok">✓ generated</St></Row>
+        <Row><B>Loss run · Granite Peak Contractors</B><St kind="ok">✓ generated</St></Row>
         <Row><B>Large-loss report (&gt;$50k)</B><St kind="ok">✓ generated</St></Row>
         <Row><B>Reserves &amp; diaries</B><St kind="ok">✓ current</St></Row>
       </Stack>
@@ -311,8 +304,8 @@ export const vignettes: Record<string, ReactNode[]> = {
         left={<FileChip name="cedent_bdx.xlsx" meta="XLSX · 1.2 MB" />}
         right={
           <>
-            <KV k="Mapped fields" v="142 / 142" />
-            <KV k="Gaps" v="7 flagged" accent />
+            <KV k="Fields mapped" v="142 / 142" />
+            <KV k="Rows with value gaps" v="7 flagged" accent />
           </>
         }
       />
