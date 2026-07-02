@@ -72,18 +72,23 @@ export default function PersonaTestimonial({ testimonials }: { testimonials: Tes
           {/* Fixed label — never changes */}
           <div className="lg:pt-[8px]">
             <p className="font-grotesk text-[11px] font-medium uppercase tracking-[1.6px] text-dark/40">
-              Testimonial
+              What they say about Cooper
             </p>
           </div>
 
-          {/* Quote — fades in fresh on each change */}
-          <blockquote
-            key={`quote-${animKey}`}
-            className="animate-fade-in font-serif text-[26px] leading-[1.28] text-dark sm:text-[32px] lg:text-[40px] lg:leading-[1.24]"
-            style={{ animationDelay: '0.08s' }}
-          >
-            &ldquo;{clean}&rdquo;
-          </blockquote>
+          {/* Quote + attribution — fades in fresh on each change */}
+          <div key={`quote-${animKey}`} className="animate-fade-in" style={{ animationDelay: '0.08s' }}>
+            <blockquote className="font-serif text-[26px] leading-[1.28] text-dark sm:text-[32px] lg:text-[40px] lg:leading-[1.24]">
+              &ldquo;{clean}&rdquo;
+            </blockquote>
+            {(t.author || t.role) && (
+              <p className="mt-[20px] font-sans text-[13px] text-dark/45">
+                {t.author && <span className="font-medium text-dark/65">{t.author}</span>}
+                {t.author && t.role && <span className="mx-[6px] text-dark/30">·</span>}
+                {t.role && <span>{t.role}</span>}
+              </p>
+            )}
+          </div>
         </div>
 
         {/* segmented progress bar (only when more than one) */}
