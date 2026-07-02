@@ -113,7 +113,11 @@ function FeatureBlock({
   )
 
   const photo = (
-    <div className="relative h-[320px] overflow-hidden bg-[#fbfbf9] sm:h-[460px] lg:h-[540px]">
+    // The box itself is the flex container that centers the vignette. On mobile
+    // it uses min-h, so the card is vertically centered AND the box grows to fit
+    // a taller card instead of clipping it; from sm up the height is fixed to the
+    // original design values. The image/gradient are absolute so they full-bleed.
+    <div className="relative flex items-center justify-center overflow-hidden bg-[#fbfbf9] min-h-[400px] sm:h-[460px] lg:h-[540px]">
       <img
         src={image}
         alt=""
@@ -122,7 +126,7 @@ function FeatureBlock({
       />
       {vignette && <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-black/5 to-black/10" />}
       {vignette && (
-        <div className="absolute inset-0 flex items-center justify-center p-[20px]">
+        <div className="relative z-10 flex w-full justify-center p-[20px]">
           <div className="w-full max-w-[460px]">{vignette}</div>
         </div>
       )}
@@ -136,17 +140,11 @@ function FeatureBlock({
           isReversed ? 'lg:grid-cols-[minmax(0,1fr)_460px]' : 'lg:grid-cols-[460px_minmax(0,1fr)]'
         }`}
       >
-        {isReversed ? (
-          <>
-            {photo}
-            {text}
-          </>
-        ) : (
-          <>
-            {text}
-            {photo}
-          </>
-        )}
+        {/* DOM order is always text → image, so on mobile (single column) the
+            image sits below the title + description every time. On lg the
+            reversed rows swap sides via `order`, keeping the alternating layout. */}
+        <div className={isReversed ? 'lg:order-2' : ''}>{text}</div>
+        <div className={isReversed ? 'lg:order-1' : ''}>{photo}</div>
       </div>
     </RevealOnScroll>
   )

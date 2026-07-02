@@ -141,24 +141,24 @@ function SubmissionPanel() {
   return (
     <div className="w-full max-w-[500px] bg-white/[0.94] overflow-hidden border border-[#D5CCC2] animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
       {/* Header */}
-      <div className="flex items-center justify-between px-[20px] py-[13px] border-b border-[#D5CCC2] bg-[#F9F6F2]">
+      <div className="flex items-center justify-between px-[14px] md:px-[20px] py-[10px] md:py-[13px] border-b border-[#D5CCC2] bg-[#F9F6F2]">
         <span className={C.label}>Submission Package</span>
-        <span className="flex items-center gap-[5px] font-sans text-[11.5px] text-[#2B7A3A]">
+        <span className="flex items-center gap-[5px] font-sans text-[10px] md:text-[11.5px] text-[#2B7A3A]">
           <span className="w-[6px] h-[6px] rounded-full bg-[#2B7A3A]" />
           Ready to send
         </span>
       </div>
 
-      {/* Two columns */}
-      <div className="grid grid-cols-2 divide-x divide-[#D5CCC2]">
+      {/* Two columns — stacked on mobile so each list gets full width, side by side from md up */}
+      <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-[#D5CCC2]">
         {/* Left — Forwarded to Cooper */}
-        <div className="p-[18px]">
-          <p className={`${C.label} mb-[12px]`}>Forwarded to Cooper</p>
-          <div className="flex flex-col gap-[7px]">
+        <div className="p-[14px] md:p-[18px]">
+          <p className={`${C.label} mb-[10px] md:mb-[12px]`}>Forwarded to Cooper</p>
+          <div className="flex flex-col gap-[6px] md:gap-[7px]">
             {files.map((f, i) => (
               <div
                 key={f.name}
-                className="flex items-center gap-[10px] px-[12px] py-[9px] border border-[#E2D9CF] bg-white"
+                className="flex items-center gap-[8px] md:gap-[10px] px-[10px] md:px-[12px] py-[8px] md:py-[9px] border border-[#E2D9CF] bg-white min-w-0"
                 style={{
                   opacity: phase > i ? 1 : 0,
                   transform: phase > i ? 'translateY(0)' : 'translateY(8px)',
@@ -166,13 +166,13 @@ function SubmissionPanel() {
                 }}
               >
                 <FileTag type={f.type} />
-                <span className="font-sans text-[12px] text-[#2B2520]">{f.name}</span>
+                <span className="font-sans text-[12px] text-[#2B2520] truncate">{f.name}</span>
               </div>
             ))}
           </div>
           {/* Outlook source */}
           <div
-            className="mt-[10px] flex items-center gap-[8px] px-[10px] py-[7px] bg-[#EEF3FA] border border-[#C5D4E8]"
+            className="mt-[10px] flex items-center gap-[8px] px-[10px] py-[7px] bg-[#EEF3FA] border border-[#C5D4E8] min-w-0"
             style={{
               opacity: phase >= 5 ? 1 : 0,
               transform: phase >= 5 ? 'translateY(0)' : 'translateY(6px)',
@@ -180,14 +180,14 @@ function SubmissionPanel() {
             }}
           >
             <img src="/images/logo-outlook.webp" alt="Outlook" className="w-[15px] h-[15px] object-contain shrink-0" />
-            <p className="font-sans text-[10.5px] text-[#3F6CA5] leading-[1.35]">From dana@riversideins.com · ABC Trucking LLC · 4 files</p>
+            <p className="font-sans text-[10.5px] text-[#3F6CA5] leading-[1.35] truncate">From dana@riversideins.com · ABC Trucking LLC · 4 files</p>
           </div>
         </div>
 
         {/* Right — Filled by Cooper */}
-        <div className="p-[18px]">
+        <div className="p-[14px] md:p-[18px]">
           {/* Label + Cooper loading badge */}
-          <div className="flex items-center gap-[7px] mb-[12px]">
+          <div className="flex items-center gap-[7px] mb-[10px] md:mb-[12px]">
             <div
               className="w-[18px] h-[18px] rounded-[5px] flex items-center justify-center shrink-0 transition-colors duration-500"
               style={{
@@ -207,14 +207,14 @@ function SubmissionPanel() {
             {fields.map((r, i) => (
               <div
                 key={r.label}
-                className="py-[8px] border-b border-[#EBE5DE] last:border-0"
+                className="py-[8px] border-b border-[#EBE5DE] last:border-0 min-w-0"
                 style={{
                   opacity: phase >= 7 + i ? 1 : 0,
                   transition: 'opacity 0.2s ease',
                 }}
               >
-                <p className="font-sans text-[10.5px] text-[#A5A09A]">{r.label}</p>
-                <p className="font-sans text-[13px] font-semibold text-[#2B2520] min-h-[20px]">
+                <p className="font-sans text-[9.5px] md:text-[10.5px] text-[#A5A09A] truncate">{r.label}</p>
+                <p className="font-sans text-[12px] md:text-[13px] font-semibold text-[#2B2520] min-h-[20px] truncate">
                   <TypedText text={r.value} active={phase >= 7 + i} />
                 </p>
               </div>
@@ -226,7 +226,7 @@ function SubmissionPanel() {
             {checks.map((item, i) => (
               <div
                 key={item}
-                className="flex items-center gap-[7px]"
+                className="flex items-center gap-[7px] min-w-0"
                 style={{
                   opacity: phase >= 10 ? 1 : 0,
                   transform: phase >= 10 ? 'translateY(0)' : 'translateY(4px)',
@@ -242,7 +242,7 @@ function SubmissionPanel() {
                   </span>
                 )}
                 <span
-                  className="font-sans text-[12px] transition-colors duration-300"
+                  className="font-sans text-[11px] md:text-[12px] truncate transition-colors duration-300"
                   style={{ color: phase >= 11 + i ? '#2B2520' : '#C5BFB8' }}
                 >
                   {item}
@@ -255,7 +255,7 @@ function SubmissionPanel() {
 
       {/* Callout footer */}
       <div
-        className="px-[16px] py-[12px] border-t border-[#D5CCC2]"
+        className="px-[14px] md:px-[16px] py-[10px] md:py-[12px] border-t border-[#D5CCC2]"
         style={{
           opacity: phase >= 14 ? 1 : 0,
           transform: phase >= 14 ? 'translateY(0)' : 'translateY(5px)',
@@ -267,7 +267,7 @@ function SubmissionPanel() {
             <circle cx="7" cy="7" r="7" fill="#C44818" opacity="0.15" />
             <path d="M7 4v3.5M7 9.5v.5" stroke="#C44818" strokeWidth="1.4" strokeLinecap="round" />
           </svg>
-          <span className="font-sans text-[11.5px] text-[#2B2520] leading-[1.4]">
+          <span className="font-sans text-[10.5px] md:text-[11.5px] text-[#2B2520] leading-[1.4]">
             <span className="font-semibold text-[#C44818]">2 items need you</span> · MC# missing · garaging address unconfirmed
           </span>
         </div>
@@ -381,21 +381,20 @@ function ProposalPanel() {
       style={{ animationDelay: '0.1s' }}
     >
       {/* Header */}
-      <div className={`flex items-center justify-between px-[20px] py-[13px] border-b ${C.divider} bg-[#F9F6F2]`}>
+      <div className={`flex items-center justify-between px-[14px] md:px-[20px] py-[10px] md:py-[13px] border-b ${C.divider} bg-[#F9F6F2]`}>
         <span className={C.label}>Quotes to Proposal</span>
-        <span className="flex items-center gap-[5px] font-sans text-[11.5px] text-[#2B7A3A]">
+        <span className="flex items-center gap-[5px] font-sans text-[10px] md:text-[11.5px] text-[#2B7A3A]">
           <span className="w-[6px] h-[6px] rounded-full bg-[#2B7A3A]" />
           Drafted in your template
         </span>
       </div>
 
-      {/* Body — receipt floats left, arrow, proposal table */}
-      <div className="flex items-start p-[16px] gap-[0]">
+      {/* Body — receipt stacked on top on mobile, floats left with arrow from md up */}
+      <div className="flex flex-col md:flex-row items-stretch md:items-start p-[14px] md:p-[16px] gap-[16px] md:gap-0">
 
-        {/* Receipt card — overlaps the left panel edge */}
+        {/* Receipt card — overlaps the left panel edge from md up */}
         <div
-          className="w-[180px] shrink-0 relative z-10"
-          style={{ marginLeft: '-36px' }}
+          className="w-full max-w-[300px] mx-auto md:mx-0 md:w-[180px] md:shrink-0 relative z-10 md:-ml-[36px]"
         >
           <div
             className="bg-white overflow-hidden"
@@ -432,21 +431,21 @@ function ProposalPanel() {
           </div>
         </div>
 
-        {/* Arrow */}
-        <div className="flex items-center justify-center w-[40px] shrink-0 mt-[68px]">
-          <svg width="22" height="12" viewBox="0 0 22 12" fill="none">
+        {/* Arrow — points down on mobile (stacked), right from md up (side by side) */}
+        <div className="flex items-center justify-center w-full md:w-[40px] shrink-0 mt-0 md:mt-[68px]">
+          <svg width="22" height="12" viewBox="0 0 22 12" fill="none" className="rotate-90 md:rotate-0">
             <path d="M1 6h20M15 1l6 5-6 5" stroke="#C44818" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </div>
 
         {/* Proposal table */}
-        <div className="flex-1 min-w-0 bg-white border border-[#E2D9CF] p-[12px]">
+        <div className="flex-1 min-w-0 bg-white border border-[#E2D9CF] p-[10px] md:p-[12px] overflow-x-auto">
           <p className={`${C.label} mb-[10px]`}>Client Proposal · ABC Trucking</p>
           <table className="w-full mb-[10px]">
             <thead>
               <tr className="border-b border-[#E2D9CF]">
                 {['Carrier', 'Premium', 'Ded.', 'Cargo'].map((h) => (
-                  <th key={h} className={`${C.label} text-left pb-[6px] pr-[4px] last:pr-0 font-medium`}>{h}</th>
+                  <th key={h} className={`${C.label} text-left pb-[6px] pr-[4px] last:pr-0 font-medium whitespace-nowrap`}>{h}</th>
                 ))}
               </tr>
             </thead>
@@ -457,10 +456,10 @@ function ProposalPanel() {
                 { carrier: 'Nationwide', premium: '$45,600', ded: '$1,000', cargo: '$100k', highlight: false },
               ].map((r) => (
                 <tr key={r.carrier} className={`border-t border-[#E2D9CF] ${r.highlight ? 'bg-[#FDF6F0]' : ''}`}>
-                  <td className={`py-[6px] font-sans text-[11.5px] text-[#2B2520] pr-[4px] ${r.highlight ? 'font-bold' : ''}`}>{r.carrier}</td>
-                  <td className={`py-[6px] font-sans text-[11.5px] text-[#2B2520] pr-[4px] ${r.highlight ? 'font-bold' : ''}`}>{r.premium}</td>
-                  <td className={`py-[6px] font-sans text-[11.5px] text-[#2B2520] pr-[4px] ${r.highlight ? 'font-bold' : ''}`}>{r.ded}</td>
-                  <td className={`py-[6px] font-sans text-[11.5px] text-[#2B2520] ${r.highlight ? 'font-bold' : ''}`}>{r.cargo}</td>
+                  <td className={`py-[6px] font-sans text-[10px] md:text-[11.5px] text-[#2B2520] pr-[4px] whitespace-nowrap ${r.highlight ? 'font-bold' : ''}`}>{r.carrier}</td>
+                  <td className={`py-[6px] font-sans text-[10px] md:text-[11.5px] text-[#2B2520] pr-[4px] whitespace-nowrap ${r.highlight ? 'font-bold' : ''}`}>{r.premium}</td>
+                  <td className={`py-[6px] font-sans text-[10px] md:text-[11.5px] text-[#2B2520] pr-[4px] whitespace-nowrap ${r.highlight ? 'font-bold' : ''}`}>{r.ded}</td>
+                  <td className={`py-[6px] font-sans text-[10px] md:text-[11.5px] text-[#2B2520] whitespace-nowrap ${r.highlight ? 'font-bold' : ''}`}>{r.cargo}</td>
                 </tr>
               ))}
             </tbody>
@@ -592,7 +591,7 @@ export default function OnePlatform() {
             </div>
 
             {/* Right — layered background + UI overlay */}
-            <div className={`relative h-[440px] md:h-auto border-t md:border-t-0 md:border-l border-black/[0.12] ${activeIdx !== 2 ? 'overflow-hidden' : ''}`}>
+            <div className={`relative min-h-[440px] md:h-auto border-t md:border-t-0 md:border-l border-black/[0.12] overflow-hidden flex items-center justify-center ${activeIdx !== 2 ? 'md:overflow-hidden' : 'md:overflow-visible'}`}>
               {/* Background videos — one per tab, crossfaded with opacity */}
               <video autoPlay loop muted playsInline
                 className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
@@ -617,10 +616,16 @@ export default function OnePlatform() {
               <div className="absolute inset-0 mix-blend-soft-light" style={{ background: 'radial-gradient(ellipse at 90% -15%, rgba(55,27,19,0) 46%, rgba(55,27,19,0.56) 100%)' }} />
               <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 100% 110%, rgba(55,27,19,0) 46%, rgba(55,27,19,0.52) 100%)' }} />
 
-              {/* UI Elements — per-tab coded panels */}
-              <div className="absolute inset-0 z-10 flex items-center justify-center p-[20px] md:p-[40px]" key={`ui-${animKey}`}>
+              {/* UI Elements — per-tab coded panels. Submission and Proposal have
+                  their own responsive layout. Portals is still a desktop-fixed
+                  layout, shrunk uniformly until it gets the same treatment. */}
+              <div className="relative z-10 w-full py-[24px] px-[14px] md:p-[40px]" key={`ui-${animKey}`}>
                 {activeIdx === 0 && <SubmissionPanel />}
-                {activeIdx === 1 && <PortalsPanel />}
+                {activeIdx === 1 && (
+                  <div className="w-full flex justify-center scale-[0.85] sm:scale-[0.95] md:scale-100 origin-center">
+                    <PortalsPanel />
+                  </div>
+                )}
                 {activeIdx === 2 && <ProposalPanel />}
               </div>
             </div>

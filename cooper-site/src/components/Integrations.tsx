@@ -146,7 +146,7 @@ function ChipTag({ item }: { item: Chip }) {
 
 function Cluster({ group }: { group: Group }) {
   const more = (
-    <div className="flex items-center whitespace-nowrap px-[10px] font-grotesk text-[14.5px] font-medium uppercase leading-none tracking-[1.45px] text-dark">
+    <div className="flex items-center whitespace-nowrap px-[10px] font-grotesk text-[12px] xl:text-[14.5px] font-medium uppercase leading-none tracking-[1.1px] xl:tracking-[1.45px] text-dark/55 xl:text-dark">
       {group.more}
     </div>
   )
@@ -170,7 +170,7 @@ function Cluster({ group }: { group: Group }) {
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-[auto_auto] gap-x-[8px] gap-y-[10px] justify-start">
+        <div className="grid grid-cols-1 sm:grid-cols-[auto_auto] gap-x-[8px] gap-y-[10px] justify-start">
           {group.chips.map((c, i) => (
             <ChipTag key={i} item={c} />
           ))}
@@ -318,7 +318,7 @@ export default function Integrations() {
               faint grid ── */}
           <div className="relative flex flex-col items-center gap-[44px] px-[24px] py-[56px] xl:hidden">
             <CooperOrb size={120} />
-            <div className="flex flex-col items-start gap-[40px]">
+            <div className="flex flex-col items-start gap-[56px]">
               <Cluster group={GROUPS.ams} />
               <Cluster group={GROUPS.carriers} />
               <Cluster group={GROUPS.documents} />

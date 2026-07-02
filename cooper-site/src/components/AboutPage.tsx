@@ -95,7 +95,7 @@ function PrincipleItem({ title, desc }: { title: string; desc: string }) {
       <h3 className="font-serif text-[22px] leading-[27.5px] text-accent-orange mb-[16px]">
         <BlurWords text={title} active={active} startDelay={0} stepMs={45} />
       </h3>
-      <p className="font-sans text-[24px] leading-[28.8px] tracking-[-0.24px] text-dark/55">
+      <p className="font-sans text-[17px] leading-[24px] md:text-[24px] md:leading-[28.8px] tracking-[-0.24px] text-dark/55">
         <BlurWords text={desc} active={active} startDelay={titleWordCount * 45 + 60} stepMs={22} />
       </p>
     </div>

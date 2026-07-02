@@ -80,10 +80,15 @@ export default function BuiltForEveryRole() {
 
         {/* Cards container — single border wrapper */}
         <div className="border border-dark">
-          {/* Top row - 3 cards */}
+          {/* Top row - 3 cards. Dividers adapt to the collapsing grid:
+              horizontal between stacked cards on mobile, vertical between
+              columns once they exist (sm = 2 col, lg = 3 col). */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {topRoles.map((role, i) => (
-              <div key={role.tag} className={i < 2 ? 'border-r border-dark' : ''}>
+              <div
+                key={role.tag}
+                className={`border-dark ${i < 2 ? 'border-b lg:border-b-0' : ''} ${i === 0 ? 'sm:border-r' : ''} ${i === 1 ? 'lg:border-r' : ''}`}
+              >
                 <RoleCard {...role} />
               </div>
             ))}
@@ -95,7 +100,7 @@ export default function BuiltForEveryRole() {
           {/* Bottom row - 2 cards */}
           <div className="grid grid-cols-1 lg:grid-cols-2">
             {bottomRoles.map((role, i) => (
-              <div key={role.tag} className={i === 0 ? 'border-r border-dark' : ''}>
+              <div key={role.tag} className={i === 0 ? 'border-dark border-b lg:border-b-0 lg:border-r' : ''}>
                 <RoleCard {...role} />
               </div>
             ))}
