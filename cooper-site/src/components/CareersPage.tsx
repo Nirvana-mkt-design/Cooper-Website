@@ -314,10 +314,10 @@ export default function CareersPage() {
               {/* Right — body paragraphs */}
               <div className="flex flex-col gap-[28px] animate-fade-blur-in" style={{ animationDelay: '0.15s' }}>
                 <p className="font-sans text-[18px] leading-[1.7] text-dark/70">
-                  Insurance is one of the largest industries in the world, and most of it still runs by hand — documents read one at a time, forms filled in, policies checked line by line. The people who do this work are good at it. The tools they've been given aren't.
+                  Insurance is one of the largest industries in the world, and most of it still runs by hand: documents read one at a time, forms filled in, policies checked line by line. The people who do this work are good at it. The tools they've been given aren't.
                 </p>
                 <p className="font-sans text-[18px] leading-[1.7] text-dark/70">
-                  That's where Cooper comes in. It takes on the work the way a sharp colleague would — learning how each shop runs and earning its way onto the tasks that matter most. It takes real judgment, not just automation, and it's hard to get right.
+                  That's where Cooper comes in. It takes on the work the way a sharp colleague would, learning how each shop runs and earning its way onto the tasks that matter most. It takes real judgment, not just automation, and it's hard to get right.
                 </p>
                 <p className="font-sans text-[18px] leading-[1.7] text-dark/70">
                   The work here stays close to the ground. You'll see how customers actually operate, put real things in their hands quickly, and own the outcome from start to finish. A rare problem, hiding in plain sight.
