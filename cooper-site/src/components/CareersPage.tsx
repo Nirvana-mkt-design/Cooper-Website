@@ -363,7 +363,7 @@ export default function CareersPage() {
                 Our Investors
               </span>
               <h2 className="font-serif text-[26px] leading-[32px] md:text-[34px] md:leading-[40px] lg:text-[40px] lg:leading-[44.8px] text-dark max-w-[756px] animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
-                Backed by builders of category-defining companies.
+                Backed by builders of <span className="whitespace-nowrap">category-defining</span> companies.
               </h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[20px]">
