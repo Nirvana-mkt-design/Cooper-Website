@@ -55,9 +55,9 @@ const teamPhotos = [
 
 /* ── Investors ── */
 const investors = [
-  { name: 'Valor Equity Partners', image: '/images/about/investor-1.png' },
   { name: 'Lightspeed', image: '/images/about/investor-2.png' },
   { name: 'General Catalyst', image: '/images/about/investor-3.png' },
+  { name: 'Valor Equity Partners', image: '/images/about/investor-1.png' },
 ]
 
 /* ── Roles data ── */
@@ -282,10 +282,10 @@ export default function CareersPage() {
             Careers at Cooper
           </span>
           <h1 className="font-serif text-[40px] leading-[44px] md:text-[64px] md:leading-[68px] lg:text-[64px] lg:leading-[68px] tracking-[-1.44px] text-white max-w-[700px] mb-[32px] animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
-            Come help Cooper grow.
+            We're building the insurance coworker — one that does the real work.
           </h1>
           <p className="font-sans text-[18px] leading-[1.6] text-white/80 max-w-full lg:max-w-[540px] mb-[40px] animate-fade-blur-in" style={{ animationDelay: '0.2s' }}>
-            We're a small team giving Cooper the judgment of a great insurance professional. If that's your kind of problem, we'd love to meet you.
+            We're a small team teaching Cooper the judgment of a top insurance professional. If that's your kind of problem, we'd love to meet you.
           </p>
           <a
             href="#open-roles"
@@ -307,24 +307,23 @@ export default function CareersPage() {
               {/* Left — heading */}
               <div className="lg:sticky lg:top-[120px]">
                 <h2 className="font-serif text-[30px] leading-[36px] md:text-[40px] md:leading-[46px] lg:text-[48px] lg:leading-[52px] tracking-[-0.5px] text-dark animate-fade-blur-in">
-                  We're building something insurance has never had.
+                  We're building the coworker insurance never had.
                 </h2>
               </div>
 
               {/* Right — body paragraphs */}
               <div className="flex flex-col gap-[28px] animate-fade-blur-in" style={{ animationDelay: '0.15s' }}>
                 <p className="font-sans text-[18px] leading-[1.7] text-dark/70">
-                  Insurance runs on relationships, expertise, and judgment built over decades. But the paperwork — the ACORDs, the submissions, the loss runs, the policy checks — doesn't require any of that. It just steals time from the work that does.
+                  Insurance is one of the largest industries in the world, and most of it still runs by hand — documents read one at a time, forms filled in, policies checked line by line. The people who do this work are good at it. The tools they've been given aren't.
                 </p>
                 <p className="font-sans text-[18px] leading-[1.7] text-dark/70">
-                  Cooper is the coworker that handles all of it. Not a form tool, not an RPA script. A teammate that reads documents the way a great employee would, adapts to how your shop actually runs, and gets sharper the longer it works alongside your team.
+                  That's where Cooper comes in. It takes on the work the way a sharp colleague would — learning how each shop runs and earning its way onto the tasks that matter most. It takes real judgment, not just automation, and it's hard to get right.
                 </p>
                 <p className="font-sans text-[18px] leading-[1.7] text-dark/70">
-                  We benchmark against the best insurance professional in the room, not against other software. That's what makes this hard. It's also what makes it worth building.
+                  The work here stays close to the ground. You'll see how customers actually operate, put real things in their hands quickly, and own the outcome from start to finish. A rare problem, hiding in plain sight.
                 </p>
                 <p className="font-sans text-[18px] leading-[1.7] text-dark">
-                  If you want to spend the next few years on a problem that matters deeply to the people it serves, you're in the right place.<br />
-                  Everyone here gets to leave a mark.
+                  If it's the kind you've been looking for, come find your place here.
                 </p>
               </div>
             </div>
@@ -364,7 +363,7 @@ export default function CareersPage() {
                 Our Investors
               </span>
               <h2 className="font-serif text-[26px] leading-[32px] md:text-[34px] md:leading-[40px] lg:text-[40px] lg:leading-[44.8px] text-dark max-w-[756px] animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
-                Backed by investors who have built category-defining companies.
+                Backed by builders of category-defining companies.
               </h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[20px]">
