@@ -242,7 +242,7 @@ export default function PersonaPage() {
                   >
                     {persona.headlineAccent ? (
                       <>
-                        {persona.headlineLead.split('. ').map((part, i, arr) => (
+                        {(persona.headlineLead ?? '').split('. ').map((part, i, arr) => (
                           <span key={i} className="block">
                             {part}{i < arr.length - 1 ? '.' : ''}
                           </span>

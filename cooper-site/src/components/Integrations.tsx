@@ -230,7 +230,7 @@ export default function Integrations() {
           {/* exact Figma grid tile (solid dark lines → softened to the
               faint warm-grey the design shows) */}
           <div
-            className="pointer-events-none absolute inset-0 opacity-[0.09]"
+            className="pointer-events-none absolute inset-0 opacity-[0.045] xl:opacity-[0.09]"
             style={{
               backgroundImage: 'url(/images/integ/grid.png)',
               backgroundRepeat: 'repeat',
@@ -325,7 +325,8 @@ export default function Integrations() {
             </div>
           </div>
 
-          {/* ── below xl: stacked (single column of clusters) ── */}
+          {/* ── below xl: stacked (single column of clusters) over the
+              faint grid ── */}
           <div className="relative flex flex-col items-center gap-[44px] px-[24px] py-[56px] xl:hidden">
             <CooperOrb size={120} />
             <div className="flex flex-col items-start gap-[40px]">

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
 
 const roles = [
   { label: 'Retail Agencies', slug: 'retail-agencies', delay: '1.6s' },
@@ -9,8 +10,18 @@ const roles = [
 ]
 
 export default function Hero() {
+  // Mobile-only carousel for the "Built For" personas
+  const [activeRole, setActiveRole] = useState(0)
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setActiveRole((prev) => (prev + 1) % roles.length)
+    }, 2600)
+    return () => clearInterval(id)
+  }, [])
+
   return (
-    <section className="relative overflow-hidden h-auto pb-[48px] lg:pb-0 lg:h-[897px]">
+    <section className="relative overflow-hidden min-h-[100dvh] lg:min-h-0 lg:h-[897px]">
       {/* Background video */}
       <div className="absolute inset-0">
         <video
@@ -66,12 +77,13 @@ export default function Hero() {
       </div>
 
       {/* Built For bar at bottom */}
-      <div className="relative mt-[48px] lg:mt-0 lg:absolute lg:bottom-[20px] left-0 right-0 z-10 max-w-[1440px] mx-auto px-5 md:px-10 lg:px-[62px]">
-        <div className="flex flex-col items-start gap-4 lg:flex-row lg:items-center lg:gap-[52px]">
-          <span className="animate-fade-blur-in font-serif text-[26px] md:text-[34px] lg:text-[36px] leading-[1.2] text-cream-light shrink-0" style={{ animationDelay: '1.4s' }}>
+      <div className="absolute bottom-[40px] lg:bottom-[20px] left-0 right-0 z-10 max-w-[1440px] mx-auto px-5 md:px-10 lg:px-[62px]">
+        {/* Desktop / tablet-landscape: full row of all personas */}
+        <div className="hidden lg:flex items-center gap-[52px]">
+          <span className="animate-fade-blur-in font-serif text-[36px] leading-[1.2] text-cream-light shrink-0" style={{ animationDelay: '1.4s' }}>
             Built<br />For
           </span>
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-3 lg:gap-[52px] font-serif text-[18px] md:text-[20px] lg:text-[24px] leading-[1.2] text-cream-light">
+          <div className="flex flex-wrap items-center gap-[52px] font-serif text-[24px] leading-[1.2] text-cream-light">
             {roles.map((role) => (
               <Link
                 key={role.slug}
@@ -89,6 +101,39 @@ export default function Hero() {
                 {role.label}
               </Link>
             ))}
+          </div>
+        </div>
+
+        {/* Mobile: "Built For" fixed, personas as an auto-rotating carousel */}
+        <div className="flex lg:hidden items-center gap-5">
+          <span className="animate-fade-blur-in font-serif text-[26px] md:text-[34px] leading-[1.15] text-cream-light shrink-0" style={{ animationDelay: '1.4s' }}>
+            Built<br />For
+          </span>
+          <div className="flex-1 min-w-0">
+            {/* Sliding persona label — centered in the remaining space */}
+            <div className="relative h-[34px] md:h-[42px] overflow-hidden">
+              {roles.map((role, i) => (
+                <Link
+                  key={role.slug}
+                  to={`/personas/${role.slug}`}
+                  aria-hidden={i !== activeRole}
+                  className="absolute inset-0 flex items-center justify-center no-underline"
+                  style={{
+                    opacity: i === activeRole ? 1 : 0,
+                    transform: i === activeRole ? 'translateY(0)' : 'translateY(10px)',
+                    pointerEvents: i === activeRole ? 'auto' : 'none',
+                    transition: 'opacity 0.5s ease, transform 0.5s ease',
+                  }}
+                >
+                  <span
+                    className="font-serif text-[22px] md:text-[28px] leading-[1.2] text-cream-light"
+                    style={{ borderBottom: '1.2px dashed rgba(255,252,241,0.5)', paddingBottom: '2px' }}
+                  >
+                    {role.label}
+                  </span>
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       </div>
