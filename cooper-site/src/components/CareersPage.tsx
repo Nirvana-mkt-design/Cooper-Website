@@ -282,7 +282,7 @@ export default function CareersPage() {
             Careers at Cooper
           </span>
           <h1 className="font-serif text-[40px] leading-[44px] md:text-[64px] md:leading-[68px] lg:text-[64px] lg:leading-[68px] tracking-[-1.44px] text-white max-w-[700px] mb-[32px] animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
-            We're building the insurance coworker — one that does the real work.
+            We're building the insurance coworker, one that does the real work.
           </h1>
           <p className="font-sans text-[18px] leading-[1.6] text-white/80 max-w-full lg:max-w-[540px] mb-[40px] animate-fade-blur-in" style={{ animationDelay: '0.2s' }}>
             We're a small team teaching Cooper the judgment of a top insurance professional. If that's your kind of problem, we'd love to meet you.
