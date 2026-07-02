@@ -22,7 +22,7 @@ const capsBoxCls = 'font-sans text-[13px] leading-[1.7] text-dark/55 mb-[16px] b
 
 export default function TermsPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-cream-light">
       <Navbar variant="light" />
 
       {/* Hero */}

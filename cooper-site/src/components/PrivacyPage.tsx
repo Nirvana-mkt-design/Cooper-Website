@@ -25,7 +25,7 @@ const numLabelCls = 'font-grotesk text-[11px] font-medium tracking-[1.2px] upper
 
 export default function PrivacyPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-cream-light">
       <Navbar variant="light" />
 
       {/* Hero */}

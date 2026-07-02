@@ -22,7 +22,7 @@ const ulCls = 'font-sans text-[15px] leading-[1.75] text-dark/60 mb-[16px] pl-[2
 
 export default function SecurityPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-cream-light">
       <Navbar variant="light" />
 
       {/* Hero */}

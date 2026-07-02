@@ -18,6 +18,7 @@ import CareerRolePage from './components/CareerRolePage'
 import PrivacyPage from './components/PrivacyPage'
 import TermsPage from './components/TermsPage'
 import SecurityPage from './components/SecurityPage'
+import SubprocessorsPage from './components/SubprocessorsPage'
 
 // Reset scroll to the top on every route change so a new page never opens
 // at the scroll height of the previous one. Honors #hash anchors when present.
@@ -125,6 +126,7 @@ export default function App() {
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/security" element={<SecurityPage />} />
+        <Route path="/subprocessors" element={<SubprocessorsPage />} />
       </Routes>
     </>
   )
