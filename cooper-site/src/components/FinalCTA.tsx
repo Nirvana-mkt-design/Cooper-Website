@@ -64,7 +64,7 @@ export default function FinalCTA() {
         <p className="font-sans text-[17.8px] leading-[1.5] text-white/70 max-w-[480px] mb-[32px]">
           See Cooper in action with your own submissions.
           <br />
-          No generic demo, we show you how it works for your team.
+          No generic demo. We show how it works for your\u00a0team.
         </p>
 
         {/* Button */}
