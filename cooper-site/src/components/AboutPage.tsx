@@ -112,14 +112,14 @@ export default function AboutPage() {
               About Cooper
             </span>
             <h1 className="font-serif text-[40px] leading-[44px] md:text-[64px] md:leading-[68px] lg:text-[64px] lg:leading-[68px] tracking-[-1.44px] text-cream-light animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
-              We're building the coworker insurance has been missing.
+              We're building the insurance coworker — one that does the real work.
             </h1>
           </div>
 
           {/* Bottom-right — body text */}
           <div className="flex lg:justify-end mt-[80px]">
             <p className="font-sans text-[17.8px] leading-[1.5] text-cream-light max-w-full lg:max-w-[465px] animate-fade-blur-in" style={{ animationDelay: '0.2s' }}>
-              Cooper is AI built for commercial insurance. Not another platform with menus and fixed workflows, but a teammate that does the document-heavy work the way your best people do, and adapts to how your shop actually runs.
+              Cooper is AI built for insurance. Not another platform of menus and fixed workflows, but a teammate that does the document-heavy work the way your best people do, and adapts to how your shop actually runs.
             </p>
           </div>
         </div>
@@ -272,21 +272,21 @@ export default function AboutPage() {
                     Careers
                   </span>
                   <h2 className="font-serif text-[26px] md:text-[34px] lg:text-[42px] leading-[1.15] text-white mb-[36px] animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
-                    Join the team rewriting how insurance gets done.
+                    Come build the insurance coworker.
                   </h2>
                   <Link
                     to="/careers"
                     className="inline-block w-fit font-sans font-medium text-[15px] text-dark bg-white rounded-[6px] px-[28px] py-[12px] hover:bg-cream hover:scale-[1.03] transition-all duration-200 no-underline animate-fade-blur-in"
                     style={{ animationDelay: '0.25s' }}
                   >
-                    See open roles
+                    Open roles
                   </Link>
                 </div>
 
                 {/* Right — body text */}
                 <div className="flex-1 flex lg:justify-end w-full">
                   <p className="font-sans text-[15px] leading-[24.75px] text-white/80 max-w-full lg:max-w-[380px] animate-fade-blur-in" style={{ animationDelay: '0.2s' }}>
-                    We're a small, focused team on a mission to give every insurance professional the best coworker they've ever had. If hard problems and high stakes are your environment, we'd love to meet you.
+                    We're a small team teaching Cooper the judgment of a top insurance professional. If that's your kind of problem, join us. We're hiring across engineering, product, operations, and go-to-market.
                   </p>
                 </div>
               </div>
