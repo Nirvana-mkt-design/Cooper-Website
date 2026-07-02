@@ -76,8 +76,9 @@ export default function Footer() {
         <div className="flex flex-col-reverse gap-4 sm:flex-row sm:gap-0 sm:justify-between items-center">
           <span className="font-sans text-[13px] text-dark/30">© 2026 Cooper. All rights reserved.</span>
           <div className="flex gap-[20px]">
-            <a href="#" className="font-sans text-[13px] text-dark/30 hover:text-dark/50 transition-colors no-underline">Privacy</a>
-            <a href="#" className="font-sans text-[13px] text-dark/30 hover:text-dark/50 transition-colors no-underline">Terms</a>
+            <Link to="/privacy" className="font-sans text-[13px] text-dark/30 hover:text-dark/50 transition-colors no-underline">Privacy</Link>
+            <Link to="/terms" className="font-sans text-[13px] text-dark/30 hover:text-dark/50 transition-colors no-underline">Terms</Link>
+            <Link to="/security" className="font-sans text-[13px] text-dark/30 hover:text-dark/50 transition-colors no-underline">Security</Link>
           </div>
         </div>
       </div>

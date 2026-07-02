@@ -15,6 +15,9 @@ import PersonaPage from './components/PersonaPage'
 import AboutPage from './components/AboutPage'
 import CareersPage from './components/CareersPage'
 import CareerRolePage from './components/CareerRolePage'
+import PrivacyPage from './components/PrivacyPage'
+import TermsPage from './components/TermsPage'
+import SecurityPage from './components/SecurityPage'
 
 // Reset scroll to the top on every route change so a new page never opens
 // at the scroll height of the previous one. Honors #hash anchors when present.
@@ -119,6 +122,9 @@ export default function App() {
         <Route path="/careers" element={<CareersPage />} />
         <Route path="/careers/:roleId" element={<CareerRolePage />} />
         <Route path="/personas/:slug" element={<PersonaPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/terms" element={<TermsPage />} />
+        <Route path="/security" element={<SecurityPage />} />
       </Routes>
     </>
   )
