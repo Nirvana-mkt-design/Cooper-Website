@@ -1,18 +1,19 @@
 import { useState, useEffect, useRef } from 'react'
 
 const metrics = [
-  { end: 3, suffix: '+ hrs', label: 'Producer time saved', note: 'every week' },
-  { end: 700, suffix: '+', label: 'Carrier portal tasks', note: 'submitted autonomously' },
-  { end: 12, suffix: 'X', label: 'ACORD & portal submissions', note: 'completed faster' },
+  { end: 8.5, decimals: 1, suffix: ' hrs', label: 'Selling time back per producer', note: 'every week' },
+  { end: 95, decimals: 0, suffix: '%', label: 'Fewer manual re-entry errors', note: 'from day one' },
+  { end: 12, decimals: 0, suffix: '×', label: 'Faster submission-to-market', note: 'end to end' },
 ]
 
-function useCountUp(end: number, duration: number, start: boolean) {
+function useCountUp(end: number, duration: number, start: boolean, decimals = 0) {
   const [value, setValue] = useState(0)
 
   useEffect(() => {
     if (!start) return
     let startTime: number | null = null
     let raf: number
+    const factor = Math.pow(10, decimals)
 
     const tick = (timestamp: number) => {
       if (!startTime) startTime = timestamp
@@ -20,7 +21,7 @@ function useCountUp(end: number, duration: number, start: boolean) {
       const progress = Math.min(elapsed / duration, 1)
       // ease-out cubic
       const eased = 1 - Math.pow(1 - progress, 3)
-      setValue(Math.round(eased * end))
+      setValue(Math.round(eased * end * factor) / factor)
       if (progress < 1) {
         raf = requestAnimationFrame(tick)
       }
@@ -28,7 +29,7 @@ function useCountUp(end: number, duration: number, start: boolean) {
 
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
-  }, [end, duration, start])
+  }, [end, duration, start, decimals])
 
   return value
 }
@@ -48,12 +49,13 @@ function AnimatedMetric({ metric, delay }: { metric: typeof metrics[0]; delay: n
     return () => observer.disconnect()
   }, [delay])
 
-  const count = useCountUp(metric.end, 1800, visible)
+  const count = useCountUp(metric.end, 1800, visible, metric.decimals)
+  const display = visible ? count.toFixed(metric.decimals) : (0).toFixed(metric.decimals)
 
   return (
     <div ref={ref} className="flex flex-col gap-[16px] items-center text-center flex-1">
       <span className={`font-serif text-[40px] md:text-[64px] lg:text-[96px] leading-[1] text-cream-light transition-opacity duration-500 ${visible ? 'opacity-100' : 'opacity-0'}`}>
-        {visible ? `${count}${metric.suffix}` : `0${metric.suffix}`}
+        {display}{metric.suffix}
       </span>
       <span className={`font-grotesk font-medium text-[14.5px] tracking-[1.45px] uppercase text-cream-light leading-[1.5] transition-opacity duration-500 ${visible ? 'opacity-100' : 'opacity-0'}`} style={{ transitionDelay: '0.3s' }}>
         {metric.label}

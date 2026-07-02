@@ -127,7 +127,7 @@ function ChipIcon({ item }: { item: Chip }) {
 function ChipTag({ item }: { item: Chip }) {
   return (
     <div
-      className="relative inline-flex items-center gap-[10px] rounded-[30px] px-[20px] py-[10px]"
+      className="relative inline-flex w-fit items-center gap-[10px] rounded-[30px] px-[20px] py-[10px]"
       style={{
         // Figma: cream fill + gradient stroke (dark @29% → transparent, 154deg).
         border: '1px solid transparent',
@@ -170,7 +170,7 @@ function Cluster({ group }: { group: Group }) {
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-x-[8px] gap-y-[10px] sm:grid-cols-2">
+        <div className="grid grid-cols-[auto_auto] gap-x-[8px] gap-y-[10px] justify-start">
           {group.chips.map((c, i) => (
             <ChipTag key={i} item={c} />
           ))}
@@ -226,25 +226,14 @@ export default function Integrations() {
         </div>
 
         {/* ──────────── Diagram panel ──────────── */}
-        <div className="relative mt-[40px] overflow-hidden rounded-[16px] border border-dark/[0.08] bg-cream-light shadow-[0_30px_80px_-50px_rgba(30,26,21,0.45)]">
-          {/* exact Figma grid tile (solid dark lines → softened to the
-              faint warm-grey the design shows) */}
-          <div
-            className="pointer-events-none absolute inset-0 opacity-[0.045] xl:opacity-[0.09]"
-            style={{
-              backgroundImage: 'url(/images/integ/grid.png)',
-              backgroundRepeat: 'repeat',
-              backgroundSize: '68px 68px',
-              backgroundPosition: 'center',
-            }}
-          />
-          {/* radial vignette — fades the grid to cream at the edges */}
-          <div
-            className="pointer-events-none absolute inset-0"
-            style={{
-              backgroundImage:
-                'radial-gradient(circle at 50% 50%, rgba(255,252,241,0) 0%, rgba(255,252,241,1) 100%)',
-            }}
+        <div className="relative mt-[40px] overflow-hidden rounded-[16px] border border-dark/[0.08] bg-cream-light">
+          {/* grid.png as full-cover background — fainter on mobile, where
+              there are no connectors to justify a busy grid */}
+          <img
+            src="/images/integ/grid-bg.png"
+            alt=""
+            aria-hidden
+            className="pointer-events-none absolute inset-0 w-full h-full object-cover opacity-50 xl:opacity-100"
           />
 
           {/* ── xl: absolute flow canvas (scaled to fit) ── */}
