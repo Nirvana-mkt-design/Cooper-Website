@@ -16,10 +16,10 @@ export const heroImages: Record<string, string> = {
 
 export const featureImages: Record<string, string[]> = {
   'retail-agencies': [
-    '/images/persona/persona-retail-1.webp',
-    '/images/persona/persona-retail-2.webp',
-    '/images/persona/persona-retail-3.webp',
-    '/images/persona/persona-retail-1.webp',
+    '/images/persona/persona-retail-1.jpg',
+    '/images/persona/persona-retail-2.jpg',
+    '/images/persona/persona-retail-3.jpg',
+    '/images/persona/persona-retail-1.jpg',
   ],
   'wholesale-brokers': [
     '/images/persona/persona-wholesale-1.webp',

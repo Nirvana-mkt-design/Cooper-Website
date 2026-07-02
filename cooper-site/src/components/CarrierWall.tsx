@@ -44,6 +44,12 @@ const SET_B: Carrier[] = [
   { name: 'RLI', word: true },
   { name: 'Tokio Marine', word: true },
   { name: 'Employers', word: true },
+  { name: 'Acuity', word: true },
+  { name: 'Auto-Owners', word: true },
+  { name: 'Selective', word: true },
+  { name: 'Sentry', word: true },
+  { name: 'RSUI', word: true },
+  { name: 'Donegal', word: true },
 ]
 
 const SETS: Carrier[][] = [SET_A, SET_B]

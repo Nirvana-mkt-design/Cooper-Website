@@ -31,6 +31,7 @@ export default function PersonaTestimonial({ testimonials }: { testimonials: Tes
   const rafRef = useRef<number>(0)
   const startRef = useRef(0)
 
+  if (!testimonials.length) return null
   const multiple = testimonials.length > 1
   const t = testimonials[active]
   const clean = t.quote.replace(/^[“"]|[”"]$/g, '').trim()
@@ -77,7 +78,7 @@ export default function PersonaTestimonial({ testimonials }: { testimonials: Tes
           </div>
 
           {/* Quote + attribution — fades in fresh on each change */}
-          <div key={`quote-${animKey}`} className="animate-fade-in" style={{ animationDelay: '0.08s' }}>
+          <div key={`quote-${animKey}`} className="animate-fade-in min-h-[200px] lg:min-h-[260px]" style={{ animationDelay: '0.08s' }}>
             <blockquote className="font-serif text-[26px] leading-[1.28] text-dark sm:text-[32px] lg:text-[40px] lg:leading-[1.24]">
               &ldquo;{clean}&rdquo;
             </blockquote>

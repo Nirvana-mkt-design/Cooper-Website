@@ -49,7 +49,7 @@ const teamPhotos = [
   '/images/careers/IMG_3225.jpg',
   '/images/careers/IMG_3423.jpg',
   '/images/careers/IMG_3462.jpg',
-  '/images/careers/image (1).png',
+  '/images/careers/image-1.jpg',
   '/images/careers/WhatsApp Image 2026-06-22 at 15.35.21.jpeg',
 ]
 

@@ -42,11 +42,12 @@ export default function FinalCTA() {
 
         {/* Heading: line 1 static, line 2 rotating word */}
         <h2 className="font-serif text-[26px] md:text-[34px] lg:text-[38px] leading-[1.2] text-cream-light mb-[20px] text-center">
-          <span>No more manual </span>
-          {/* Rotating word — inline after the static text */}
+          {/* Line 1 — always fixed, never moves */}
+          <span className="block">No more manual</span>
+          {/* Line 2 — rotating word in a fixed-height slot */}
           <span
-            className="inline-block overflow-hidden align-bottom"
-            style={{ height: '1.25em', minWidth: '160px' }}
+            className="block overflow-hidden"
+            style={{ height: '1.25em' }}
           >
             <span
               key={key}
@@ -54,7 +55,6 @@ export default function FinalCTA() {
               style={{ animation: 'slot-roll-in 0.5s ease-out forwards' }}
             >
               {rotatingWords[currentIdx]}
-              {/* Dashed underline tracks word width */}
               <span className="absolute bottom-[3px] left-0 right-0 h-0 border-b border-dashed border-cream-light/50" />
             </span>
           </span>

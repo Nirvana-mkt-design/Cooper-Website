@@ -99,9 +99,19 @@ export const personas: Persona[] = [
     testimonialRole: 'Regional P&C Agency',
     testimonials: [
       {
+        quote: 'Every time we meet, people learn something new they can use Cooper for — they\'re just excited.',
+        author: 'Holly Otlewski',
+        role: 'Marketing Manager, Transtar Insurance Brokers',
+      },
+      {
         quote: 'It\'s probably cut down the time it takes from getting submission information to getting it out to market. Probably pretty close to in half.',
         author: 'Holly Otlewski',
-        role: '',
+        role: 'Marketing Manager, Transtar Insurance Brokers',
+      },
+      {
+        quote: 'Now anything we get in a day, we can get out to market, as long as we have everything. Which is huge.',
+        author: 'Holly Otlewski',
+        role: 'Marketing Manager, Transtar Insurance Brokers',
       },
       {
         quote: 'The coverage analysis is amazing, I absolutely love it. If we were to do that on our own, it would probably take five hours in itself.',
@@ -109,19 +119,14 @@ export const personas: Persona[] = [
         role: 'Account Executive, HBW Insurance',
       },
       {
-        quote: 'It has really opened the minds of our producers and a lot of our team who were previously very closed off to the idea of using AI.',
-        author: 'Laura Evans',
-        role: '',
-      },
-      {
-        quote: 'Now anything we get in a day, we can get out to market, as long as we have everything. Which is huge.',
-        author: 'Holly Otlewski',
-        role: '',
-      },
-      {
         quote: 'I get a lot of documents from the producer, and now I can just forward them to Cooper instead of going into the system. I really like that a lot.',
         author: 'Debbie Butcher',
         role: 'Account Executive, HBW Insurance',
+      },
+      {
+        quote: 'They haven\'t come back with any issues recently — so I think we\'re good.',
+        author: 'Heidi',
+        role: 'Breinholt Insurance Group',
       },
     ],
     ctaText: 'See how Cooper works for your agency',
@@ -159,23 +164,7 @@ export const personas: Persona[] = [
       'The first quote back usually wins. Cooper makes sure that\'s us.',
     testimonialAuthor: 'VP of Brokerage',
     testimonialRole: 'National Wholesale Broker',
-    testimonials: [
-      {
-        quote: 'The first quote back usually wins. Cooper makes sure that\'s us.',
-        author: 'VP of Brokerage',
-        role: 'National Wholesale Broker',
-      },
-      {
-        quote: 'We clear and route submissions in minutes instead of hours. Our markets notice we respond first.',
-        author: 'Brokerage Manager',
-        role: 'E&S Wholesaler',
-      },
-      {
-        quote: 'Cooper reads every attachment, so my team only touches the deals worth working.',
-        author: 'Head of Casualty',
-        role: 'Wholesale Brokerage',
-      },
-    ],
+    testimonials: [],
     ctaText: 'See how Cooper places business faster',
   },
   {
@@ -211,23 +200,7 @@ export const personas: Persona[] = [
       'We doubled our program count without adding a single underwriter.',
     testimonialAuthor: 'Chief Underwriting Officer',
     testimonialRole: 'Specialty MGA',
-    testimonials: [
-      {
-        quote: 'We doubled our program count without adding a single underwriter.',
-        author: 'Chief Underwriting Officer',
-        role: 'Specialty MGA',
-      },
-      {
-        quote: 'Every bind ties back to our guidelines now. Audits went from dread to a non-event.',
-        author: 'Director of Underwriting',
-        role: 'Program MGA',
-      },
-      {
-        quote: 'Pricing stays consistent across the whole team, even as we scale fast.',
-        author: 'VP of Programs',
-        role: 'Specialty Insurer',
-      },
-    ],
+    testimonials: [],
     ctaText: 'See how Cooper scales your underwriting',
   },
   {
@@ -263,23 +236,7 @@ export const personas: Persona[] = [
       'Our adjusters handle 40% more files and our SLA compliance has never been better.',
     testimonialAuthor: 'VP of Claims Operations',
     testimonialRole: 'National Claims TPA',
-    testimonials: [
-      {
-        quote: 'Our adjusters handle 40% more files and our SLA compliance has never been better.',
-        author: 'VP of Claims Operations',
-        role: 'National Claims TPA',
-      },
-      {
-        quote: 'Every claim starts clean and matched to the right policy. No more chasing intake.',
-        author: 'Claims Manager',
-        role: 'Regional TPA',
-      },
-      {
-        quote: 'Coverage calls come backed by the actual policy language. Our adjusters move with confidence.',
-        author: 'Director of Claims',
-        role: 'Independent TPA',
-      },
-    ],
+    testimonials: [],
     ctaText: 'See how Cooper streamlines your claims',
   },
   {
@@ -315,23 +272,7 @@ export const personas: Persona[] = [
       'Renewal season used to mean three weeks of spreadsheet hell. Now we walk in prepared.',
     testimonialAuthor: 'Treaty Underwriter',
     testimonialRole: 'Global Reinsurer',
-    testimonials: [
-      {
-        quote: 'Renewal season used to mean three weeks of spreadsheet hell. Now we walk in prepared.',
-        author: 'Treaty Underwriter',
-        role: 'Global Reinsurer',
-      },
-      {
-        quote: 'Cedent data lands clean and mapped. Our analysts start working on day one.',
-        author: 'Head of Analytics',
-        role: 'Reinsurance Group',
-      },
-      {
-        quote: 'We see accumulation building well before it becomes a problem.',
-        author: 'Portfolio Manager',
-        role: 'Global Reinsurer',
-      },
-    ],
+    testimonials: [],
     ctaText: 'See how Cooper prepares your renewals',
   },
 ]

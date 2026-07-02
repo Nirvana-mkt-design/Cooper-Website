@@ -592,25 +592,19 @@ export default function OnePlatform() {
 
             {/* Right — layered background + UI overlay */}
             <div className={`relative min-h-[440px] md:h-auto border-t md:border-t-0 md:border-l border-black/[0.12] overflow-hidden flex items-center justify-center ${activeIdx !== 2 ? 'md:overflow-hidden' : 'md:overflow-visible'}`}>
-              {/* Background videos — one per tab, crossfaded with opacity */}
-              <video autoPlay loop muted playsInline
+              {/* Background images — one per tab, crossfaded with opacity */}
+              <img src="/images/platform-bg-submissions.jpg" alt=""
                 className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
                 style={{ opacity: activeIdx === 0 ? 1 : 0 }}
-              >
-                <source src="/images/platform-bg-video-compressed.mp4" type="video/mp4" />
-              </video>
-              <video autoPlay loop muted playsInline
+              />
+              <img src="/images/platform-bg-portals.jpg" alt=""
                 className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
                 style={{ opacity: activeIdx === 1 ? 1 : 0 }}
-              >
-                <source src="/images/platform-bg-portals.mp4" type="video/mp4" />
-              </video>
-              <video autoPlay loop muted playsInline
+              />
+              <img src="/images/platform-bg-proposals.jpg" alt=""
                 className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
                 style={{ opacity: activeIdx === 2 ? 1 : 0 }}
-              >
-                <source src="/images/platform-bg-proposals.mp4" type="video/mp4" />
-              </video>
+              />
               <div className="absolute inset-0 mix-blend-hard-light" style={{ backgroundImage: 'linear-gradient(-89.4deg, rgba(186,67,9,0.36) 35%, rgba(186,67,9,0) 70%)' }} />
               <div className="absolute inset-0 mix-blend-hard-light" style={{ backgroundImage: 'linear-gradient(241.6deg, rgba(186,186,9,0) 43%, rgba(186,89,9,0.43) 57%)' }} />
               <div className="absolute inset-0 mix-blend-soft-light" style={{ background: 'radial-gradient(ellipse at 90% -15%, rgba(55,27,19,0) 46%, rgba(55,27,19,0.56) 100%)' }} />
@@ -620,7 +614,11 @@ export default function OnePlatform() {
                   their own responsive layout. Portals is still a desktop-fixed
                   layout, shrunk uniformly until it gets the same treatment. */}
               <div className="relative z-10 w-full py-[24px] px-[14px] md:p-[40px]" key={`ui-${animKey}`}>
-                {activeIdx === 0 && <SubmissionPanel />}
+                {activeIdx === 0 && (
+                  <div className="w-full flex justify-center">
+                    <SubmissionPanel />
+                  </div>
+                )}
                 {activeIdx === 1 && (
                   <div className="w-full flex justify-center scale-[0.85] sm:scale-[0.95] md:scale-100 origin-center">
                     <PortalsPanel />

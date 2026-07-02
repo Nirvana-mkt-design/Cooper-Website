@@ -368,9 +368,11 @@ export default function PersonaPage() {
         <section className="relative overflow-hidden py-[120px]">
           <div className="absolute inset-0">
             <div className="absolute inset-0 bg-[#1e1a15]" />
-            <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover opacity-50">
-              <source src="/images/persona-cta-video-compressed.mp4" type="video/mp4" />
-            </video>
+            <img
+              src="/images/persona/persona-retail-1.jpg"
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover opacity-60"
+            />
             <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(30,26,21,0.3) 0%, rgba(30,26,21,0.7) 100%)' }} />
           </div>
           <div className="relative z-10 max-w-[1440px] mx-auto px-5 md:px-10 lg:px-[60px] text-center">

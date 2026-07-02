@@ -272,7 +272,7 @@ export default function AboutPage() {
                     Careers
                   </span>
                   <h2 className="font-serif text-[26px] md:text-[34px] lg:text-[42px] leading-[1.15] text-white mb-[36px] animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
-                    Come build the insurance coworker.
+                    Join us in bringing insurance brokers to the future.
                   </h2>
                   <Link
                     to="/careers"
@@ -286,7 +286,7 @@ export default function AboutPage() {
                 {/* Right — body text */}
                 <div className="flex-1 flex lg:justify-end w-full">
                   <p className="font-sans text-[15px] leading-[24.75px] text-white/80 max-w-full lg:max-w-[380px] animate-fade-blur-in" style={{ animationDelay: '0.2s' }}>
-                    We're a small team teaching Cooper the judgment of a top insurance professional. If that's your kind of problem, join us. We're hiring across engineering, product, operations, and go-to-market.
+                    We're a small team giving Cooper the judgment of a great insurance professional. If that's your kind of problem, we're hiring across engineering, design, and go-to-market.
                   </p>
                 </div>
               </div>
