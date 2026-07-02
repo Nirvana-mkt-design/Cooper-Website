@@ -112,7 +112,7 @@ export default function AboutPage() {
               About Cooper
             </span>
             <h1 className="font-serif text-[40px] leading-[44px] md:text-[64px] md:leading-[68px] lg:text-[64px] lg:leading-[68px] tracking-[-1.44px] text-cream-light animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
-              We're building the insurance coworker, one that does the real work.
+              We're building the <span className="whitespace-nowrap">insurance coworker,</span> one that does the real work.
             </h1>
           </div>
 
