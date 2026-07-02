@@ -68,22 +68,17 @@ export default function PersonaTestimonial({ testimonials }: { testimonials: Tes
   return (
     <section className="bg-cream-light py-[120px]">
       <div className="mx-auto max-w-[1440px] px-5 md:px-10 lg:px-[60px]">
-        <div
-          key={`row-${animKey}`}
-          className="grid grid-cols-1 items-start gap-[40px] lg:grid-cols-[260px_1fr] lg:gap-[80px]"
-        >
-          {/* meta column */}
-          <div className="animate-fade-in lg:pt-[8px]">
-            <p className="font-grotesk text-[17px] font-medium leading-[1.3] text-dark">{t.author}</p>
-            {t.role && (
-              <p className="mt-[6px] max-w-[220px] font-sans text-[15px] leading-[1.45] text-dark/55">
-                {t.role}
-              </p>
-            )}
+        <div className="grid grid-cols-1 items-start gap-[40px] lg:grid-cols-[260px_1fr] lg:gap-[80px]">
+          {/* Fixed label — never changes */}
+          <div className="lg:pt-[8px]">
+            <p className="font-grotesk text-[11px] font-medium uppercase tracking-[1.6px] text-dark/40">
+              Testimonial
+            </p>
           </div>
 
-          {/* quote */}
+          {/* Quote — fades in fresh on each change */}
           <blockquote
+            key={`quote-${animKey}`}
             className="animate-fade-in font-serif text-[26px] leading-[1.28] text-dark sm:text-[32px] lg:text-[40px] lg:leading-[1.24]"
             style={{ animationDelay: '0.08s' }}
           >
@@ -93,12 +88,12 @@ export default function PersonaTestimonial({ testimonials }: { testimonials: Tes
 
         {/* segmented progress bar (only when more than one) */}
         {multiple && (
-          <div className="mt-10 md:mt-14 lg:mt-[72px] flex gap-[14px]">
-            {testimonials.map((item, i) => {
+          <div className="mt-10 md:mt-14 lg:mt-[72px] flex gap-[8px]">
+            {testimonials.map((_, i) => {
               const fill = i < active ? 100 : i === active ? progress : 0
               return (
                 <button
-                  key={`${item.author}-${i}`}
+                  key={i}
                   onClick={() => goTo(i)}
                   aria-label={`Go to testimonial ${i + 1}`}
                   className="group relative h-[18px] flex-1 cursor-pointer"

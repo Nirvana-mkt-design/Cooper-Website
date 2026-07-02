@@ -91,9 +91,7 @@ function HomePage() {
       <RevealSection>
         <BuiltForEveryRole />
       </RevealSection>
-      <RevealSection>
-        <InvestorStrip />
-      </RevealSection>
+
       {/* <RevealSection>
         <TeamSection />
       </RevealSection> */}
