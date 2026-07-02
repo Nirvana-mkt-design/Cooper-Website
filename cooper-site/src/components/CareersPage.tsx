@@ -189,23 +189,30 @@ export default function CareersPage() {
       {/* ══════════════════════════════════════════════
           PHOTO STRIP — slow continuous marquee, pauses on hover
           ══════════════════════════════════════════════ */}
-      <section className="bg-cream-light overflow-hidden pb-[80px] group/strip">
-        <div className="flex gap-[10px] w-max animate-marquee-slow group-hover/strip:[animation-play-state:paused]">
-          {[...teamPhotos, ...teamPhotos].map((src, i) => (
-            <div
-              key={i}
-              className="h-[220px] md:h-[260px] shrink-0 overflow-hidden rounded-[6px] transition-transform duration-700 ease-out group-hover/strip:scale-[0.98]"
-              style={{ aspectRatio: '4/3' }}
-            >
-              <img
-                src={src}
-                alt=""
-                className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover/strip:scale-[1.04]"
-              />
-            </div>
-          ))}
-        </div>
-      </section>
+      <RevealSection>
+        <section className="bg-cream-light overflow-hidden pb-[80px] group/strip">
+          <div className="flex gap-[10px] w-max animate-marquee-slow group-hover/strip:[animation-play-state:paused]">
+            {[...teamPhotos, ...teamPhotos].map((src, i) => (
+              <div
+                key={i}
+                className="h-[220px] md:h-[260px] shrink-0 overflow-hidden rounded-[6px] transition-all duration-500 ease-out"
+                style={{
+                  aspectRatio: '4/3',
+                  ['--rotate' as string]: i % 2 === 0 ? '1.5deg' : '-1.5deg',
+                }}
+                onMouseEnter={e => (e.currentTarget.style.transform = `rotate(var(--rotate)) scale(1.03)`)}
+                onMouseLeave={e => (e.currentTarget.style.transform = '')}
+              >
+                <img
+                  src={src}
+                  alt=""
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            ))}
+          </div>
+        </section>
+      </RevealSection>
 
       {/* ══════════════════════════════════════════════
           INVESTORS
@@ -252,11 +259,12 @@ export default function CareersPage() {
             )}
             {!loading && jobs.length === 0 && (
               <div className="flex flex-col items-center justify-center py-[80px] text-center animate-fade-blur-in">
-                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" className="mb-[24px] text-dark/20">
-                  <circle cx="24" cy="24" r="22" stroke="currentColor" strokeWidth="1.5" />
-                  <path d="M16 28s2-4 8-4 8 4 8 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                  <circle cx="18" cy="20" r="2" fill="currentColor" />
-                  <circle cx="30" cy="20" r="2" fill="currentColor" />
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" className="mb-[24px] text-dark/25">
+                  {/* Briefcase */}
+                  <rect x="6" y="18" width="36" height="24" rx="3" stroke="currentColor" strokeWidth="1.5" />
+                  <path d="M16 18v-4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                  <path d="M6 30h36" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                  <path d="M20 30v2h8v-2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 <p className="font-serif text-[22px] text-dark mb-[12px]">No open roles right now.</p>
                 <p className="font-sans text-[15px] leading-[1.6] text-dark/50 max-w-[380px]">
