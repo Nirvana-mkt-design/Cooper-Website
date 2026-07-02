@@ -20,11 +20,12 @@ export interface AshbyJob {
   applyUrl: string
   publishedAt: string
   isListed: boolean
+  descriptionHtml: string
+  descriptionPlain: string
 }
 
-export interface AshbyJobDetail extends AshbyJob {
-  descriptionHtml: string
-}
+// Alias kept for compatibility
+export type AshbyJobDetail = AshbyJob
 
 /** Map Ashby internal dept names to display labels */
 export function deptLabel(dept: string): string {
@@ -61,8 +62,10 @@ export async function fetchJobs(): Promise<AshbyJob[]> {
   return (data.jobs as AshbyJob[]).filter((j) => j.isListed)
 }
 
+/** Find a single job by ID — reuses the full job-board fetch (descriptionHtml is included). */
 export async function fetchJob(id: string): Promise<AshbyJobDetail> {
-  const res = await fetch(`${BASE}/job-posting/${id}`, { headers: HEADERS })
-  if (!res.ok) throw new Error('Failed to fetch job from Ashby')
-  return res.json()
+  const jobs = await fetchJobs()
+  const job = jobs.find((j) => j.id === id)
+  if (!job) throw new Error(`Job ${id} not found`)
+  return job
 }

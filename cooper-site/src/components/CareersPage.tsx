@@ -251,7 +251,27 @@ export default function CareersPage() {
               <p className="font-sans text-[15px] text-dark/40 animate-pulse">Loading open roles...</p>
             )}
             {!loading && jobs.length === 0 && (
-              <p className="font-sans text-[15px] text-dark/40">No open roles at the moment. Check back soon.</p>
+              <div className="flex flex-col items-center justify-center py-[80px] text-center animate-fade-blur-in">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" className="mb-[24px] text-dark/20">
+                  <circle cx="24" cy="24" r="22" stroke="currentColor" strokeWidth="1.5" />
+                  <path d="M16 28s2-4 8-4 8 4 8 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                  <circle cx="18" cy="20" r="2" fill="currentColor" />
+                  <circle cx="30" cy="20" r="2" fill="currentColor" />
+                </svg>
+                <p className="font-serif text-[22px] text-dark mb-[12px]">No open roles right now.</p>
+                <p className="font-sans text-[15px] leading-[1.6] text-dark/50 max-w-[380px]">
+                  We're a small team and hire carefully. Follow us on{' '}
+                  <a
+                    href="https://www.linkedin.com/company/cooperai"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-accent-orange hover:underline"
+                  >
+                    LinkedIn
+                  </a>{' '}
+                  to be the first to know when something opens up.
+                </p>
+              </div>
             )}
             {departments.map((dept) => (
               <div key={dept} className="mb-[48px]">
