@@ -322,3 +322,37 @@
     font-family: 'Inter', system-ui, sans-serif;
   }
 }
+
+/* ── Ashby job description HTML styles ── */
+.ashby-description p {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 28px;
+  color: rgba(30,26,21,0.70);
+  margin-bottom: 16px;
+}
+.ashby-description p:empty { display: none; }
+.ashby-description strong {
+  font-weight: 600;
+  color: rgba(30,26,21,0.90);
+}
+.ashby-description ul, .ashby-description ol {
+  margin: 0 0 20px 0;
+  padding-left: 20px;
+}
+.ashby-description li {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 26px;
+  color: rgba(30,26,21,0.70);
+  margin-bottom: 8px;
+  padding-left: 4px;
+}
+.ashby-description h1, .ashby-description h2, .ashby-description h3 {
+  font-family: 'Playfair Display', Georgia, serif;
+  color: #1e1a15;
+  margin-top: 36px;
+  margin-bottom: 14px;
+}
+.ashby-description h2 { font-size: 22px; line-height: 28px; }
+.ashby-description h3 { font-size: 18px; line-height: 24px; }
