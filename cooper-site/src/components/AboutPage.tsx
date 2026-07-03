@@ -111,8 +111,8 @@ export default function AboutPage() {
             <span className="font-grotesk font-medium text-[11px] tracking-[1.4px] uppercase text-cream-light mb-[16px] block animate-fade-blur-in">
               About Cooper
             </span>
-            <h1 className="font-serif text-[40px] leading-[44px] md:text-[64px] md:leading-[68px] lg:text-[64px] lg:leading-[68px] tracking-[-1.44px] text-cream-light animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
-              We're building the <span className="whitespace-nowrap">insurance coworker,</span> one that does the real work.
+            <h1 className="font-serif text-[44px] leading-[1.05] md:text-[64px] md:leading-[68px] lg:text-[64px] lg:leading-[68px] tracking-[-1.44px] text-cream-light animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
+              We're building the <span className="md:whitespace-nowrap">insurance coworker,</span> one that does the real work.
             </h1>
           </div>
 
@@ -185,35 +185,35 @@ export default function AboutPage() {
               Insurance brokers are drowning in busywork. Cooper gives you time back to focus on judgment.
             </h2>
 
-            {/* Table — flat grid so colored columns are truly continuous */}
-            <div className="w-full overflow-x-auto">
-              <div className="min-w-[520px] grid grid-cols-[1fr_180px_180px] lg:grid-cols-[1fr_220px_220px]">
+            {/* Table — sticky label col + horizontal scroll on mobile */}
+            <div className="w-full overflow-x-auto -mx-5 px-5 md:-mx-12 md:px-12 lg:mx-0 lg:px-0">
+              <div className="grid grid-cols-[140px_135px_135px] lg:grid-cols-[1fr_220px_220px] w-[410px] lg:w-full">
 
                 {/* Row 1 — category headings */}
-                <div />
-                <div className="px-4 pb-[10px] text-center">
-                  <p className="font-serif text-[18px] lg:text-[20px] text-dark leading-none mb-[4px]">Busywork</p>
-                  <p className="font-grotesk font-medium text-[10px] tracking-[1.2px] uppercase text-accent-orange">Cooper handles</p>
+                <div className="sticky left-0 bg-cream" />
+                <div className="px-3 pb-[10px] text-center">
+                  <p className="font-serif text-[13px] lg:text-[20px] text-dark leading-none mb-[4px]">Busywork</p>
+                  <p className="font-grotesk font-medium text-[8px] tracking-[0.6px] uppercase text-accent-orange leading-[1.4]">Cooper handles</p>
                 </div>
-                <div className="px-4 pb-[10px] text-center">
-                  <p className="font-serif text-[18px] lg:text-[20px] text-dark leading-none mb-[4px]">Judgment</p>
-                  <p className="font-grotesk font-medium text-[10px] tracking-[1.2px] uppercase text-accent-orange">Your people keep</p>
+                <div className="px-3 pb-[10px] text-center">
+                  <p className="font-serif text-[13px] lg:text-[20px] text-dark leading-none mb-[4px]">Judgment</p>
+                  <p className="font-grotesk font-medium text-[8px] tracking-[0.6px] uppercase text-accent-orange leading-[1.4]">Your people</p>
                 </div>
 
                 {/* Row 2 — sub-column headers */}
-                <div />
-                <div className="bg-accent-orange rounded-t-[12px] px-4 py-[16px] flex flex-col items-center gap-[6px]">
-                  <img src="/images/cooper-icon.svg" alt="" className="w-[20px] h-[20px]" style={{ filter: 'brightness(0) invert(1)' }} />
-                  <span className="font-grotesk font-medium text-[10px] tracking-[1.3px] uppercase text-white">Cooper</span>
+                <div className="sticky left-0 bg-cream" />
+                <div className="bg-accent-orange rounded-t-[12px] px-3 py-[14px] flex flex-col items-center gap-[6px]">
+                  <img src="/images/cooper-icon.svg" alt="" className="w-[18px] h-[18px]" style={{ filter: 'brightness(0) invert(1)' }} />
+                  <span className="font-grotesk font-medium text-[9px] tracking-[1px] uppercase text-white">Cooper</span>
                 </div>
-                <div className="px-4 py-[16px] flex items-center justify-center">
-                  <span className="font-grotesk font-medium text-[10px] tracking-[1.3px] uppercase text-dark/40">Your team</span>
+                <div className="px-3 py-[14px] flex items-center justify-center">
+                  <span className="font-grotesk font-medium text-[9px] tracking-[1px] uppercase text-dark/40 text-center leading-[1.4]">Your team</span>
                 </div>
 
                 {/* Cooper rows */}
                 {cooperRows.map((label, i) => (
                   <React.Fragment key={`c-${i}`}>
-                    <div className="py-[13px] pr-6 border-t border-dark/8 font-sans text-[14px] lg:text-[15px] leading-[1.5] text-dark/55 self-center">{label}</div>
+                    <div className="sticky left-0 bg-cream py-[13px] pr-4 border-t border-dark/8 font-sans text-[14px] lg:text-[15px] leading-[1.5] text-dark/55 self-center">{label}</div>
                     <div className="bg-accent-orange flex items-center justify-center py-[13px] border-t border-white/15">
                       <CheckCircle color="white" />
                     </div>
@@ -226,7 +226,7 @@ export default function AboutPage() {
                 {/* Human rows */}
                 {humanRows.map((label, i) => (
                   <React.Fragment key={`h-${i}`}>
-                    <div className="py-[13px] pr-6 border-t border-dark/8 font-sans text-[14px] lg:text-[15px] leading-[1.5] text-dark/55 self-center">{label}</div>
+                    <div className="sticky left-0 bg-cream py-[13px] pr-4 border-t border-dark/8 font-sans text-[14px] lg:text-[15px] leading-[1.5] text-dark/55 self-center">{label}</div>
                     <div className={`bg-accent-orange/20 flex items-center justify-center py-[13px] border-t border-accent-orange/20 ${i === humanRows.length - 1 ? 'rounded-b-[12px]' : ''}`}>
                       <span className="text-accent-orange/50 text-[16px] leading-none">—</span>
                     </div>
@@ -260,8 +260,7 @@ export default function AboutPage() {
               <img
                 src="/images/about/careers-cta-bg.png"
                 alt=""
-                className="absolute top-0 left-0 w-full max-w-none"
-                style={{ height: '140%' }}
+                className="absolute inset-0 w-full h-full object-cover"
               />
 
               {/* Content — 2 col */}
@@ -271,7 +270,7 @@ export default function AboutPage() {
                   <span className="font-grotesk font-medium text-[11px] tracking-[1.4px] uppercase text-cream-light mb-[16px] block animate-fade-blur-in">
                     Careers
                   </span>
-                  <h2 className="font-serif text-[26px] md:text-[34px] lg:text-[42px] leading-[1.15] text-white mb-[36px] animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
+                  <h2 className="font-serif text-[36px] md:text-[34px] lg:text-[42px] leading-[1.15] text-white mb-[36px] animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
                     Join us in bringing insurance brokers to the future.
                   </h2>
                   <Link

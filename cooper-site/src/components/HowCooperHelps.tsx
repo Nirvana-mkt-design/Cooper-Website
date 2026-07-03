@@ -184,8 +184,8 @@ export default function HowCooperHelps() {
           />
 
           {/* Cooper icon */}
-          <div className="absolute z-10" style={{ left: mobIconX - 36, top: mobIconY - 36 }}>
-            <img src="/images/cooper-icon.svg" alt="" className="w-[72px] h-[72px]" />
+          <div className="absolute z-10" style={{ left: mobIconX - 24, top: mobIconY - 24 }}>
+            <img src="/images/cooper-icon.svg" alt="" className="w-[48px] h-[48px]" />
           </div>
         </div>
       </div>
@@ -208,8 +208,8 @@ export default function HowCooperHelps() {
           }}
         />
 
-        <div className="absolute z-10" style={{ left: iconX - 39, top: iconY - 39 }}>
-          <img src="/images/cooper-icon.svg" alt="" className="w-[78px] h-[78px]" />
+        <div className="absolute z-10" style={{ left: iconX - 30, top: iconY - 30 }}>
+          <img src="/images/cooper-icon.svg" alt="" className="w-[60px] h-[60px]" />
         </div>
 
         <div

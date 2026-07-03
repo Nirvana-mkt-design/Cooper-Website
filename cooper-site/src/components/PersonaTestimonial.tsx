@@ -79,7 +79,7 @@ export default function PersonaTestimonial({ testimonials }: { testimonials: Tes
 
           {/* Quote + attribution — fades in fresh on each change */}
           <div key={`quote-${animKey}`} className="animate-fade-in min-h-[200px] lg:min-h-[260px]" style={{ animationDelay: '0.08s' }}>
-            <blockquote className="font-serif text-[26px] leading-[1.28] text-dark sm:text-[32px] lg:text-[40px] lg:leading-[1.24]">
+            <blockquote className="font-serif text-[36px] leading-[1.2] text-dark sm:text-[38px] lg:text-[40px] lg:leading-[1.24]">
               &ldquo;{clean}&rdquo;
             </blockquote>
             {(t.author || t.role) && (

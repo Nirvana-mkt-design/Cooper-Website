@@ -1,86 +1,54 @@
 /* ──────────────────────────────────────────────────────────────
    Integrations — "Works with the tools you already use".
-   Four category clusters (AMS, Carriers, Documents, Communication)
-   arranged around a central orange Cooper orb, linked by dashed
-   orthogonal connectors over a faint grid. Followed by the
-   customer carrier wall.
-   Layout reproduced pixel-for-pixel from Figma "Desktop - 9".
+   Desktop: 1280×800 canvas scaled to fit. 4 standalone boxes
+   separated by SVG rails (grey gradient + orange trim-path anim).
+   Labels live inside each box. Carriers = static + scroll + more.
+   Mobile: stacked single column (unchanged).
 ─────────────────────────────────────────────────────────────── */
 
 import { useEffect, useRef, useState } from 'react'
 import CarrierWall from './CarrierWall'
 
-/* Scale the fixed-size diagram canvas down to fit its container
-   (never up), so the layout stays proportional at every width. */
-function useFitScale(natural: number) {
-  const ref = useRef<HTMLDivElement>(null)
-  const [scale, setScale] = useState(1)
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const ro = new ResizeObserver(() => {
-      setScale(Math.min(1, el.clientWidth / natural))
-    })
-    ro.observe(el)
-    return () => ro.disconnect()
-  }, [natural])
-  return { ref, scale }
-}
-
-/* ── Orange Cooper orb (exact Figma SVG: flat #CE4411 body, drop +
-   inner shadow, glow). The SVG is 244² with the 144.6² body inset;
-   `size` is the visible body edge. */
-const ORB_SVG_RATIO = 244 / 144.623
-function CooperOrb({ size = 144 }: { size?: number }) {
-  const total = size * ORB_SVG_RATIO
-  return (
-    <img src="/images/integ/orb.svg" alt="" aria-hidden className="pointer-events-none" style={{ width: total, height: total }} />
-  )
-}
-
-/* ── Chip icons — brand marks for the chips ──
-   Carriers use small brand marks (not wordmarks). Chubb is cropped
-   from the wordmark strip to isolate the mark, matching Figma. */
+/* ── Chip types & data ── */
 type Chip = { src: string; label: string; crop?: boolean; h?: number; maxW?: number }
 
 const logo = {
-  epic: '/images/logo-epic.webp',
-  hawksoft: '/images/logo-hawksoft.webp',
-  ams360: '/images/logo-ams360.webp',
-  ezlynx: '/images/chips/ezlynx.png',
-  sharepoint: '/images/logo-sharepoint.webp',
-  onedrive: '/images/logo-onedrive.png',
-  dropbox: '/images/logo-dropbox.webp',
-  hubspot: '/images/chips/hubspot.png',
-  salesforce: '/images/chips/salesforce.png',
-  travelers: '/images/chips/travelers.png',
+  epic:          '/images/logo-epic.webp',
+  hawksoft:      '/images/logo-hawksoft.webp',
+  ams360:        '/images/logo-ams360.webp',
+  ezlynx:        '/images/chips/ezlynx.png',
+  sharepoint:    '/images/logo-sharepoint.webp',
+  onedrive:      '/images/logo-onedrive.png',
+  dropbox:       '/images/logo-dropbox.webp',
+  hubspot:       '/images/chips/hubspot.png',
+  salesforce:    '/images/chips/salesforce.png',
+  travelers:     '/images/chips/travelers.png',
   libertymutual: '/images/chips/liberty-mutual.png',
-  chubb: '/images/chips/chubb.png',
-  outlook: '/images/logo-outlook.webp',
-  teams: '/images/logo-teams.png',
+  chubb:         '/images/chips/chubb.png',
+  outlook:       '/images/logo-outlook.webp',
+  teams:         '/images/logo-teams.png',
 }
 
-type Group = { label: string; chips: Chip[]; more: string; carriers?: boolean }
+type Group = { label: string; chips: Chip[]; more: string }
 
 const GROUPS: Record<'ams' | 'carriers' | 'documents' | 'communication', Group> = {
   ams: {
     label: 'AMS',
     more: 'And more...',
     chips: [
-      { src: logo.epic, label: 'Applied Epic' },
-      { src: logo.hawksoft, label: 'HawkSoft' },
-      { src: logo.ams360, label: 'AMS360' },
-      { src: logo.ezlynx, label: 'EzLynx', h: 21, maxW: 42 },
+      { src: logo.epic,      label: 'Applied Epic' },
+      { src: logo.hawksoft,  label: 'HawkSoft' },
+      { src: logo.ams360,    label: 'AMS360' },
+      { src: logo.ezlynx,    label: 'EzLynx', h: 21, maxW: 42 },
     ],
   },
   carriers: {
     label: 'Carriers',
     more: '+ hundreds more',
-    carriers: true,
     chips: [
-      { src: logo.travelers, label: 'Travelers', h: 22 },
+      { src: logo.travelers,     label: 'Travelers',     h: 22 },
       { src: logo.libertymutual, label: 'Liberty Mutual', h: 28 },
-      { src: logo.chubb, label: 'Chubb', crop: true },
+      { src: logo.chubb,         label: 'Chubb', crop: true },
     ],
   },
   documents: {
@@ -88,9 +56,9 @@ const GROUPS: Record<'ams' | 'carriers' | 'documents' | 'communication', Group> 
     more: 'And more...',
     chips: [
       { src: logo.sharepoint, label: 'SharePoint' },
-      { src: logo.onedrive, label: 'OneDrive', h: 22 },
-      { src: logo.dropbox, label: 'Dropbox' },
-      { src: logo.hubspot, label: 'HubSpot', h: 22 },
+      { src: logo.onedrive,   label: 'OneDrive', h: 22 },
+      { src: logo.dropbox,    label: 'Dropbox' },
+      { src: logo.hubspot,    label: 'HubSpot', h: 22 },
       { src: logo.salesforce, label: 'Salesforce', h: 20, maxW: 42 },
     ],
   },
@@ -99,15 +67,21 @@ const GROUPS: Record<'ams' | 'carriers' | 'documents' | 'communication', Group> 
     more: 'And more...',
     chips: [
       { src: logo.outlook, label: 'Outlook' },
-      { src: logo.teams, label: 'Teams' },
+      { src: logo.teams,   label: 'Teams' },
     ],
   },
 }
 
-/* ── Reusable pieces ── */
+/* Desktop carrier scroll — names only (no logos) */
+const SCROLL_NAMES = [
+  'Chubb', 'Zurich', 'AIG', 'CNA', 'Markel',
+  'Progressive', 'The Hanover', 'Hiscox', 'Nationwide',
+  'The Hartford', 'Berkley', 'Amtrust',
+]
+
+/* ── Shared chip components ── */
 function ChipIcon({ item }: { item: Chip }) {
   if (item.crop) {
-    // Isolate the leftmost mark from a wide wordmark strip (Figma crop).
     return (
       <span className="relative block h-[23px] w-[33px] shrink-0 overflow-hidden">
         <img src={item.src} alt="" className="absolute left-0 top-0 h-full w-[693%] max-w-none" />
@@ -129,7 +103,6 @@ function ChipTag({ item }: { item: Chip }) {
     <div
       className="relative inline-flex w-fit items-center gap-[10px] rounded-[30px] px-[20px] py-[10px]"
       style={{
-        // Figma: cream fill + gradient stroke (dark @29% → transparent, 154deg).
         border: '1px solid transparent',
         background:
           'linear-gradient(#fffcf1, #fffcf1) padding-box, linear-gradient(154deg, rgba(30,26,21,0.29) 6%, rgba(30,26,21,0) 100%) border-box',
@@ -144,71 +117,136 @@ function ChipTag({ item }: { item: Chip }) {
   )
 }
 
-function Cluster({ group }: { group: Group }) {
-  const more = (
-    <div className="flex items-center whitespace-nowrap px-[10px] font-grotesk text-[12px] xl:text-[14.5px] font-medium uppercase leading-none tracking-[1.1px] xl:tracking-[1.45px] text-dark/55 xl:text-dark">
-      {group.more}
+/* Text-only pill for desktop carrier scroll */
+function TextChip({ label }: { label: string }) {
+  return (
+    <div
+      className="relative inline-flex w-fit items-center rounded-[30px] px-[20px] py-[10px]"
+      style={{
+        border: '1px solid transparent',
+        background:
+          'linear-gradient(#fffcf1, #fffcf1) padding-box, linear-gradient(154deg, rgba(30,26,21,0.29) 6%, rgba(30,26,21,0) 100%) border-box',
+        boxShadow: '0 7px 60px -20px rgba(30,26,21,0.33), inset 7px 6px 23px 0 rgba(30,26,21,0.10)',
+      }}
+    >
+      <span className="whitespace-nowrap font-grotesk text-[14.5px] font-medium uppercase leading-none tracking-[1.45px] text-dark">
+        {label}
+      </span>
     </div>
   )
+}
+
+/* ── Desktop: label inside box ── */
+function BoxLabel({ children }: { children: string }) {
+  return (
+    <div className="mb-[22px]">
+      <div
+        className="font-grotesk font-medium uppercase leading-none"
+        style={{ fontSize: 26, letterSpacing: '3.5px', color: 'rgba(30,26,21,0.16)' }}
+      >
+        {children}
+      </div>
+      <div className="flex gap-[5px] mt-[10px]">
+        {Array.from({ length: 14 }).map((_, i) => (
+          <div key={i} style={{ width: 3, height: 3, borderRadius: '50%', backgroundColor: 'rgba(30,26,21,0.13)' }} />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/* ── Desktop: carrier scroll (names only) ── */
+function DesktopCarrierScroll() {
+  const doubled = [...SCROLL_NAMES, ...SCROLL_NAMES]
+  return (
+    <div
+      className="overflow-hidden"
+      style={{
+        maskImage: 'linear-gradient(to right, transparent, black 12%, black 88%, transparent)',
+        WebkitMaskImage: 'linear-gradient(to right, transparent, black 12%, black 88%, transparent)',
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          gap: 8,
+          width: 'max-content',
+          animation: 'integ-scroll 26s linear infinite',
+        }}
+      >
+        {doubled.map((name, i) => (
+          <TextChip key={i} label={name} />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/* ── ChipGrid for both mobile and desktop box interiors ── */
+function ChipGrid({ group, twoCol = true }: { group: Group; twoCol?: boolean }) {
+  return (
+    <div className={`grid gap-x-[10px] gap-y-[10px] justify-start ${twoCol ? 'grid-cols-[auto_auto]' : 'grid-cols-1'}`}>
+      {group.chips.map((c, i) => (
+        <ChipTag key={i} item={c} />
+      ))}
+      <div className="flex items-center whitespace-nowrap px-[10px] font-grotesk text-[13px] font-medium uppercase leading-none tracking-[1.1px] text-dark/55">
+        {group.more}
+      </div>
+    </div>
+  )
+}
+
+/* ── Mobile cluster ── */
+function Cluster({ group }: { group: Group }) {
   return (
     <div className="flex flex-col gap-[26px]">
       <span className="font-grotesk text-[14.5px] font-medium uppercase leading-none tracking-[1.45px] text-dark underline decoration-dotted decoration-dark/40 underline-offset-[5px]">
         {group.label}
       </span>
-      {group.carriers ? (
-        // Explicit flex rows (Figma): row 1 = two chips, row 2 = one chip +
-        // "+ hundreds more". Chips hug their content so wide labels never
-        // shrink/overflow their pill.
-        <div className="flex flex-col gap-[13px]">
-          <div className="flex flex-col gap-[10px] sm:flex-row sm:gap-[14px]">
-            <ChipTag item={group.chips[0]} />
-            <ChipTag item={group.chips[1]} />
-          </div>
-          <div className="flex flex-col gap-[10px] sm:flex-row sm:items-center sm:gap-[17px]">
-            <ChipTag item={group.chips[2]} />
-            {more}
-          </div>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-[auto_auto] gap-x-[8px] gap-y-[10px] justify-start">
-          {group.chips.map((c, i) => (
-            <ChipTag key={i} item={c} />
-          ))}
-          {more}
-        </div>
-      )}
+      <ChipGrid group={group} />
     </div>
   )
 }
 
-/* ── Diagram geometry (xl canvas = Figma panel coords, 1297×859) ── */
-const VW = 1297
-const VH = 859
+/* ── Mobile Cooper orb ── */
+function CooperOrb({ size = 144 }: { size?: number }) {
+  const RATIO = 244 / 144.623
+  const total = size * RATIO
+  return (
+    <img src="/images/integ/orb.svg" alt="" aria-hidden className="pointer-events-none" style={{ width: total, height: total }} />
+  )
+}
 
-// Connector centre-lines derived from the exact Figma connector geometry.
-// Each path runs from its source node (outer dot) into the Cooper orb, so
-// the travelling pulse flows "into Cooper". Dashed style matches Figma
-// (#151515 @60%, 2px, dash 8/8, rounded elbows).
-const CONN_PATHS: { d: string; dur: number; begin: number }[] = [
-  { d: 'M 457.22 80.67 H 594.92 Q 623.84 80.67 623.84 109.99 V 321.32', dur: 2.8, begin: 0 }, // AMS → orb top
-  { d: 'M 750.76 261.1 H 665 Q 638.27 261.1 638.27 288 V 320.86', dur: 2.4, begin: -0.6 }, // Carriers → orb top-right
-  { d: 'M 458.65 551.75 H 589.45 Q 614.68 551.75 614.68 523.16 V 470.68', dur: 2.6, begin: -1.2 }, // Documents → orb bottom-left
-  { d: 'M 766.43 675.85 H 656 Q 628.88 675.85 628.88 646 V 470.68', dur: 3.0, begin: -0.3 }, // Communication → orb bottom
-]
-// Source anchor dots (path starts), grey #73716D, ⌀11.36.
-const CONN_STARTS: [number, number][] = [
-  [457.22, 80.67],
-  [750.76, 261.1],
-  [458.65, 551.75],
-  [766.43, 675.85],
-]
+/* ── Canvas scale hook ── */
+function useCanvasScale(targetW: number) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [scale, setScale] = useState(1)
+  useEffect(() => {
+    if (!ref.current) return
+    const ro = new ResizeObserver(([e]) => {
+      setScale(e.contentRect.width / targetW)
+    })
+    ro.observe(ref.current)
+    return () => ro.disconnect()
+  }, [targetW])
+  return { ref, scale }
+}
+
+/* ── Canvas constants ── */
+const CW = 1280   // canvas width
+const CH = 800    // canvas height
+const RX = 620    // vertical rail x  (center of horizontal gap)
+const RY = 400    // horizontal rail y (center of vertical gap)
+const BP = 36     // box inner padding
 
 export default function Integrations() {
-  const { ref: fitRef, scale } = useFitScale(VW)
+  const { ref: canvasRef, scale } = useCanvasScale(CW)
+
   return (
     <section id="integrations" className="bg-cream-light overflow-hidden px-5 sm:px-6 lg:px-[40px]">
       <div className="mx-auto max-w-[1440px] px-0 sm:px-4 lg:px-[40px] py-[64px] lg:py-[96px]">
-        {/* ── Header (two columns) ── */}
+
+        {/* ── Header ── */}
         <div className="flex flex-col gap-[24px] lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-[620px]">
             <p className="mb-[18px] font-grotesk text-[13px] font-medium uppercase tracking-[1.6px] text-accent-orange">
@@ -225,98 +263,140 @@ export default function Integrations() {
           </div>
         </div>
 
-        {/* ──────────── Diagram panel ──────────── */}
-        <div className="relative mt-[40px] overflow-hidden rounded-[16px] border border-dark/[0.08] bg-cream-light">
-          {/* grid.png as full-cover background — fainter on mobile, where
-              there are no connectors to justify a busy grid */}
-          <img
-            src="/images/integ/grid-bg.png"
-            alt=""
-            aria-hidden
-            className="pointer-events-none absolute inset-0 w-full h-full object-cover opacity-50 xl:opacity-100"
-          />
+        {/* ──────────────────────────────────────────
+            DESKTOP — scaled canvas (xl+)
+        ────────────────────────────────────────── */}
+        <div
+          ref={canvasRef}
+          className="hidden xl:block relative mt-[40px] overflow-hidden rounded-[16px] border border-dark/[0.08] bg-cream-light"
+        >
+          {/* Aspect-ratio spacer */}
+          <div style={{ paddingBottom: `${(CH / CW) * 100}%` }} />
 
-          {/* ── xl: absolute flow canvas (scaled to fit) ── */}
-          <div ref={fitRef} className="relative hidden w-full xl:block" style={{ height: VH * scale }}>
-            <div
-              className="absolute left-1/2 top-0"
-              style={{ width: VW, height: VH, marginLeft: -VW / 2, transformOrigin: 'top center', transform: `scale(${scale})` }}
-            >
-            {/* dashed connectors + travelling pulses (flow into Cooper) */}
-            <svg
-              className="absolute inset-0 pointer-events-none"
-              width={VW}
-              height={VH}
-              viewBox={`0 0 ${VW} ${VH}`}
-              fill="none"
-            >
-              {CONN_PATHS.map((c, i) => (
-                <path
-                  key={`p-${i}`}
-                  d={c.d}
-                  stroke="#151515"
-                  strokeOpacity="0.6"
-                  strokeWidth="2"
-                  strokeDasharray="8 8"
-                  strokeLinecap="round"
-                />
-              ))}
-              {CONN_STARTS.map(([cx, cy], i) => (
-                <circle key={`s-${i}`} cx={cx} cy={cy} r="5.68" fill="#73716D" />
-              ))}
-              {CONN_PATHS.map((c, i) => (
-                <circle key={`m-${i}`} r="5.68" fill="#73716D">
-                  <animateMotion
-                    dur={`${c.dur}s`}
-                    begin={`${c.begin}s`}
-                    repeatCount="indefinite"
-                    path={c.d}
-                    rotate="auto"
-                  />
-                </circle>
-              ))}
+          {/* Scaled canvas */}
+          <div
+            className="absolute top-0 left-0"
+            style={{ width: CW, height: CH, transformOrigin: 'top left', transform: `scale(${scale})` }}
+          >
+            {/* Grid background texture */}
+            <img
+              src="/images/integ/grid-bg.png"
+              alt="" aria-hidden
+              className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+            />
+
+            {/* ── SVG rails ── */}
+            <svg className="absolute inset-0 pointer-events-none" width={CW} height={CH}>
+              <defs>
+                <linearGradient id="integ-hg" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%"   stopColor="rgba(30,26,21,0)" />
+                  <stop offset="10%"  stopColor="rgba(30,26,21,0.22)" />
+                  <stop offset="90%"  stopColor="rgba(30,26,21,0.22)" />
+                  <stop offset="100%" stopColor="rgba(30,26,21,0)" />
+                </linearGradient>
+                <linearGradient id="integ-vg" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%"   stopColor="rgba(30,26,21,0)" />
+                  <stop offset="10%"  stopColor="rgba(30,26,21,0.22)" />
+                  <stop offset="90%"  stopColor="rgba(30,26,21,0.22)" />
+                  <stop offset="100%" stopColor="rgba(30,26,21,0)" />
+                </linearGradient>
+              </defs>
+
+              {/* Grey horizontal rail */}
+              <line x1={0} y1={RY} x2={CW} y2={RY} stroke="url(#integ-hg)" strokeWidth={1.5} />
+              {/* Grey vertical rail */}
+              <line x1={RX} y1={0} x2={RX} y2={CH} stroke="url(#integ-vg)" strokeWidth={1.5} />
+
+              {/* Orange trim-path — horizontal */}
+              <line
+                x1={0} y1={RY} x2={CW} y2={RY}
+                stroke="rgba(186,67,9,0.85)" strokeWidth={2}
+                strokeDasharray={`70 ${CW}`}
+                style={{ animation: 'trim-h-rail 5s linear infinite' }}
+              />
+              {/* Orange trim-path — vertical */}
+              <line
+                x1={RX} y1={0} x2={RX} y2={CH}
+                stroke="rgba(186,67,9,0.85)" strokeWidth={2}
+                strokeDasharray={`70 ${CH}`}
+                style={{ animation: 'trim-v-rail 4s linear infinite' }}
+              />
             </svg>
 
-            {/* cream fade masks (Figma) — dissolve the dashed lines + pulses
-                into the orb where they meet it, top and bottom */}
+            {/* ── AMS — top-left ── */}
             <div
-              className="absolute pointer-events-none"
-              style={{ left: 592.97, top: 211.76, width: 74.41, height: 115.25, background: 'linear-gradient(0deg, #FFFCF1 0%, rgba(255,252,241,0) 100%)' }}
-            />
+              className="absolute bg-cream-light overflow-hidden"
+              style={{ left: 40, top: 40, width: 540, height: 320, borderRadius: 16, border: '1px solid rgba(30,26,21,0.10)' }}
+            >
+              <div style={{ padding: BP }}>
+                <BoxLabel>AMS</BoxLabel>
+                <ChipGrid group={GROUPS.ams} />
+              </div>
+            </div>
+
+            {/* ── Carriers — top-right ── */}
             <div
-              className="absolute pointer-events-none"
-              style={{ left: 575, top: 463.76, width: 74.41, height: 115.25, background: 'linear-gradient(180deg, #FFFCF1 0%, rgba(255,252,241,0) 100%)' }}
-            />
+              className="absolute bg-cream-light overflow-hidden"
+              style={{ left: 700, top: 40, width: 540, height: 320, borderRadius: 16, border: '1px solid rgba(30,26,21,0.10)' }}
+            >
+              <div style={{ padding: BP, paddingBottom: 24 }}>
+                <BoxLabel>Carriers</BoxLabel>
+                {/* Static featured carriers */}
+                <div className="flex gap-[10px] mb-[12px]">
+                  <ChipTag item={GROUPS.carriers.chips[0]} />
+                  <ChipTag item={GROUPS.carriers.chips[1]} />
+                </div>
+                {/* Infinity scroll — names only */}
+                <DesktopCarrierScroll />
+                {/* More label */}
+                <div className="mt-[12px] font-grotesk text-[13px] font-medium uppercase tracking-[1.1px] text-dark/50">
+                  + hundreds more
+                </div>
+              </div>
+            </div>
 
-            {/* centre orb (SVG body 144.6² centred at 625,396) */}
-            <img
-              src="/images/integ/orb.svg"
-              alt=""
-              aria-hidden
-              className="absolute pointer-events-none"
-              style={{ left: 502.98, top: 281.02, width: 244, height: 244 }}
-            />
+            {/* ── Documents — bottom-left ── */}
+            <div
+              className="absolute bg-cream-light overflow-hidden"
+              style={{ left: 40, top: 440, width: 540, height: 320, borderRadius: 16, border: '1px solid rgba(30,26,21,0.10)' }}
+            >
+              <div style={{ padding: BP }}>
+                <BoxLabel>Documents</BoxLabel>
+                <ChipGrid group={GROUPS.documents} />
+              </div>
+            </div>
 
-            {/* four clusters at Figma coordinates (AMS nudged left for
-                clearance from the vertical connector) */}
-            <div className="absolute" style={{ left: 190, top: 75 }}>
-              <Cluster group={GROUPS.ams} />
+            {/* ── Communication — bottom-right ── */}
+            <div
+              className="absolute bg-cream-light overflow-hidden"
+              style={{ left: 700, top: 440, width: 540, height: 320, borderRadius: 16, border: '1px solid rgba(30,26,21,0.10)' }}
+            >
+              <div style={{ padding: BP }}>
+                <BoxLabel>Communication</BoxLabel>
+                <ChipGrid group={GROUPS.communication} twoCol={false} />
+              </div>
             </div>
-            <div className="absolute" style={{ left: 804, top: 158 }}>
-              <Cluster group={GROUPS.carriers} />
-            </div>
-            <div className="absolute" style={{ left: 112, top: 444 }}>
-              <Cluster group={GROUPS.documents} />
-            </div>
-            <div className="absolute" style={{ left: 820, top: 584 }}>
-              <Cluster group={GROUPS.communication} />
-            </div>
+
+            {/* ── Cooper orb at rail intersection ── */}
+            <div
+              className="absolute z-10 pointer-events-none"
+              style={{ left: RX - 122, top: RY - 122, width: 244, height: 244 }}
+            >
+              <img src="/images/integ/orb.svg" alt="" aria-hidden style={{ width: 244, height: 244 }} />
             </div>
           </div>
+        </div>
 
-          {/* ── below xl: stacked (single column of clusters) over the
-              faint grid ── */}
-          <div className="relative flex flex-col items-center gap-[44px] px-[24px] py-[56px] xl:hidden">
+        {/* ──────────────────────────────────────────
+            MOBILE — stacked clusters (below xl)
+        ────────────────────────────────────────── */}
+        <div className="relative mt-[40px] overflow-hidden rounded-[16px] border border-dark/[0.08] bg-cream-light xl:hidden">
+          <img
+            src="/images/integ/grid-bg.png"
+            alt="" aria-hidden
+            className="pointer-events-none absolute inset-0 w-full h-full object-cover opacity-50"
+          />
+          <div className="relative flex flex-col items-center gap-[44px] px-[24px] py-[56px]">
             <CooperOrb size={120} />
             <div className="flex flex-col items-start gap-[56px]">
               <Cluster group={GROUPS.ams} />
@@ -327,7 +407,7 @@ export default function Integrations() {
           </div>
         </div>
 
-        {/* ──────────── Customer logo wall ──────────── */}
+        {/* ── Customer carrier wall ── */}
         <CarrierWall />
       </div>
     </section>

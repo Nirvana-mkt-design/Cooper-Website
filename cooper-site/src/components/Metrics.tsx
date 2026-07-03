@@ -53,7 +53,7 @@ function AnimatedMetric({ metric, delay }: { metric: typeof metrics[0]; delay: n
   const display = visible ? count.toFixed(metric.decimals) : (0).toFixed(metric.decimals)
 
   return (
-    <div ref={ref} className="flex flex-col gap-[16px] items-center text-center flex-1">
+    <div ref={ref} className="flex flex-col gap-[16px] items-start text-left md:items-center md:text-center flex-1">
       <span className={`font-serif text-[72px] md:text-[64px] lg:text-[96px] leading-[1] text-cream-light transition-opacity duration-500 ${visible ? 'opacity-100' : 'opacity-0'}`}>
         {display}{metric.suffix}
       </span>

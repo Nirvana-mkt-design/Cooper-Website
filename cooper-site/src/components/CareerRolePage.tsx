@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { useParams, Link, Navigate } from 'react-router-dom'
 import Navbar from './Navbar'
 import Footer from './Footer'
@@ -47,6 +47,16 @@ export default function CareerRolePage() {
   const [job, setJob] = useState<AshbyJobDetail | null>(null)
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+
+  const handleScroll = useCallback(() => {
+    setScrolled(window.scrollY > 120)
+  }, [])
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [handleScroll])
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -91,7 +101,7 @@ export default function CareerRolePage() {
             <h1 className="font-serif text-[32px] leading-[36px] md:text-[44px] md:leading-[48px] lg:text-[52px] lg:leading-[56px] tracking-[-1px] text-dark mb-[20px] animate-fade-blur-in" style={{ animationDelay: '0.05s' }}>
               {job.title}
             </h1>
-            <div className="flex items-center gap-[12px] flex-wrap animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
+            <div className="flex items-center gap-[12px] flex-wrap animate-fade-in" style={{ animationDelay: '0.1s' }}>
               <span className={`font-grotesk text-[11px] font-medium tracking-[0.5px] uppercase px-[10px] py-[4px] rounded-full ${deptColor(job.department)}`}>
                 {deptLabel(job.department)}
               </span>
@@ -110,6 +120,16 @@ export default function CareerRolePage() {
                 {employmentLabel(job.employmentType)}
               </span>
             </div>
+            {/* Mobile — inline Apply button at top */}
+            <a
+              href={job.applyUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="lg:hidden mt-[24px] block w-full text-center font-sans font-medium text-[15px] text-white rounded-[12px] py-[14px] hover:opacity-90 transition-opacity no-underline animate-fade-in"
+              style={{ backgroundColor: '#BA4309', animationDelay: '0.15s' }}
+            >
+              Apply for this role
+            </a>
           </div>
         )}
       </div>
@@ -130,16 +150,16 @@ export default function CareerRolePage() {
               </div>
             ) : job && (
               <div
-                className="ashby-description animate-fade-blur-in"
+                className="ashby-description animate-fade-in"
                 style={{ animationDelay: '0.15s' }}
                 dangerouslySetInnerHTML={{ __html: job.descriptionHtml }}
               />
             )}
           </RevealSection>
 
-          {/* ── Sidebar ── */}
+          {/* ── Sidebar — desktop only ── */}
           {job && (
-            <div className="static lg:sticky lg:top-[100px] w-full animate-fade-blur-in" style={{ animationDelay: '0.2s' }}>
+            <div className="hidden lg:block lg:sticky lg:top-[100px] w-full animate-fade-in" style={{ animationDelay: '0.2s' }}>
               <div className="rounded-[20px] p-5 lg:p-[32px]" style={{ backgroundColor: '#1D1A17' }}>
                 {/* Apply button */}
                 <a
@@ -185,6 +205,28 @@ export default function CareerRolePage() {
           )}
         </div>
       </div>
+
+      {/* Floating Apply bar — mobile only, appears after scroll */}
+      {job && (
+        <div
+          className={`lg:hidden fixed bottom-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}
+          style={{ backgroundColor: '#F5F1EA', paddingBottom: 'env(safe-area-inset-bottom)' }}
+        >
+          {/* Fade gradient above the bar */}
+          <div className="absolute -top-[40px] left-0 right-0 h-[40px] pointer-events-none" style={{ background: 'linear-gradient(to bottom, rgba(245,241,234,0), rgba(245,241,234,1))' }} />
+          <div className="px-5 pt-[12px] pb-[16px]">
+            <a
+              href={job.applyUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block w-full text-center font-sans font-medium text-[15px] text-white rounded-[12px] py-[15px] hover:opacity-90 transition-opacity no-underline"
+              style={{ backgroundColor: '#BA4309' }}
+            >
+              Apply for this role
+            </a>
+          </div>
+        </div>
+      )}
 
       <Footer />
     </div>

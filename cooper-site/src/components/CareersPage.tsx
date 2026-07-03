@@ -113,14 +113,6 @@ export default function CareersPage() {
           }}
         />
 
-        {/* Top frosted blur — darker tone */}
-        <div
-          className="absolute top-0 left-0 right-0 h-[102px] z-[5] opacity-60"
-          style={{
-            filter: 'blur(39.85px)',
-            background: 'linear-gradient(to bottom, rgba(30,26,21,0.5), rgba(30,26,21,0))',
-          }}
-        />
         <div
           className="absolute top-0 left-0 right-0 h-[102px] z-[5]"
           style={{
@@ -293,14 +285,14 @@ export default function CareersPage() {
                       <Link
                         key={job.id}
                         to={`/careers/${job.id}`}
-                        className="group flex flex-col gap-3 md:flex-row md:items-center md:justify-between py-[20px] border-b border-dark/[0.06] no-underline transition-colors hover:bg-cream/50 px-[16px] -mx-[16px] rounded-[8px] animate-fade-blur-in"
+                        className="group flex flex-col gap-3 md:flex-row md:items-center md:justify-between py-[20px] border-b border-dark/[0.06] no-underline transition-colors hover:bg-cream/50 px-[16px] -mx-[16px] rounded-[8px] animate-fade-in"
                         style={{ animationDelay: `${0.2 + i * 0.06}s` }}
                       >
                         <div className="flex items-center gap-[16px]">
                           <span className="font-sans text-[17px] font-medium text-dark group-hover:text-accent-orange transition-colors">
                             {job.title}
                           </span>
-                          <span className={`font-grotesk text-[11px] font-medium tracking-[0.5px] uppercase px-[8px] py-[3px] rounded-full ${deptColor(job.department)}`}>
+                          <span className={`font-grotesk text-[11px] font-medium tracking-[0.5px] uppercase px-[8px] py-[3px] rounded-full whitespace-nowrap ${deptColor(job.department)}`}>
                             {dept}
                           </span>
                         </div>
