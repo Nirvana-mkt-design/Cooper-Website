@@ -32,8 +32,8 @@ function RevealSection({ children, delay = 0 }: { children: React.ReactNode; del
 
 
 /* ── Comparison table check icon ── */
-function CheckCircle({ color = 'orange' }: { color?: 'orange' | 'white' }) {
-  const stroke = color === 'white' ? '#fff' : '#d95611'
+function CheckCircle({ color = 'orange' }: { color?: 'orange' | 'white' | 'green' }) {
+  const stroke = color === 'white' ? '#fff' : color === 'green' ? '#2b7a3a' : '#d95611'
   return (
     <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
       <circle cx="11" cy="11" r="10" stroke={stroke} strokeWidth="1.5" />
@@ -42,28 +42,30 @@ function CheckCircle({ color = 'orange' }: { color?: 'orange' | 'white' }) {
   )
 }
 
-/* Half-filled circle — Cooper assists, your people make the call */
-function AssistCircle({ color = 'orange' }: { color?: 'orange' | 'white' }) {
-  const c = color === 'white' ? '#fff' : '#d95611'
+/* X icon — the manual struggle (red) */
+function XIcon() {
   return (
     <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-      <circle cx="11" cy="11" r="10" stroke={c} strokeWidth="1.5" />
-      <path d="M11 1a10 10 0 010 20z" fill={c} fillOpacity="0.85" />
+      <circle cx="11" cy="11" r="10" stroke="#c0392b" strokeWidth="1.5" />
+      <path d="M7.5 7.5l7 7M14.5 7.5l-7 7" stroke="#c0392b" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
   )
 }
 
-/* ── Comparison data ── */
-const cooperRows = [
-  'Rekey the same data into ACORD 125 / 137',
-  'Fill the submission across six carrier portals',
-  'Chase missing documents over email',
-  'Copy everything back into the AMS',
+/* ── Struggle vs help data ── */
+const struggles = [
+  'Rekeying the same data into ACORD 125 / 137',
+  'Filling submissions across six carrier portals',
+  'Chasing missing documents over email',
+  'Reading loss runs to spot the real exposure',
+  'Comparing quotes to advise the client',
 ]
-const humanRows = [
-  'Win and keep the account',
-  'Read the loss runs, spot the real exposure',
-  'Compare the quotes, advise the client',
+const helps = [
+  'Fills ACORD 125 / 137 from the source documents',
+  'Submits the risk across every carrier in parallel',
+  'Chases and collects missing documents for you',
+  'Reads the loss runs and surfaces the real exposure',
+  'Builds the quote comparison so you advise faster',
 ]
 
 
@@ -192,81 +194,44 @@ export default function AboutPage() {
             <span className="font-grotesk font-medium text-[11px] tracking-[1.4px] uppercase text-accent-orange mb-[20px] block animate-fade-blur-in">
               The Problem
             </span>
-            <h2 className="font-serif text-[30px] md:text-[44px] lg:text-[54px] leading-[1.1] text-dark mb-[56px] max-w-[760px] animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
+            <h2 className="font-serif text-[30px] md:text-[44px] lg:text-[54px] leading-[1.1] text-dark mb-[56px] lg:mb-[72px] max-w-[880px] animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
               Insurance brokers are drowning in busywork. Cooper gives you time back to focus on judgment.
             </h2>
 
-            {/* Table — sticky label col + horizontal scroll on mobile */}
-            <div className="w-full overflow-x-auto -mx-5 px-5 md:-mx-12 md:px-12 lg:mx-0 lg:px-0">
-              <div className="grid grid-cols-[140px_135px_135px] lg:grid-cols-[1fr_220px_220px] w-[410px] lg:w-full">
+            {/* Description + two columns (struggle / help) */}
+            <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,300px)_1fr_1fr] gap-x-[40px] xl:gap-x-[56px] gap-y-[44px] animate-fade-blur-in" style={{ animationDelay: '0.2s' }}>
 
-                {/* Row 1 — category headings */}
-                <div className="sticky left-0 bg-cream" />
-                <div className="px-3 pb-[10px] text-center">
-                  <p className="font-serif text-[13px] lg:text-[20px] text-dark leading-none mb-[4px]">Busywork</p>
-                  <p className="font-grotesk font-medium text-[8px] tracking-[0.6px] uppercase text-accent-orange leading-[1.4]">Cooper handles</p>
-                </div>
-                <div className="px-3 pb-[10px] text-center">
-                  <p className="font-serif text-[13px] lg:text-[20px] text-dark leading-none mb-[4px]">Judgment</p>
-                  <p className="font-grotesk font-medium text-[8px] tracking-[0.6px] uppercase text-accent-orange leading-[1.4]">Your people</p>
-                </div>
+              {/* Left — description */}
+              <p className="font-sans text-[15px] lg:text-[16px] leading-[1.7] text-dark/55 max-w-[320px]">
+                Insurance runs on email, Excel, a browser, and a CRM. None of them were built for the expertise the work actually takes. Cooper handles the busywork and does the legwork behind every judgment call, so your people can focus on the decisions.
+              </p>
 
-                {/* Row 2 — sub-column headers */}
-                <div className="sticky left-0 bg-cream" />
-                <div className="bg-accent-orange rounded-t-[12px] px-3 py-[14px] flex flex-col items-center gap-[6px]">
-                  <img src="/images/cooper-icon.svg" alt="" className="w-[18px] h-[18px]" style={{ filter: 'brightness(0) invert(1)' }} />
-                  <span className="font-grotesk font-medium text-[9px] tracking-[1px] uppercase text-white">Cooper</span>
+              {/* Where teams struggle */}
+              <div>
+                <div className="flex items-center gap-[10px] pb-[18px] border-b border-dark/[0.14]">
+                  <XIcon />
+                  <h3 className="font-serif text-[22px] lg:text-[26px] leading-none text-dark">Where teams struggle</h3>
                 </div>
-                <div className="px-3 py-[14px] flex items-center justify-center">
-                  <span className="font-grotesk font-medium text-[9px] tracking-[1px] uppercase text-dark/40 text-center leading-[1.4]">Your team</span>
-                </div>
-
-                {/* Cooper rows */}
-                {cooperRows.map((label, i) => (
-                  <React.Fragment key={`c-${i}`}>
-                    <div className="sticky left-0 bg-cream py-[13px] pr-4 border-t border-dark/8 font-sans text-[14px] lg:text-[15px] leading-[1.5] text-dark/55 self-center">{label}</div>
-                    <div className="bg-accent-orange flex items-center justify-center py-[13px] border-t border-white/15">
-                      <CheckCircle color="white" />
-                    </div>
-                    <div className="flex items-center justify-center py-[13px] border-t border-dark/8">
-                      <span className="text-dark/25 text-[16px] leading-none">—</span>
-                    </div>
-                  </React.Fragment>
+                {struggles.map((s, i) => (
+                  <div key={i} className="py-[17px] border-b border-dark/[0.08] font-sans text-[15px] lg:text-[16px] leading-[1.5] text-dark/60">
+                    {s}
+                  </div>
                 ))}
+              </div>
 
-                {/* Human rows */}
-                {humanRows.map((label, i) => (
-                  <React.Fragment key={`h-${i}`}>
-                    <div className="sticky left-0 bg-cream py-[13px] pr-4 border-t border-dark/8 font-sans text-[14px] lg:text-[15px] leading-[1.5] text-dark/55 self-center">{label}</div>
-                    <div className={`bg-accent-orange/20 flex items-center justify-center py-[13px] border-t border-accent-orange/20 ${i === humanRows.length - 1 ? 'rounded-b-[12px]' : ''}`}>
-                      <AssistCircle color="orange" />
-                    </div>
-                    <div className="flex items-center justify-center py-[13px] border-t border-dark/8">
-                      <CheckCircle color="orange" />
-                    </div>
-                  </React.Fragment>
+              {/* How Cooper helps */}
+              <div>
+                <div className="flex items-center gap-[10px] pb-[18px] border-b border-dark/[0.14]">
+                  <CheckCircle color="green" />
+                  <h3 className="font-serif text-[22px] lg:text-[26px] leading-none text-dark">How Cooper helps</h3>
+                </div>
+                {helps.map((s, i) => (
+                  <div key={i} className="py-[17px] border-b border-dark/[0.08] font-sans text-[15px] lg:text-[16px] leading-[1.5] text-dark">
+                    {s}
+                  </div>
                 ))}
-
               </div>
             </div>
-
-            {/* Legend */}
-            <div className="flex flex-wrap items-center gap-x-[24px] gap-y-[10px] mt-[28px]">
-              <span className="flex items-center gap-[8px]">
-                <CheckCircle color="orange" />
-                <span className="font-grotesk font-medium text-[11px] tracking-[0.8px] uppercase text-dark/50">Cooper does it</span>
-              </span>
-              <span className="flex items-center gap-[8px]">
-                <AssistCircle color="orange" />
-                <span className="font-grotesk font-medium text-[11px] tracking-[0.8px] uppercase text-dark/50">Cooper assists, your people decide</span>
-              </span>
-            </div>
-
-            {/* Footer */}
-            <p className="font-sans text-[13px] lg:text-[14px] leading-[1.75] text-dark/45 mt-[32px] max-w-[760px]">
-              Insurance runs on email, Excel, a browser, and a CRM. None of those tools were built for the expertise the work actually takes.{' '}
-              <span className="font-medium text-accent-orange">Cooper handles the busywork and does the legwork behind every judgment call, so your people can focus on the decisions.</span>
-            </p>
 
           </div>
         </section>
