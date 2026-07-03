@@ -119,19 +119,19 @@ function SubmissionPanel() {
   const files = [
     { type: 'PDF' as const, name: 'Dec page.pdf' },
     { type: 'PDF' as const, name: 'Loss runs · 5 yr.pdf' },
+    { type: 'XLS' as const, name: 'Statement of values.xlsx' },
     { type: 'EML' as const, name: 'Submission email' },
-    { type: 'XLS' as const, name: 'Vehicle schedule.xls' },
   ] as const
 
   const fields = [
-    { label: 'Named insured', value: 'ABC Trucking LLC' },
-    { label: 'Lines', value: 'Auto Liab · Cargo' },
-    { label: 'Effective', value: '2026-06-25' },
+    { label: 'Named insured', value: 'Brightwater Apartments LLC' },
+    { label: 'Lines', value: 'Property · General Liability' },
+    { label: 'Effective', value: '2026-07-01' },
   ]
 
   const checks = [
-    'ACORD application filled',
-    'Motor Truck Cargo supplement built',
+    'ACORD 125 + 126 + 140 filled',
+    'Statement of values built · 6 buildings',
     '5-yr loss summary built',
   ]
 
@@ -180,7 +180,7 @@ function SubmissionPanel() {
             }}
           >
             <img src="/images/logo-outlook.webp" alt="Outlook" className="w-[15px] h-[15px] object-contain shrink-0" />
-            <p className="font-sans text-[10.5px] text-[#3F6CA5] leading-[1.35] truncate">From dana@riversideins.com · ABC Trucking LLC · 4 files</p>
+            <p className="font-sans text-[10.5px] text-[#3F6CA5] leading-[1.35] truncate">From dana@riversideins.com · Brightwater Apartments LLC · 4 files</p>
           </div>
         </div>
 
@@ -268,7 +268,7 @@ function SubmissionPanel() {
             <path d="M7 4v3.5M7 9.5v.5" stroke="#C44818" strokeWidth="1.4" strokeLinecap="round" />
           </svg>
           <span className="font-sans text-[10.5px] md:text-[11.5px] text-[#2B2520] leading-[1.4]">
-            <span className="font-semibold text-[#C44818]">2 items need you</span> · MC# missing · garaging address unconfirmed
+            <span className="font-semibold text-[#C44818]">2 items need you</span> · roof ages unconfirmed · sprinkler (NFPA 13) status missing
           </span>
         </div>
       </div>
@@ -277,11 +277,11 @@ function SubmissionPanel() {
 }
 
 function PortalsPanel() {
-  const carriers: { name: string; logo: string; logoH: number; crop?: boolean; pct?: number; status: string; type: 'done' | 'progress' | 'queued' }[] = [
-    { name: 'Travelers', logo: '/images/chips/travelers.png', logoH: 22, status: 'Submitted', type: 'done' },
-    { name: 'Chubb', logo: '/images/chips/chubb.png', logoH: 16, crop: true, status: 'Submitted', type: 'done' },
-    { name: 'Nationwide', logo: '/images/carriers/nationwide.png', logoH: 18, status: 'Filling... 78%', type: 'progress', pct: 78 },
-    { name: 'The Hartford', logo: '/images/carriers/the-hartford.png', logoH: 16, status: 'Queued', type: 'queued' },
+  const carriers: { name: string; pct?: number; status: string; type: 'done' | 'progress' | 'queued' }[] = [
+    { name: 'The Hartford', status: 'submitted', type: 'done' },
+    { name: 'Travelers', status: 'submitted', type: 'done' },
+    { name: 'Nationwide', status: 'filling 78%', type: 'progress', pct: 78 },
+    { name: 'Progressive · Sentry · Zurich', status: 'queued', type: 'queued' },
   ]
   return (
     <div className="w-full max-w-[440px] animate-fade-blur-in relative" style={{ animationDelay: '0.1s', height: 370 }}>
@@ -303,14 +303,14 @@ function PortalsPanel() {
                 <span className="w-[7px] h-[7px] rounded-full bg-[#E2D9CF]" />
                 <span className="w-[7px] h-[7px] rounded-full bg-[#E2D9CF]" />
               </div>
-              <span className="font-sans text-[9.5px] text-[#A5A09A] truncate">portal.travelers.com › new-submission › commercial-auto</span>
+              <span className="font-sans text-[9.5px] text-[#A5A09A] truncate">portal.thehartford.com › new-submission › commercial-auto</span>
             </div>
             <div className="p-[12px] grid grid-cols-2 gap-[8px] bg-white">
               {[
-                { label: 'Named Insured', value: 'ABC Trucking LLC' },
+                { label: 'Named Insured', value: 'Northgate Mechanical Services' },
                 { label: 'FEIN', value: '47-20••••' },
                 { label: 'Garaging ZIP', value: '60629' },
-                { label: 'Power Units', value: '18' },
+                { label: 'Vehicles', value: '12' },
               ].map((f) => (
                 <div key={f.label}>
                   <p className={`${C.label} mb-[3px]`}>{f.label}</p>
@@ -331,42 +331,36 @@ function PortalsPanel() {
           <span className={C.label}>Markets</span>
         </div>
         <div className="divide-y divide-[#EBE5DE]">
-          {carriers.map((c) => (
-            <div key={c.name} className="flex items-center gap-[8px] px-[14px] py-[9px]">
-              <div className="shrink-0 flex items-center" style={{ minWidth: 36 }}>
-                {c.crop ? (
-                  // C-mark crop: show only the leftmost mark of the wordmark strip
-                  <span
-                    className="relative block shrink-0 overflow-hidden"
-                    style={{ height: c.logoH, width: Math.round(c.logoH * 33 / 23) }}
-                  >
-                    <img src={c.logo} alt="" className="absolute left-0 top-0 h-full max-w-none" style={{ width: '693%' }} />
-                  </span>
-                ) : (
-                  <img src={c.logo} alt={c.name} className="object-contain object-left" style={{ height: c.logoH, maxWidth: 60 }} />
-                )}
-              </div>
-              <div className="flex-1 min-w-0">
-                {c.type === 'done' && (
-                  <div className="flex items-center gap-[5px]">
-                    <CoopCheck size={11} />
-                    <span className="font-sans text-[11px] text-[#C44818]">{c.status}</span>
+          {carriers.map((c) => {
+            const [first, ...rest] = c.name.split(' · ')
+            return (
+            <div key={c.name} className="flex items-center gap-[10px] px-[14px] py-[11px]">
+              <span className="flex-1 min-w-0 font-sans text-[12px] truncate">
+                <span className="font-semibold text-[#2B2520]">{first}</span>
+                {rest.length > 0 && <span className="text-[#2B2520]/55">{' · ' + rest.join(' · ')}</span>}
+              </span>
+              {c.type === 'done' && (
+                <span className="flex items-center gap-[5px] shrink-0 font-sans text-[11px] text-[#5F8168]">
+                  <svg width="11" height="11" viewBox="0 0 14 14" fill="none">
+                    <path d="M3 7.2 5.7 10l5.3-6" stroke="#5F8168" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  {c.status}
+                </span>
+              )}
+              {c.type === 'progress' && (
+                <div className="flex items-center gap-[8px] shrink-0">
+                  <div className="w-[70px] h-[4px] rounded-full bg-[#E2D9CF] overflow-hidden">
+                    <div className="h-full bg-[#C44818] rounded-full" style={{ width: `${c.pct}%` }} />
                   </div>
-                )}
-                {c.type === 'progress' && (
-                  <div>
-                    <div className="w-full h-[3px] rounded-full bg-[#E2D9CF] overflow-hidden mb-[3px]">
-                      <div className="h-full bg-[#C44818] rounded-full" style={{ width: `${c.pct}%` }} />
-                    </div>
-                    <span className="font-sans text-[10px] text-[#A5A09A]">{c.status}</span>
-                  </div>
-                )}
-                {c.type === 'queued' && (
-                  <span className="font-sans text-[11px] text-[#A5A09A]">{c.status}</span>
-                )}
-              </div>
+                  <span className="font-sans text-[10.5px] text-[#A5A09A] whitespace-nowrap">{c.status}</span>
+                </div>
+              )}
+              {c.type === 'queued' && (
+                <span className="font-sans text-[11px] text-[#A5A09A] shrink-0">{c.status}</span>
+              )}
             </div>
-          ))}
+            )
+          })}
         </div>
       </div>
     </div>
@@ -412,9 +406,9 @@ function ProposalPanel() {
             {/* Quote rows */}
             <div className="px-[14px] py-[11px] flex flex-col gap-[6px]">
               {[
-                { carrier: 'Travelers', amount: '$42,180' },
-                { carrier: 'Chubb', amount: '$39,750' },
-                { carrier: 'Nationwide', amount: '$45,600' },
+                { carrier: 'The Hartford', amount: '$28,400' },
+                { carrier: 'Travelers', amount: '$26,950' },
+                { carrier: 'AmTrust', amount: '$31,200' },
               ].map((q) => (
                 <div key={q.carrier} className="border border-[#EDE7DE] px-[10px] py-[8px] flex items-baseline justify-between gap-[4px] bg-[#FDFAF7]">
                   <span className="font-sans text-[11.5px] font-medium text-[#2B2520]">{q.carrier}</span>
@@ -440,26 +434,26 @@ function ProposalPanel() {
 
         {/* Proposal table */}
         <div className="flex-1 min-w-0 bg-white border border-[#E2D9CF] p-[10px] md:p-[12px] overflow-x-auto">
-          <p className={`${C.label} mb-[10px]`}>Client Proposal · ABC Trucking</p>
+          <p className={`${C.label} mb-[10px]`}>Client Proposal · Summit Builders Inc · Workers' Comp</p>
           <table className="w-full mb-[10px]">
             <thead>
               <tr className="border-b border-[#E2D9CF]">
-                {['Carrier', 'Premium', 'Ded.', 'Cargo'].map((h) => (
+                {['Carrier', 'Premium', 'Dividend', 'Pay-Go'].map((h) => (
                   <th key={h} className={`${C.label} text-left pb-[6px] pr-[4px] last:pr-0 font-medium whitespace-nowrap`}>{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {[
-                { carrier: 'Travelers', premium: '$42,180', ded: '$2,500', cargo: '$100k', highlight: false },
-                { carrier: 'Chubb', premium: '$39,750', ded: '$5,000', cargo: '$250k', highlight: true },
-                { carrier: 'Nationwide', premium: '$45,600', ded: '$1,000', cargo: '$100k', highlight: false },
+                { carrier: 'The Hartford', premium: '$28,400', dividend: '5%', paygo: 'yes', highlight: false },
+                { carrier: 'Travelers', premium: '$26,950', dividend: '3%', paygo: 'yes', highlight: true },
+                { carrier: 'AmTrust', premium: '$31,200', dividend: '—', paygo: 'no', highlight: false },
               ].map((r) => (
                 <tr key={r.carrier} className={`border-t border-[#E2D9CF] ${r.highlight ? 'bg-[#FDF6F0]' : ''}`}>
                   <td className={`py-[6px] font-sans text-[10px] md:text-[11.5px] text-[#2B2520] pr-[4px] whitespace-nowrap ${r.highlight ? 'font-bold' : ''}`}>{r.carrier}</td>
                   <td className={`py-[6px] font-sans text-[10px] md:text-[11.5px] text-[#2B2520] pr-[4px] whitespace-nowrap ${r.highlight ? 'font-bold' : ''}`}>{r.premium}</td>
-                  <td className={`py-[6px] font-sans text-[10px] md:text-[11.5px] text-[#2B2520] pr-[4px] whitespace-nowrap ${r.highlight ? 'font-bold' : ''}`}>{r.ded}</td>
-                  <td className={`py-[6px] font-sans text-[10px] md:text-[11.5px] text-[#2B2520] whitespace-nowrap ${r.highlight ? 'font-bold' : ''}`}>{r.cargo}</td>
+                  <td className={`py-[6px] font-sans text-[10px] md:text-[11.5px] text-[#2B2520] pr-[4px] whitespace-nowrap ${r.highlight ? 'font-bold' : ''}`}>{r.dividend}</td>
+                  <td className={`py-[6px] font-sans text-[10px] md:text-[11.5px] text-[#2B2520] whitespace-nowrap ${r.highlight ? 'font-bold' : ''}`}>{r.paygo}</td>
                 </tr>
               ))}
             </tbody>
@@ -467,7 +461,7 @@ function ProposalPanel() {
           <div className="flex items-start gap-[6px] p-[8px] bg-[#FDF6F0] border border-[#C44818]/20 mb-[8px]">
             <CoopCheck size={12} />
             <span className="font-sans text-[10.5px] text-[#2B2520] leading-[1.4]">
-              <span className="font-semibold">Recommended: Chubb</span> · lowest premium and best cargo, at a higher $5k deductible
+              <span className="font-semibold">Recommended: Travelers</span> · lowest premium with pay-as-you-go billing
             </span>
           </div>
           <p className="font-sans text-[10px] text-[#A5A09A] leading-[1.4]">Drafted in Riverside Insurance Group's template · review before sending</p>
