@@ -18,8 +18,8 @@ const tabs = [
   {
     id: 'portals',
     label: 'Fill the portals',
-    category: 'Carrier Portals · Our Edge',
-    title: 'Portals, filled. We hit the markets, you don\'t.',
+    category: 'Carrier Portals',
+    title: 'Pick your portals and Cooper fills them in.',
     subtitle: '',
     description:
       'Cooper logs into each carrier portal and enters the same risk across all of them. The real forms, uploads, and clicks. You stop re-keying identical data ten times.',
@@ -582,7 +582,8 @@ function MobileAccordion() {
 export default function OnePlatform() {
   const [activeIdx, setActiveIdx] = useState(0)
   const [progress, setProgress] = useState(0)
-  const [paused, setPaused] = useState(false)
+  const [inView, setInView] = useState(false)
+  const sectionRef = useRef<HTMLElement>(null)
   const startRef = useRef(Date.now())
   const rafRef = useRef<number>(0)
   const [animKey, setAnimKey] = useState(0)
@@ -595,9 +596,27 @@ export default function OnePlatform() {
     startRef.current = Date.now()
   }, [])
 
+  // Only start the auto-advance + progress bar once the section scrolls into view
+  useEffect(() => {
+    const el = sectionRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true)
+          setAnimKey((k) => k + 1) // replay panel animations from the top
+          observer.unobserve(el)
+        }
+      },
+      { threshold: 0.2 }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
   // Animation frame loop for smooth progress bar
   useEffect(() => {
-    if (paused) return
+    if (!inView) return
 
     startRef.current = Date.now() - (progress / 100) * DURATION
 
@@ -613,23 +632,25 @@ export default function OnePlatform() {
     }
     rafRef.current = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(rafRef.current)
-  }, [paused, activeIdx, goNext])
+  }, [inView, activeIdx, goNext])
 
+  // Manual click: restart this tab's progress from 0 and keep the carousel running
   const handleTabClick = (idx: number) => {
     setActiveIdx(idx)
     setAnimKey((k) => k + 1)
     setProgress(0)
     startRef.current = Date.now()
-    setPaused(true)
-    setTimeout(() => setPaused(false), 15000)
   }
 
   return (
-    <section className="bg-cream py-[60px] md:py-[100px]">
+    <section ref={sectionRef} className="bg-cream py-[60px] md:py-[100px]">
       <div className="max-w-[1440px] mx-auto px-[20px] md:px-[62px]">
         {/* Heading */}
+        <p className="font-grotesk font-medium text-[13px] tracking-[1.45px] uppercase text-accent-orange text-center mb-[14px] md:mb-[16px]">
+          Spotlight Use Case
+        </p>
         <h2 className="font-serif text-[36px] md:text-[38px] leading-[1.2] text-dark text-center mb-[40px] md:mb-[60px]">
-          One platform,<br className="lg:hidden" /> every workflow
+          Commercial Brokers
         </h2>
 
         {/* Mobile accordion */}

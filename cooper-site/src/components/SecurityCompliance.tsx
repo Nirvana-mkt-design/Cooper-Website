@@ -1,8 +1,7 @@
 const badges = [
   { label: 'SOC 2 Type ii', icon: '/images/icon-soc2.webp' },
-  { label: 'HIPAA Compliant', icon: '/images/icon-hipaa.webp' },
   { label: 'No model training', icon: '/images/icon-no-training.webp' },
-  { label: 'SSO & MFA', icon: '/images/icon-sso-mfa.webp' },
+  { label: 'HIPAA Compliant', icon: '/images/icon-hipaa.webp' },
   { label: 'RBAC & audit logs', icon: '/images/icon-audit.webp' },
 ]
 

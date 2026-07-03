@@ -10,26 +10,24 @@ const reasons = [
 
 const testimonials = [
   {
-    quote: 'Cooper transformed how we process submissions. What took hours now takes minutes.',
-    name: 'Rushil Goel',
-    role: 'CEO, Nirvana Insurance',
-    photo: '/images/testimonial-rushil.webp',
+    quote: 'The policy comparison alone saves us 15 hours a week. Cooper reads every document and gives us clean side-by-side breakdowns.',
+    name: 'James Mitchell',
+    role: 'Head of Underwriting, Trident MGA',
+    photo: '/images/testimonial-james.webp',
   },
   {
-    quote: 'Our producers doubled their submission volume without adding headcount.',
-    name: 'Sarah Chen',
-    role: 'VP Operations, Apex Brokerage',
-    photo: '/images/testimonial-sarah.webp',
+    quote: 'Cooper caught coverage gaps we had been missing for months. Our loss ratio improved and our clients noticed immediately.',
+    name: 'Maria Santos',
+    role: 'Managing Director, Lighthouse Re',
+    photo: '/images/testimonial-maria.webp',
   },
 ]
 
 const stats = [
-  { value: '25h', label: 'saved monthly per producer' },
-  { value: '17%', label: 'more bound premium' },
-  { value: '3x', label: 'faster submissions' },
+  { value: '8.5 hrs', label: 'Selling time back per producer' },
+  { value: '95%', label: 'Fewer manual re-entry errors' },
+  { value: '12×', label: 'Faster submission-to-market' },
 ]
-
-const trustedBy = ['Hartford', 'Travelers', 'Chubb', 'Zurich', 'Nationwide']
 
 export default function DemoPage() {
   const [email, setEmail] = useState('')
@@ -216,21 +214,9 @@ export default function DemoPage() {
           ))}
         </div>
 
-        {/* Trusted by */}
-        <div>
-          <p className="font-grotesk font-medium text-[11px] tracking-[1.1px] uppercase text-dark/40 mb-[14px]">
-            Trusted by leading carriers
-          </p>
-          <div className="flex gap-[20px] flex-wrap">
-            {trustedBy.map((name) => (
-              <span key={name} className="font-sans text-[14px] text-dark/30 font-medium">{name}</span>
-            ))}
-          </div>
-        </div>
-
         {/* Security badges */}
-        <div className="flex gap-[16px] mt-[32px]">
-          {['SOC 2', 'HIPAA', 'SSO'].map((badge) => (
+        <div className="flex gap-[16px]">
+          {['SOC 2', 'HIPAA'].map((badge) => (
             <span
               key={badge}
               className="font-grotesk text-[10px] tracking-[1px] uppercase text-dark/30 border border-dark/[0.08] rounded-[4px] px-[10px] py-[4px]"

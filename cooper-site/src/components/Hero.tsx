@@ -66,7 +66,7 @@ export default function Hero() {
           <p className="animate-fade-blur-in font-grotesk font-medium text-[14.5px] tracking-[1.45px] uppercase text-[#fffcf1]/80 mb-[20px]" style={{ animationDelay: '0.2s' }}>
             Built for Insurance Professionals
           </p>
-          <h1 className="font-serif text-[72px] md:text-[64px] lg:text-[96px] leading-[1.05] text-cream-light mb-[20px]" style={{ textIndent: '-5px' }}>
+          <h1 className="font-serif text-[52px] md:text-[64px] lg:text-[96px] leading-[1.05] text-cream-light mb-[20px]" style={{ textIndent: '-5px' }}>
             <span className="animate-fade-blur-in block" style={{ animationDelay: '0.5s' }}>More business. </span>
             <span className="animate-fade-blur-in block" style={{ animationDelay: '0.8s' }}>Less busywork.</span>
           </h1>
@@ -105,19 +105,19 @@ export default function Hero() {
         </div>
 
         {/* Mobile: "Built For" fixed, personas as an auto-rotating carousel */}
-        <div className="flex lg:hidden items-center gap-5">
-          <span className="animate-fade-blur-in font-serif text-[26px] md:text-[34px] leading-[1.15] text-cream-light shrink-0 whitespace-nowrap" style={{ animationDelay: '1.4s' }}>
+        <div className="flex lg:hidden items-center gap-4">
+          <span className="animate-fade-blur-in font-serif text-[24px] md:text-[34px] leading-[1.15] text-cream-light shrink-0 whitespace-nowrap" style={{ animationDelay: '1.4s' }}>
             Built For
           </span>
           <div className="flex-1 min-w-0">
-            {/* Sliding persona label — centered in the remaining space */}
+            {/* Sliding persona label — left-aligned in the remaining space */}
             <div className="relative h-[34px] md:h-[42px] overflow-hidden">
               {roles.map((role, i) => (
                 <Link
                   key={role.slug}
                   to={`/personas/${role.slug}`}
                   aria-hidden={i !== activeRole}
-                  className="absolute inset-0 flex items-center justify-center no-underline"
+                  className="absolute inset-0 flex items-center justify-start no-underline"
                   style={{
                     opacity: i === activeRole ? 1 : 0,
                     transform: i === activeRole ? 'translateY(0)' : 'translateY(10px)',
@@ -126,7 +126,7 @@ export default function Hero() {
                   }}
                 >
                   <span
-                    className="font-serif text-[22px] md:text-[28px] leading-[1.2] text-cream-light"
+                    className="font-serif text-[19px] md:text-[28px] leading-[1.2] text-cream-light whitespace-nowrap"
                     style={{ borderBottom: '1.2px dashed rgba(255,252,241,0.5)', paddingBottom: '2px' }}
                   >
                     {role.label}

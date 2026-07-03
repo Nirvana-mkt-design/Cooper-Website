@@ -17,6 +17,7 @@ const logo = {
   hawksoft:      '/images/logo-hawksoft.webp',
   ams360:        '/images/logo-ams360.webp',
   ezlynx:        '/images/chips/ezlynx.png',
+  guidewire:     '/images/logo-guidewire.svg',
   sharepoint:    '/images/logo-sharepoint.webp',
   onedrive:      '/images/logo-onedrive.png',
   dropbox:       '/images/logo-dropbox.webp',
@@ -33,13 +34,16 @@ type Group = { label: string; chips: Chip[]; more: string }
 
 const GROUPS: Record<'ams' | 'carriers' | 'documents' | 'communication', Group> = {
   ams: {
-    label: 'AMS',
+    label: 'Records',
     more: 'And more...',
     chips: [
       { src: logo.epic,      label: 'Applied Epic' },
       { src: logo.hawksoft,  label: 'HawkSoft' },
       { src: logo.ams360,    label: 'AMS360' },
       { src: logo.ezlynx,    label: 'EzLynx', h: 21, maxW: 42 },
+      { src: logo.guidewire, label: 'Guidewire' },
+      { src: logo.hubspot,   label: 'HubSpot', h: 22 },
+      { src: logo.salesforce, label: 'Salesforce', h: 20, maxW: 42 },
     ],
   },
   carriers: {
@@ -58,8 +62,6 @@ const GROUPS: Record<'ams' | 'carriers' | 'documents' | 'communication', Group> 
       { src: logo.sharepoint, label: 'SharePoint' },
       { src: logo.onedrive,   label: 'OneDrive', h: 22 },
       { src: logo.dropbox,    label: 'Dropbox' },
-      { src: logo.hubspot,    label: 'HubSpot', h: 22 },
-      { src: logo.salesforce, label: 'Salesforce', h: 20, maxW: 42 },
     ],
   },
   communication: {
@@ -482,7 +484,7 @@ function MobileIntegrations() {
           />
 
           {/* Category labels */}
-          <div className="absolute" style={{ left: 32.7, top: 100 }}><CanvasLabel>AMS</CanvasLabel></div>
+          <div className="absolute" style={{ left: 32.7, top: 100 }}><CanvasLabel>Records</CanvasLabel></div>
           <div className="absolute" style={{ left: 32.7, top: 327 }}><CanvasLabel>Carriers</CanvasLabel></div>
           <div className="absolute" style={{ left: 40.6, top: 995 }}><CanvasLabel>Documents</CanvasLabel></div>
           <div className="absolute" style={{ left: 40.6, top: 1240 }}><CanvasLabel>Communication</CanvasLabel></div>
@@ -604,7 +606,7 @@ export default function Integrations() {
 
             {/* ── Category labels — float near center ── */}
             <div className="absolute" style={{ left: 431, top: 297, transform: 'translateY(-50%)' }}>
-              <CanvasLabel>AMS</CanvasLabel>
+              <CanvasLabel>Records</CanvasLabel>
             </div>
             <div className="absolute" style={{ left: 746, top: 297, transform: 'translateY(-50%)' }}>
               <CanvasLabel>Carriers</CanvasLabel>

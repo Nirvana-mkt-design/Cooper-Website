@@ -42,6 +42,17 @@ function CheckCircle({ color = 'orange' }: { color?: 'orange' | 'white' }) {
   )
 }
 
+/* Half-filled circle — Cooper assists, your people make the call */
+function AssistCircle({ color = 'orange' }: { color?: 'orange' | 'white' }) {
+  const c = color === 'white' ? '#fff' : '#d95611'
+  return (
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+      <circle cx="11" cy="11" r="10" stroke={c} strokeWidth="1.5" />
+      <path d="M11 1a10 10 0 010 20z" fill={c} fillOpacity="0.85" />
+    </svg>
+  )
+}
+
 /* ── Comparison data ── */
 const cooperRows = [
   'Rekey the same data into ACORD 125 / 137',
@@ -228,7 +239,7 @@ export default function AboutPage() {
                   <React.Fragment key={`h-${i}`}>
                     <div className="sticky left-0 bg-cream py-[13px] pr-4 border-t border-dark/8 font-sans text-[14px] lg:text-[15px] leading-[1.5] text-dark/55 self-center">{label}</div>
                     <div className={`bg-accent-orange/20 flex items-center justify-center py-[13px] border-t border-accent-orange/20 ${i === humanRows.length - 1 ? 'rounded-b-[12px]' : ''}`}>
-                      <span className="text-accent-orange/50 text-[16px] leading-none">—</span>
+                      <AssistCircle color="orange" />
                     </div>
                     <div className="flex items-center justify-center py-[13px] border-t border-dark/8">
                       <CheckCircle color="orange" />
@@ -239,10 +250,22 @@ export default function AboutPage() {
               </div>
             </div>
 
+            {/* Legend */}
+            <div className="flex flex-wrap items-center gap-x-[24px] gap-y-[10px] mt-[28px]">
+              <span className="flex items-center gap-[8px]">
+                <CheckCircle color="orange" />
+                <span className="font-grotesk font-medium text-[11px] tracking-[0.8px] uppercase text-dark/50">Cooper does it</span>
+              </span>
+              <span className="flex items-center gap-[8px]">
+                <AssistCircle color="orange" />
+                <span className="font-grotesk font-medium text-[11px] tracking-[0.8px] uppercase text-dark/50">Cooper assists, your people decide</span>
+              </span>
+            </div>
+
             {/* Footer */}
-            <p className="font-sans text-[13px] lg:text-[14px] leading-[1.75] text-dark/45 mt-[48px] max-w-[760px]">
+            <p className="font-sans text-[13px] lg:text-[14px] leading-[1.75] text-dark/45 mt-[32px] max-w-[760px]">
               Insurance runs on email, Excel, a browser, and a CRM. None of those tools were built for the expertise the work actually takes.{' '}
-              <span className="font-medium text-accent-orange">Cooper takes the busywork. Your people keep the judgment.</span>
+              <span className="font-medium text-accent-orange">Cooper handles the busywork and does the legwork behind every judgment call, so your people can focus on the decisions.</span>
             </p>
 
           </div>
