@@ -103,10 +103,10 @@ function FeatureBlock({
 
   const text = (
     <div className={isReversed ? 'lg:pl-[40px]' : 'lg:pr-[40px]'}>
-      <h3 className="font-serif text-[22px] md:text-[28px] lg:text-[32px] leading-[1.05] tracking-[-0.4px] text-[#0a0a0a] mb-[24px]">
+      <h3 className="font-serif text-[26px] md:text-[34px] lg:text-[38px] leading-[1.1] tracking-[-0.4px] text-[#0a0a0a] mb-[24px]">
         {feature.title}
       </h3>
-      <p className="font-sans text-[18px] leading-[1.55] text-[#6b6b6b] max-w-[440px]">
+      <p className="font-sans text-[17.8px] leading-[1.5] text-[#6b6b6b] max-w-[440px]">
         {feature.description}
       </p>
     </div>
@@ -235,7 +235,7 @@ export default function PersonaPage() {
                     </span>
                   </div>
                   <h1
-                    className="animate-fade-blur-in font-serif text-[28px] md:text-[40px] lg:text-[48px] leading-[1.05] tracking-[-1.44px] text-[#0a0a0a] max-w-[620px]"
+                    className="animate-fade-blur-in font-serif text-[40px] md:text-[64px] lg:text-[72px] leading-[1.05] tracking-[-1.44px] text-[#0a0a0a] max-w-[620px]"
                     style={{ animationDelay: '0.3s' }}
                   >
                     {persona.headlineAccent ? (
@@ -257,16 +257,16 @@ export default function PersonaPage() {
                     )}
                   </h1>
                 </div>
-                <div className="animate-fade-blur-in flex flex-wrap items-center gap-[12px]" style={{ animationDelay: '0.45s' }}>
+                <div className="animate-fade-blur-in flex flex-col items-stretch gap-[12px] sm:flex-row sm:flex-wrap sm:items-center" style={{ animationDelay: '0.45s' }}>
                   <a
                     href="#features"
-                    className="inline-flex w-fit items-center rounded-[8px] border border-dark/[0.18] bg-transparent px-[28px] py-[14px] font-sans text-[16px] font-medium text-dark no-underline transition-colors hover:bg-dark/[0.04]"
+                    className="inline-flex w-full items-center justify-center rounded-[8px] border border-dark/[0.18] bg-transparent px-[28px] py-[14px] font-sans text-[16px] font-medium text-dark no-underline transition-colors hover:bg-dark/[0.04] sm:w-fit sm:justify-start"
                   >
                     See how it works
                   </a>
                   <Link
                     to="/demo"
-                    className="inline-flex w-fit items-center rounded-[8px] bg-[#1e1a15] px-[32px] py-[14px] font-sans text-[16px] font-medium text-cream-light no-underline transition-opacity hover:opacity-90"
+                    className="inline-flex w-full items-center justify-center rounded-[8px] bg-[#1e1a15] px-[32px] py-[14px] text-center font-sans text-[16px] font-medium text-cream-light no-underline transition-opacity hover:opacity-90 sm:w-fit sm:justify-start sm:text-left"
                   >
                     {persona.ctaText}
                   </Link>
@@ -376,7 +376,7 @@ export default function PersonaPage() {
             <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(30,26,21,0.3) 0%, rgba(30,26,21,0.7) 100%)' }} />
           </div>
           <div className="relative z-10 max-w-[1440px] mx-auto px-5 md:px-10 lg:px-[60px] text-center">
-            <h2 className="font-serif text-[26px] md:text-[34px] lg:text-[42px] leading-[1.2] text-cream-light mb-[16px]">
+            <h2 className="font-serif text-[26px] md:text-[34px] lg:text-[38px] leading-[1.2] text-cream-light mb-[16px]">
               {persona.demoHeadline ?? 'Ready to see Cooper in action?'}
             </h2>
             <p className="font-sans text-[17px] leading-[1.6] text-cream-light/60 max-w-[460px] mx-auto mb-[32px]">
