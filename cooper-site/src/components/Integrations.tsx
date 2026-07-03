@@ -214,7 +214,7 @@ export default function Integrations() {
             <p className="mb-[18px] font-grotesk text-[13px] font-medium uppercase tracking-[1.6px] text-accent-orange">
               Integrations
             </p>
-            <h2 className="font-serif text-[32px] leading-[1.12] text-dark md:text-[44px] lg:text-[48px]">
+            <h2 className="font-serif text-[36px] leading-[1.12] text-dark md:text-[44px] lg:text-[48px]">
               Works with the tools you already use
             </h2>
           </div>

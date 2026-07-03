@@ -12,7 +12,7 @@ export default function SecurityCompliance() {
       <div className="max-w-[1440px] mx-auto">
         <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-10 lg:gap-[80px]">
           {/* Left heading */}
-          <h2 className="font-serif text-[32px] leading-[1.2] text-cream-light/40 shrink-0 text-center sm:text-left md:text-[44px] lg:text-[48px]">
+          <h2 className="font-serif text-[36px] leading-[1.2] text-cream-light/40 shrink-0 text-center sm:text-left md:text-[44px] lg:text-[48px]">
             Security<br />& compliance
           </h2>
 

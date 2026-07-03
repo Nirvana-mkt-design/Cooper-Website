@@ -69,7 +69,7 @@ export default function BuiltForEveryRole() {
             <p className="font-grotesk font-medium text-[18px] tracking-[1.8px] uppercase text-dark mb-[16px]">
               Built for every role
             </p>
-            <h2 className="font-serif text-[26px] md:text-[34px] lg:text-[38px] leading-[1.2] text-dark">
+            <h2 className="font-serif text-[36px] md:text-[34px] lg:text-[38px] leading-[1.2] text-dark">
               Cooper adapts to your workflow
             </h2>
           </div>

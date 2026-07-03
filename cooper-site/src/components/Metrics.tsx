@@ -113,7 +113,7 @@ export default function Metrics() {
             <p className="font-grotesk font-medium text-[14.5px] tracking-[1.45px] uppercase text-cream-light leading-[1.5]">
               Impact
             </p>
-            <h2 className="font-serif text-[32px] md:text-[44px] lg:text-[48px] leading-[1.2] text-cream-light">
+            <h2 className="font-serif text-[36px] md:text-[44px] lg:text-[48px] leading-[1.2] text-cream-light">
               Measurable results from day one
             </h2>
           </div>
