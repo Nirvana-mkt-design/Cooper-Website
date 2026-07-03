@@ -54,7 +54,7 @@ function AnimatedMetric({ metric, delay }: { metric: typeof metrics[0]; delay: n
 
   return (
     <div ref={ref} className="flex flex-col gap-[16px] items-center text-center flex-1">
-      <span className={`font-serif text-[40px] md:text-[64px] lg:text-[96px] leading-[1] text-cream-light transition-opacity duration-500 ${visible ? 'opacity-100' : 'opacity-0'}`}>
+      <span className={`font-serif text-[72px] md:text-[64px] lg:text-[96px] leading-[1] text-cream-light transition-opacity duration-500 ${visible ? 'opacity-100' : 'opacity-0'}`}>
         {display}{metric.suffix}
       </span>
       <span className={`font-grotesk font-medium text-[14.5px] tracking-[1.45px] uppercase text-cream-light leading-[1.5] transition-opacity duration-500 ${visible ? 'opacity-100' : 'opacity-0'}`} style={{ transitionDelay: '0.3s' }}>

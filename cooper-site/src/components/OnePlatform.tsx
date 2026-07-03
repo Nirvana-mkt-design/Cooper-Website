@@ -149,8 +149,8 @@ function SubmissionPanel() {
         </span>
       </div>
 
-      {/* Two columns — stacked on mobile so each list gets full width, side by side from md up */}
-      <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-[#D5CCC2]">
+      {/* Two columns — always side by side */}
+      <div className="grid grid-cols-2 divide-x divide-[#D5CCC2]">
         {/* Left — Forwarded to Cooper */}
         <div className="p-[14px] md:p-[18px]">
           <p className={`${C.label} mb-[10px] md:mb-[12px]`}>Forwarded to Cooper</p>
@@ -389,12 +389,12 @@ function ProposalPanel() {
         </span>
       </div>
 
-      {/* Body — receipt stacked on top on mobile, floats left with arrow from md up */}
-      <div className="flex flex-col md:flex-row items-stretch md:items-start p-[14px] md:p-[16px] gap-[16px] md:gap-0">
+      {/* Body — receipt floats left with arrow */}
+      <div className="flex flex-row items-start p-[16px] gap-0">
 
-        {/* Receipt card — overlaps the left panel edge from md up */}
+        {/* Receipt card — overlaps the left panel edge */}
         <div
-          className="w-full max-w-[300px] mx-auto md:mx-0 md:w-[180px] md:shrink-0 relative z-10 md:-ml-[36px]"
+          className="w-[180px] shrink-0 relative z-10 -ml-[36px]"
         >
           <div
             className="bg-white overflow-hidden"
@@ -431,9 +431,9 @@ function ProposalPanel() {
           </div>
         </div>
 
-        {/* Arrow — points down on mobile (stacked), right from md up (side by side) */}
-        <div className="flex items-center justify-center w-full md:w-[40px] shrink-0 mt-0 md:mt-[68px]">
-          <svg width="22" height="12" viewBox="0 0 22 12" fill="none" className="rotate-90 md:rotate-0">
+        {/* Arrow — points right */}
+        <div className="flex items-center justify-center w-[40px] shrink-0 mt-[68px]">
+          <svg width="22" height="12" viewBox="0 0 22 12" fill="none" className="rotate-0">
             <path d="M1 6h20M15 1l6 5-6 5" stroke="#C44818" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </div>
@@ -478,6 +478,106 @@ function ProposalPanel() {
 }
 
 const DURATION = 15000 // ms per tab
+
+const bgImages = [
+  '/images/platform-bg-submissions.jpg',
+  '/images/platform-bg-portals.jpg',
+  '/images/platform-bg-proposals.jpg',
+]
+
+function MobileAccordion() {
+  const [openIdx, setOpenIdx] = useState(0)
+
+  return (
+    <div className="lg:hidden overflow-hidden" style={{ boxShadow: '0px 4px 32px -8px rgba(0,0,0,0.18), 0 0 0 4px rgba(0,0,0,0.02)' }}>
+      {tabs.map((tab, idx) => {
+        const isOpen = openIdx === idx
+        return (
+          <div key={tab.id} className="border-b border-dark/[0.08] last:border-b-0 bg-cream-light">
+            {/* Header — always visible */}
+            <button
+              onClick={() => setOpenIdx(isOpen ? -1 : idx)}
+              className="w-full flex items-start justify-between px-[28px] pt-[32px] pb-[0px] text-left gap-4"
+            >
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-[7px] mb-[16px]">
+                  <img
+                    src="/images/cooper-icon.svg"
+                    alt=""
+                    className="w-[16px] h-[16px] shrink-0"
+                    style={isOpen
+                      ? { filter: 'invert(35%) sepia(70%) saturate(800%) hue-rotate(355deg) brightness(90%)' }
+                      : { filter: 'brightness(0) opacity(0.25)' }
+                    }
+                  />
+                  <p className={`font-grotesk font-medium text-[11px] tracking-[1.2px] uppercase ${isOpen ? 'text-accent-orange' : 'text-dark/30'}`}>
+                    {tab.category}
+                  </p>
+                </div>
+                <h3 className="font-serif text-[26px] leading-[1.2] text-dark">
+                  {tab.title}
+                </h3>
+              </div>
+              <span className="font-sans text-[24px] font-light text-dark/35 shrink-0 mt-[4px] leading-none select-none">
+                {isOpen ? '−' : '+'}
+              </span>
+            </button>
+
+            {/* Description — always visible */}
+            <div className="px-[28px] pt-[20px] pb-[28px]">
+              <p className="font-sans text-[17px] leading-[1.7] text-dark/55">
+                {tab.description}
+              </p>
+            </div>
+
+            {/* Expandable body — checks + image */}
+            <div style={{ maxHeight: isOpen ? '700px' : '0px', overflow: 'hidden', transition: 'max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1)' }}>
+              <div className="px-[28px] pb-[32px]">
+                <div className="flex flex-col gap-[16px]">
+                  {tab.checks.map((check, i) => (
+                    <div key={i} className="flex items-start gap-[10px]">
+                      <img src="/images/check-circle.svg" alt="" className="w-[20px] h-[20px] shrink-0 mt-[2px]" />
+                      <p className="font-sans text-[15px] leading-[1.5] text-dark">{check}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Background image strip with UI panels */}
+              <div className="relative h-[340px] overflow-hidden">
+                <img src={bgImages[idx]} alt="" className="absolute inset-0 w-full h-full object-cover" />
+                <div className="absolute inset-0 mix-blend-hard-light" style={{ backgroundImage: 'linear-gradient(-89.4deg, rgba(186,67,9,0.36) 35%, rgba(186,67,9,0) 70%)' }} />
+                <div className="absolute inset-0 mix-blend-hard-light" style={{ backgroundImage: 'linear-gradient(241.6deg, rgba(186,186,9,0) 43%, rgba(186,89,9,0.43) 57%)' }} />
+                <div className="absolute inset-0 mix-blend-soft-light" style={{ background: 'radial-gradient(ellipse at 90% -15%, rgba(55,27,19,0) 46%, rgba(55,27,19,0.56) 100%)' }} />
+                <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 100% 110%, rgba(55,27,19,0) 46%, rgba(55,27,19,0.52) 100%)' }} />
+                {/* UI panels — only mounted when open so animation replays each time */}
+                {isOpen && (
+                  <div className="absolute inset-0 z-10 overflow-hidden">
+                    {idx === 0 && (
+                      <div style={{ position: 'absolute', top: 40, left: '50%', width: 500, marginLeft: -250, transform: 'scale(0.65)', transformOrigin: 'top center' }}>
+                        <SubmissionPanel />
+                      </div>
+                    )}
+                    {idx === 1 && (
+                      <div style={{ position: 'absolute', top: 36, left: '50%', width: 440, marginLeft: -220, transform: 'scale(0.72)', transformOrigin: 'top center' }}>
+                        <PortalsPanel />
+                      </div>
+                    )}
+                    {idx === 2 && (
+                      <div style={{ position: 'absolute', top: 80, left: '50%', width: 580, marginLeft: -279, transform: 'scale(0.62)', transformOrigin: 'top center' }}>
+                        <ProposalPanel />
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
 
 export default function OnePlatform() {
   const [activeIdx, setActiveIdx] = useState(0)
@@ -528,13 +628,20 @@ export default function OnePlatform() {
     <section className="bg-cream py-[60px] md:py-[100px]">
       <div className="max-w-[1440px] mx-auto px-[20px] md:px-[62px]">
         {/* Heading */}
+<<<<<<< HEAD
         <h2 className="font-serif text-[36px] md:text-[38px] leading-[1.2] text-dark text-center mb-[40px] md:mb-[60px]">
+=======
+        <h2 className="font-serif text-[28px] md:text-[38px] leading-[1.2] text-dark text-center mb-[40px] md:mb-[60px]">
+>>>>>>> feat/mobile-responsive-updates
           One platform,<br className="lg:hidden" /> every workflow
         </h2>
 
-        {/* Card */}
+        {/* Mobile accordion */}
+        <MobileAccordion />
+
+        {/* Card — desktop only */}
         <div
-          className="bg-cream-light border-4 border-black/[0.02] overflow-hidden relative md:max-h-[755px]"
+          className="hidden md:block bg-cream-light border-4 border-black/[0.02] overflow-hidden relative md:max-h-[755px]"
           style={{ boxShadow: '0px 7.5px 69.6px -20px rgba(0,0,0,0.33)' }}
         >
           {/* Tab bar */}

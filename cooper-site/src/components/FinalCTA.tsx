@@ -41,7 +41,7 @@ export default function FinalCTA() {
         />
 
         {/* Heading: line 1 static, line 2 rotating word */}
-        <h2 className="font-serif text-[26px] md:text-[34px] lg:text-[38px] leading-[1.2] text-cream-light mb-[20px] text-center">
+        <h2 className="font-serif text-[42px] md:text-[34px] lg:text-[38px] leading-[1.2] text-cream-light mb-[20px] text-center">
           {/* Line 1 — always fixed, never moves */}
           <span className="block">No more manual</span>
           {/* Line 2 — rotating word in a fixed-height slot */}
@@ -62,9 +62,7 @@ export default function FinalCTA() {
 
         {/* Subtitle */}
         <p className="font-sans text-[17.8px] leading-[1.5] text-white/70 max-w-[480px] mb-[32px]">
-          See Cooper in action with your own submissions.
-          <br />
-          No generic demo. We show how it works for your&nbsp;team.
+          See Cooper in action with your own submissions. No generic demo. We show how it works for your&nbsp;team.
         </p>
 
         {/* Button */}

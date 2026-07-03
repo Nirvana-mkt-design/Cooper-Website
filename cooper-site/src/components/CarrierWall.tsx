@@ -132,7 +132,7 @@ export default function CarrierWall() {
           logos inside fade out / in together as the set swaps */}
       <div className="grid grid-cols-2 gap-[1px] overflow-hidden rounded-[14px] bg-dark/[0.06] sm:grid-cols-3 lg:grid-cols-6">
         {current.map((carrier, cell) => (
-          <div key={cell} className="relative grid place-items-center bg-cream-light min-h-[90px] lg:min-h-[110px]">
+          <div key={cell} className={`relative grid place-items-center bg-cream-light min-h-[90px] lg:min-h-[110px] ${cell >= 10 ? 'hidden sm:grid' : ''}`}>
             <div
               className="flex items-center justify-center px-[8%] transition-[opacity,filter] ease-out"
               style={{

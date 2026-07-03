@@ -21,7 +21,7 @@ export default function Hero() {
   }, [])
 
   return (
-    <section className="relative overflow-hidden min-h-[100dvh] lg:min-h-0 lg:h-[897px]">
+    <section className="relative overflow-hidden min-h-[100dvh] lg:min-h-0 lg:h-[897px] flex flex-col lg:block">
       {/* Background video */}
       <div className="absolute inset-0">
         <video
@@ -61,12 +61,12 @@ export default function Hero() {
       />
 
       {/* Content */}
-      <div className="relative z-10 max-w-[1440px] mx-auto px-5 md:px-10 lg:px-[62px] pt-[120px] md:pt-[180px] lg:pt-[254px]">
+      <div className="relative z-10 max-w-[1440px] mx-auto px-5 md:px-10 lg:px-[62px] flex-1 flex flex-col justify-center pt-[80px] pb-[120px] lg:flex-none lg:block lg:pt-[254px] lg:pb-0">
         <div className="max-w-[794px]">
           <p className="animate-fade-blur-in font-grotesk font-medium text-[14.5px] tracking-[1.45px] uppercase text-[#fffcf1]/80 mb-[20px]" style={{ animationDelay: '0.2s' }}>
             Built for Insurance Professionals
           </p>
-          <h1 className="font-serif text-[40px] md:text-[64px] lg:text-[96px] leading-[1.05] text-cream-light mb-[20px]" style={{ textIndent: '-5px' }}>
+          <h1 className="font-serif text-[72px] md:text-[64px] lg:text-[96px] leading-[1.05] text-cream-light mb-[20px]" style={{ textIndent: '-5px' }}>
             <span className="animate-fade-blur-in block" style={{ animationDelay: '0.5s' }}>More business. </span>
             <span className="animate-fade-blur-in block" style={{ animationDelay: '0.8s' }}>Less busywork.</span>
           </h1>
@@ -106,8 +106,8 @@ export default function Hero() {
 
         {/* Mobile: "Built For" fixed, personas as an auto-rotating carousel */}
         <div className="flex lg:hidden items-center gap-5">
-          <span className="animate-fade-blur-in font-serif text-[26px] md:text-[34px] leading-[1.15] text-cream-light shrink-0" style={{ animationDelay: '1.4s' }}>
-            Built<br />For
+          <span className="animate-fade-blur-in font-serif text-[26px] md:text-[34px] leading-[1.15] text-cream-light shrink-0 whitespace-nowrap" style={{ animationDelay: '1.4s' }}>
+            Built For
           </span>
           <div className="flex-1 min-w-0">
             {/* Sliding persona label — centered in the remaining space */}
