@@ -84,6 +84,16 @@
   100% { transform: scale(1); }
 }
 
+/* Mobile connector flow — normalized (pathLength=1) travelling orange dash */
+@keyframes integ-flow {
+  from { stroke-dashoffset: 1; }
+  to   { stroke-dashoffset: 0; }
+}
+@keyframes integ-flow-rev {
+  from { stroke-dashoffset: 0; }
+  to   { stroke-dashoffset: 1; }
+}
+
 @keyframes slot-roll-in {
   0% {
     transform: translateY(100%);
