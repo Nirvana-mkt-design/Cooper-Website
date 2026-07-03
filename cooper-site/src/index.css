@@ -62,6 +62,27 @@
   from { stroke-dashoffset: 0; }
   to   { stroke-dashoffset: -800; }
 }
+@keyframes trim-bracket-v {
+  from { stroke-dashoffset: 0; }
+  to   { stroke-dashoffset: -400; }
+}
+@keyframes trim-bracket-v-rev {
+  from { stroke-dashoffset: 0; }
+  to   { stroke-dashoffset: 400; }
+}
+@keyframes trim-bracket-h {
+  from { stroke-dashoffset: 0; }
+  to   { stroke-dashoffset: -450; }
+}
+@keyframes trim-bracket-h-rev {
+  from { stroke-dashoffset: 0; }
+  to   { stroke-dashoffset: 450; }
+}
+@keyframes orb-bump {
+  0%, 85% { transform: scale(1); }
+  92% { transform: scale(1.025); }
+  100% { transform: scale(1); }
+}
 
 @keyframes slot-roll-in {
   0% {

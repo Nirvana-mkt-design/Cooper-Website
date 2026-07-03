@@ -1,8 +1,7 @@
 /* ──────────────────────────────────────────────────────────────
    Integrations — "Works with the tools you already use".
-   Desktop: 1280×800 canvas scaled to fit. 4 standalone boxes
-   separated by SVG rails (grey gradient + orange trim-path anim).
-   Labels live inside each box. Carriers = static + scroll + more.
+   Desktop: 1297×858 scaled canvas. Hub-and-spoke layout with
+   L-bracket connectors and floating chip groups (Figma ref).
    Mobile: stacked single column (unchanged).
 ─────────────────────────────────────────────────────────────── */
 
@@ -46,8 +45,8 @@ const GROUPS: Record<'ams' | 'carriers' | 'documents' | 'communication', Group> 
     label: 'Carriers',
     more: '+ hundreds more',
     chips: [
-      { src: logo.travelers,     label: 'Travelers',     h: 22 },
-      { src: logo.libertymutual, label: 'Liberty Mutual', h: 28 },
+      { src: logo.travelers,     label: 'Travelers',      h: 22 },
+      { src: logo.libertymutual, label: 'Liberty Mutual',  h: 28 },
       { src: logo.chubb,         label: 'Chubb', crop: true },
     ],
   },
@@ -117,11 +116,11 @@ function ChipTag({ item }: { item: Chip }) {
   )
 }
 
-/* Text-only pill for desktop carrier scroll */
+/* Text-only pill for carrier scroll */
 function TextChip({ label }: { label: string }) {
   return (
     <div
-      className="relative inline-flex w-fit items-center rounded-[30px] px-[20px] py-[10px]"
+      className="relative inline-flex w-fit items-center rounded-[30px] px-[20px] py-[10px] h-[46px]"
       style={{
         border: '1px solid transparent',
         background:
@@ -136,22 +135,57 @@ function TextChip({ label }: { label: string }) {
   )
 }
 
-/* ── Desktop: label inside box ── */
-function BoxLabel({ children }: { children: string }) {
+/* ── Desktop: category label near center ── */
+function CanvasLabel({ children }: { children: string }) {
   return (
-    <div className="mb-[22px]">
-      <div
-        className="font-grotesk font-medium uppercase leading-none"
-        style={{ fontSize: 26, letterSpacing: '3.5px', color: 'rgba(30,26,21,0.16)' }}
-      >
-        {children}
-      </div>
-      <div className="flex gap-[5px] mt-[10px]">
-        {Array.from({ length: 14 }).map((_, i) => (
-          <div key={i} style={{ width: 3, height: 3, borderRadius: '50%', backgroundColor: 'rgba(30,26,21,0.13)' }} />
-        ))}
+    <span
+      className="font-grotesk font-medium uppercase leading-none"
+      style={{
+        fontSize: 22,
+        letterSpacing: '2.27px',
+        color: 'rgba(30,26,21,0.40)',
+        textDecoration: 'underline',
+        textDecorationStyle: 'dotted',
+        textDecorationColor: 'rgba(30,26,21,0.25)',
+        textUnderlineOffset: '6px',
+      }}
+    >
+      {children}
+    </span>
+  )
+}
+
+/* ── Mobile cluster ── */
+function Cluster({ group }: { group: Group }) {
+  return (
+    <div className="flex flex-col gap-[26px]">
+      <span className="font-grotesk text-[14.5px] font-medium uppercase leading-none tracking-[1.45px] text-dark underline decoration-dotted decoration-dark/40 underline-offset-[5px]">
+        {group.label}
+      </span>
+      <ChipGrid group={group} />
+    </div>
+  )
+}
+
+function ChipGrid({ group, twoCol = true }: { group: Group; twoCol?: boolean }) {
+  return (
+    <div className={`grid gap-x-[10px] gap-y-[10px] justify-start ${twoCol ? 'grid-cols-[auto_auto]' : 'grid-cols-1'}`}>
+      {group.chips.map((c, i) => (
+        <ChipTag key={i} item={c} />
+      ))}
+      <div className="flex items-center whitespace-nowrap px-[10px] font-grotesk text-[13px] font-medium uppercase leading-none tracking-[1.1px] text-dark/55">
+        {group.more}
       </div>
     </div>
+  )
+}
+
+/* ── Mobile Cooper orb ── */
+function CooperOrb({ size = 144 }: { size?: number }) {
+  const RATIO = 244 / 144.623
+  const total = size * RATIO
+  return (
+    <img src="/images/integ/orb.svg" alt="" aria-hidden className="pointer-events-none" style={{ width: total, height: total }} />
   )
 }
 
@@ -160,10 +194,10 @@ function DesktopCarrierScroll() {
   const doubled = [...SCROLL_NAMES, ...SCROLL_NAMES]
   return (
     <div
-      className="overflow-hidden"
       style={{
-        maskImage: 'linear-gradient(to right, transparent, black 12%, black 88%, transparent)',
-        WebkitMaskImage: 'linear-gradient(to right, transparent, black 12%, black 88%, transparent)',
+        overflow: 'hidden',
+        maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
+        WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
       }}
     >
       <div
@@ -182,41 +216,6 @@ function DesktopCarrierScroll() {
   )
 }
 
-/* ── ChipGrid for both mobile and desktop box interiors ── */
-function ChipGrid({ group, twoCol = true }: { group: Group; twoCol?: boolean }) {
-  return (
-    <div className={`grid gap-x-[10px] gap-y-[10px] justify-start ${twoCol ? 'grid-cols-[auto_auto]' : 'grid-cols-1'}`}>
-      {group.chips.map((c, i) => (
-        <ChipTag key={i} item={c} />
-      ))}
-      <div className="flex items-center whitespace-nowrap px-[10px] font-grotesk text-[13px] font-medium uppercase leading-none tracking-[1.1px] text-dark/55">
-        {group.more}
-      </div>
-    </div>
-  )
-}
-
-/* ── Mobile cluster ── */
-function Cluster({ group }: { group: Group }) {
-  return (
-    <div className="flex flex-col gap-[26px]">
-      <span className="font-grotesk text-[14.5px] font-medium uppercase leading-none tracking-[1.45px] text-dark underline decoration-dotted decoration-dark/40 underline-offset-[5px]">
-        {group.label}
-      </span>
-      <ChipGrid group={group} />
-    </div>
-  )
-}
-
-/* ── Mobile Cooper orb ── */
-function CooperOrb({ size = 144 }: { size?: number }) {
-  const RATIO = 244 / 144.623
-  const total = size * RATIO
-  return (
-    <img src="/images/integ/orb.svg" alt="" aria-hidden className="pointer-events-none" style={{ width: total, height: total }} />
-  )
-}
-
 /* ── Canvas scale hook ── */
 function useCanvasScale(targetW: number) {
   const ref = useRef<HTMLDivElement>(null)
@@ -232,12 +231,112 @@ function useCanvasScale(targetW: number) {
   return { ref, scale }
 }
 
-/* ── Canvas constants ── */
-const CW = 1280   // canvas width
-const CH = 800    // canvas height
-const RX = 620    // vertical rail x  (center of horizontal gap)
-const RY = 400    // horizontal rail y (center of vertical gap)
-const BP = 36     // box inner padding
+/* ── Canvas constants (match Figma: 1297×858) ── */
+const CW = 1297
+const CH = 858
+
+/* L-bracket SVG paths (Figma node 65:431 ff.) */
+const V_PATH = 'M89.0874 237.378V31C89.0874 14.4315 75.6559 1 59.0874 1H0'
+const V_VB   = '0 0 90.0874 237.378'
+const H_PATH = 'M124.025 262.75V31C124.025 14.4315 110.594 1 94.0254 1H0'
+const H_VB   = '0 0 125.025 262.75'
+
+/* Stable random from a seed (for consistent animation offsets per bracket) */
+function seededRandom(seed: number) {
+  const x = Math.sin(seed * 9301 + 49297) * 49297
+  return x - Math.floor(x)
+}
+
+/* ── L-bracket connector component ──
+   fadeV/fadeH control which LOCAL edges get the gradient fade.
+   'start' = top/left edge, 'end' = bottom/right edge. */
+function Bracket({
+  left, top, outerW, outerH, innerW, innerH, innerTransform, path, viewBox, orange, reverse,
+  fadeV = 'end', fadeH = 'start',
+}: {
+  left: number; top: number; outerW: number; outerH: number
+  innerW: number; innerH: number; innerTransform: string
+  path: string; viewBox: string; orange?: boolean; reverse?: boolean
+  fadeV?: 'start' | 'end'; fadeH?: 'start' | 'end'
+}) {
+  const isH = path === H_PATH
+  // Each bracket gets a unique but stable random delay and duration based on position
+  const seed = left * 7 + top * 13 + (reverse ? 31 : 0)
+  const animDelay = `${-(seededRandom(seed) * 8).toFixed(2)}s`
+  const animDuration = `${(4 + seededRandom(seed + 1) * 3).toFixed(2)}s`
+  const vMask = fadeV === 'end'
+    ? 'linear-gradient(to top, transparent, black 30%)'
+    : 'linear-gradient(to bottom, transparent, black 30%)'
+  const hMask = fadeH === 'start'
+    ? 'linear-gradient(to right, transparent, black 30%)'
+    : 'linear-gradient(to left, transparent, black 30%)'
+  return (
+    <div
+      className="absolute pointer-events-none"
+      style={{ left, top, width: outerW, height: outerH, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+    >
+      <div style={{ transform: innerTransform, flex: 'none' }}>
+        <div
+          style={{
+            width: innerW, height: innerH, position: 'relative',
+            maskImage: `${vMask}, ${hMask}`,
+            maskComposite: 'intersect',
+            WebkitMaskComposite: 'destination-in' as never,
+          }}
+        >
+          <svg viewBox={viewBox} fill="none" style={{ display: 'block', width: '100%', height: '100%', overflow: 'visible' }}>
+            {orange ? (
+              <>
+                {/* Soft halo — wider dash, low opacity for gradient edges */}
+                <path
+                  d={path}
+                  stroke="rgba(186,67,9,0.2)"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeDasharray="80 380"
+                  style={{
+                    animation: `${isH ? (reverse ? 'trim-bracket-h-rev' : 'trim-bracket-h') : (reverse ? 'trim-bracket-v-rev' : 'trim-bracket-v')} ${animDuration} linear infinite`,
+                    animationDelay: animDelay,
+                  }}
+                />
+                {/* Core dash — narrower, full opacity */}
+                <path
+                  d={path}
+                  stroke="rgba(186,67,9,0.85)"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeDasharray="45 415"
+                  style={{
+                    animation: `${isH ? (reverse ? 'trim-bracket-h-rev' : 'trim-bracket-h') : (reverse ? 'trim-bracket-v-rev' : 'trim-bracket-v')} ${animDuration} linear infinite`,
+                    animationDelay: animDelay,
+                  }}
+                />
+              </>
+            ) : (
+              <path
+                d={path}
+                stroke="rgba(30,26,21,0.22)"
+                strokeWidth="1.2"
+                opacity="0.6"
+              />
+            )}
+          </svg>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* Shorthand for rendering both grey + orange bracket at same position.
+   `reverse` flips the orange dash direction (away from Cooper instead of toward). */
+function BracketPair(props: Omit<Parameters<typeof Bracket>[0], 'orange'>) {
+  return (
+    <>
+      <Bracket {...props} />
+      <Bracket {...props} orange />
+    </>
+  )
+}
 
 export default function Integrations() {
   const { ref: canvasRef, scale } = useCanvasScale(CW)
@@ -268,7 +367,7 @@ export default function Integrations() {
         ────────────────────────────────────────── */}
         <div
           ref={canvasRef}
-          className="hidden xl:block relative mt-[40px] overflow-hidden rounded-[16px] border border-dark/[0.08] bg-cream-light"
+          className="hidden xl:block relative mt-[40px] overflow-hidden rounded-[20px] border border-dark/[0.08] bg-cream-light"
         >
           {/* Aspect-ratio spacer */}
           <div style={{ paddingBottom: `${(CH / CW) * 100}%` }} />
@@ -278,111 +377,105 @@ export default function Integrations() {
             className="absolute top-0 left-0"
             style={{ width: CW, height: CH, transformOrigin: 'top left', transform: `scale(${scale})` }}
           >
-            {/* Grid background texture */}
+            {/* Grid background */}
             <img
               src="/images/integ/grid-bg.png"
               alt="" aria-hidden
               className="absolute inset-0 w-full h-full object-cover pointer-events-none"
             />
 
-            {/* ── SVG rails ── */}
-            <svg className="absolute inset-0 pointer-events-none" width={CW} height={CH}>
-              <defs>
-                <linearGradient id="integ-hg" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%"   stopColor="rgba(30,26,21,0)" />
-                  <stop offset="10%"  stopColor="rgba(30,26,21,0.22)" />
-                  <stop offset="90%"  stopColor="rgba(30,26,21,0.22)" />
-                  <stop offset="100%" stopColor="rgba(30,26,21,0)" />
-                </linearGradient>
-                <linearGradient id="integ-vg" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%"   stopColor="rgba(30,26,21,0)" />
-                  <stop offset="10%"  stopColor="rgba(30,26,21,0.22)" />
-                  <stop offset="90%"  stopColor="rgba(30,26,21,0.22)" />
-                  <stop offset="100%" stopColor="rgba(30,26,21,0)" />
-                </linearGradient>
-              </defs>
+            {/* ── L-bracket connectors (Figma node 65:431 ff.) ── */}
 
-              {/* Grey horizontal rail */}
-              <line x1={0} y1={RY} x2={CW} y2={RY} stroke="url(#integ-hg)" strokeWidth={1.5} />
-              {/* Grey vertical rail */}
-              <line x1={RX} y1={0} x2={RX} y2={CH} stroke="url(#integ-vg)" strokeWidth={1.5} />
+            {/* Vertical — top pair: left goes toward Cooper, right goes away */}
+            <BracketPair left={556} top={118} outerW={89} outerH={236} innerW={89} innerH={236} innerTransform="none"                     path={V_PATH} viewBox={V_VB} />
+            <BracketPair left={644} top={118} outerW={89} outerH={236} innerW={89} innerH={236} innerTransform="scaleY(-1) rotate(180deg)" path={V_PATH} viewBox={V_VB} reverse />
 
-              {/* Orange trim-path — horizontal */}
-              <line
-                x1={0} y1={RY} x2={CW} y2={RY}
-                stroke="rgba(186,67,9,0.85)" strokeWidth={2}
-                strokeDasharray={`70 ${CW}`}
-                style={{ animation: 'trim-h-rail 5s linear infinite' }}
-              />
-              {/* Orange trim-path — vertical */}
-              <line
-                x1={RX} y1={0} x2={RX} y2={CH}
-                stroke="rgba(186,67,9,0.85)" strokeWidth={2}
-                strokeDasharray={`70 ${CH}`}
-                style={{ animation: 'trim-v-rail 4s linear infinite' }}
-              />
-            </svg>
+            {/* Vertical — bottom pair: left goes away, right goes toward Cooper */}
+            <BracketPair left={556} top={494} outerW={89} outerH={236} innerW={89} innerH={236} innerTransform="scaleY(-1)"               path={V_PATH} viewBox={V_VB} reverse />
+            <BracketPair left={644} top={494} outerW={89} outerH={236} innerW={89} innerH={236} innerTransform="rotate(180deg)"            path={V_PATH} viewBox={V_VB} />
 
-            {/* ── AMS — top-left ── */}
-            <div
-              className="absolute bg-cream-light overflow-hidden"
-              style={{ left: 40, top: 40, width: 540, height: 320, borderRadius: 16, border: '1px solid rgba(30,26,21,0.10)' }}
-            >
-              <div style={{ padding: BP }}>
-                <BoxLabel>AMS</BoxLabel>
-                <ChipGrid group={GROUPS.ams} />
+            {/* Horizontal — left pair: top goes toward Cooper, bottom goes away */}
+            <BracketPair left={311} top={300} outerW={261} outerH={124} innerW={124} innerH={261} innerTransform="rotate(90deg) scaleY(-1)"  path={H_PATH} viewBox={H_VB} />
+            <BracketPair left={311} top={424} outerW={261} outerH={124} innerW={124} innerH={261} innerTransform="rotate(-90deg)"             path={H_PATH} viewBox={H_VB} reverse />
+
+            {/* Horizontal — right pair: top goes away, bottom goes toward Cooper */}
+            <BracketPair left={717} top={300} outerW={261} outerH={124} innerW={124} innerH={261} innerTransform="rotate(90deg)"              path={H_PATH} viewBox={H_VB} reverse />
+            <BracketPair left={717} top={424} outerW={261} outerH={124} innerW={124} innerH={261} innerTransform="rotate(-90deg) scaleY(-1)"  path={H_PATH} viewBox={H_VB} />
+
+            {/* ── Category labels — float near center ── */}
+            <div className="absolute" style={{ left: 431, top: 297, transform: 'translateY(-50%)' }}>
+              <CanvasLabel>AMS</CanvasLabel>
+            </div>
+            <div className="absolute" style={{ left: 746, top: 297, transform: 'translateY(-50%)' }}>
+              <CanvasLabel>Carriers</CanvasLabel>
+            </div>
+            <div className="absolute" style={{ left: 392, top: 538, transform: 'translateY(-50%)' }}>
+              <CanvasLabel>Documents</CanvasLabel>
+            </div>
+            <div className="absolute" style={{ left: 719, top: 538, transform: 'translateY(-50%)' }}>
+              <CanvasLabel>Communication</CanvasLabel>
+            </div>
+
+            {/* ── AMS chip group — top-left ── */}
+            <div className="absolute" style={{ left: 178, top: 125 }}>
+              <div className="grid gap-x-[5px] gap-y-[10px]" style={{ gridTemplateColumns: 'auto auto' }}>
+                {GROUPS.ams.chips.map((c, i) => <ChipTag key={i} item={c} />)}
+                <div className="flex items-center px-[10px] font-grotesk text-[13px] font-medium uppercase tracking-[1.1px] text-dark/55 whitespace-nowrap">
+                  {GROUPS.ams.more}
+                </div>
               </div>
             </div>
 
-            {/* ── Carriers — top-right ── */}
-            <div
-              className="absolute bg-cream-light overflow-hidden"
-              style={{ left: 700, top: 40, width: 540, height: 320, borderRadius: 16, border: '1px solid rgba(30,26,21,0.10)' }}
-            >
-              <div style={{ padding: BP, paddingBottom: 24 }}>
-                <BoxLabel>Carriers</BoxLabel>
-                {/* Static featured carriers */}
-                <div className="flex gap-[10px] mb-[12px]">
+            {/* ── Carriers chip group — top-right ── */}
+            <div className="absolute" style={{ left: 799, top: 115, width: 416, overflow: 'hidden' }}>
+              <div className="flex flex-col gap-[13px]">
+                <div className="flex gap-[14px] items-center">
                   <ChipTag item={GROUPS.carriers.chips[0]} />
                   <ChipTag item={GROUPS.carriers.chips[1]} />
                 </div>
-                {/* Infinity scroll — names only */}
-                <DesktopCarrierScroll />
-                {/* More label */}
-                <div className="mt-[12px] font-grotesk text-[13px] font-medium uppercase tracking-[1.1px] text-dark/50">
-                  + hundreds more
+                <div className="flex gap-[14px] items-center">
+                  <ChipTag item={GROUPS.carriers.chips[2]} />
+                  <DesktopCarrierScroll />
+                </div>
+                <div className="px-[10px] font-grotesk text-[13px] font-medium uppercase tracking-[1.1px] text-dark/50">
+                  {GROUPS.carriers.more}
                 </div>
               </div>
             </div>
 
-            {/* ── Documents — bottom-left ── */}
-            <div
-              className="absolute bg-cream-light overflow-hidden"
-              style={{ left: 40, top: 440, width: 540, height: 320, borderRadius: 16, border: '1px solid rgba(30,26,21,0.10)' }}
-            >
-              <div style={{ padding: BP }}>
-                <BoxLabel>Documents</BoxLabel>
-                <ChipGrid group={GROUPS.documents} />
+            {/* ── Documents chip group — bottom-left ── */}
+            <div className="absolute" style={{ left: 200, top: 630 }}>
+              <div className="grid gap-x-[5px] gap-y-[10px]" style={{ gridTemplateColumns: 'auto auto' }}>
+                {GROUPS.documents.chips.map((c, i) => <ChipTag key={i} item={c} />)}
+                <div className="flex items-center px-[10px] font-grotesk text-[13px] font-medium uppercase tracking-[1.1px] text-dark/55 whitespace-nowrap">
+                  {GROUPS.documents.more}
+                </div>
               </div>
             </div>
 
-            {/* ── Communication — bottom-right ── */}
-            <div
-              className="absolute bg-cream-light overflow-hidden"
-              style={{ left: 700, top: 440, width: 540, height: 320, borderRadius: 16, border: '1px solid rgba(30,26,21,0.10)' }}
-            >
-              <div style={{ padding: BP }}>
-                <BoxLabel>Communication</BoxLabel>
-                <ChipGrid group={GROUPS.communication} twoCol={false} />
+            {/* ── Communication chip group — bottom-right ── */}
+            <div className="absolute" style={{ left: 814, top: 634 }}>
+              <div className="flex flex-wrap gap-[16px] items-center">
+                {GROUPS.communication.chips.map((c, i) => <ChipTag key={i} item={c} />)}
+                <div className="px-[10px] font-grotesk text-[13px] font-medium uppercase tracking-[1.1px] text-dark/55 whitespace-nowrap">
+                  {GROUPS.communication.more}
+                </div>
               </div>
             </div>
 
-            {/* ── Cooper orb at rail intersection ── */}
+            {/* ── Cooper orb at canvas center ── */}
             <div
               className="absolute z-10 pointer-events-none"
-              style={{ left: RX - 122, top: RY - 122, width: 244, height: 244 }}
+              style={{ left: CW / 2 - 122, top: CH / 2 - 122, width: 244, height: 244 }}
             >
-              <img src="/images/integ/orb.svg" alt="" aria-hidden style={{ width: 244, height: 244 }} />
+              <img
+                src="/images/integ/orb.svg"
+                alt="" aria-hidden
+                style={{
+                  width: 244, height: 244,
+                  animation: 'orb-bump 4s ease-in-out infinite',
+                }}
+              />
             </div>
           </div>
         </div>
