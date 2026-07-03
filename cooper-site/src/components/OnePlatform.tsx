@@ -628,11 +628,7 @@ export default function OnePlatform() {
     <section className="bg-cream py-[60px] md:py-[100px]">
       <div className="max-w-[1440px] mx-auto px-[20px] md:px-[62px]">
         {/* Heading */}
-<<<<<<< HEAD
         <h2 className="font-serif text-[36px] md:text-[38px] leading-[1.2] text-dark text-center mb-[40px] md:mb-[60px]">
-=======
-        <h2 className="font-serif text-[28px] md:text-[38px] leading-[1.2] text-dark text-center mb-[40px] md:mb-[60px]">
->>>>>>> feat/mobile-responsive-updates
           One platform,<br className="lg:hidden" /> every workflow
         </h2>
 
