@@ -2,7 +2,8 @@
    Integrations — "Works with the tools you already use".
    Desktop: 1297×858 scaled canvas. Hub-and-spoke layout with
    L-bracket connectors and floating chip groups (Figma ref).
-   Mobile: stacked single column (unchanged).
+   Mobile: 390×1515 scaled canvas, hub-and-spoke stacked
+   vertically (Figma node 6280:1137).
 ─────────────────────────────────────────────────────────────── */
 
 import { useEffect, useRef, useState } from 'react'
@@ -155,37 +156,52 @@ function CanvasLabel({ children }: { children: string }) {
   )
 }
 
-/* ── Mobile cluster ── */
-function Cluster({ group }: { group: Group }) {
-  return (
-    <div className="flex flex-col gap-[26px]">
-      <span className="font-grotesk text-[14.5px] font-medium uppercase leading-none tracking-[1.45px] text-dark underline decoration-dotted decoration-dark/40 underline-offset-[5px]">
-        {group.label}
+/* ── Mobile chips (Figma mobile canvas ≈ 0.784× the desktop chip) ── */
+const M = 0.784 // mobile scale factor vs desktop chip metrics
+
+function MobileChipIcon({ item }: { item: Chip }) {
+  if (item.crop) {
+    return (
+      <span className="relative block shrink-0 overflow-hidden" style={{ height: 18, width: 26 }}>
+        <img src={item.src} alt="" className="absolute left-0 top-0 h-full w-[693%] max-w-none" />
       </span>
-      <ChipGrid group={group} />
+    )
+  }
+  return (
+    <img
+      src={item.src}
+      alt=""
+      className="w-auto shrink-0 object-contain"
+      style={{ height: (item.h ?? 24) * M, maxWidth: (item.maxW ?? 36) * M }}
+    />
+  )
+}
+
+function MobileChipTag({ item }: { item: Chip }) {
+  return (
+    <div
+      className="relative inline-flex w-fit items-center gap-[7.8px] rounded-[23.5px] px-[15.7px] py-[7.8px]"
+      style={{
+        border: '0.784px solid transparent',
+        background:
+          'linear-gradient(#fffcf1, #fffcf1) padding-box, linear-gradient(154deg, rgba(30,26,21,0.29) 6%, rgba(30,26,21,0) 100%) border-box',
+        boxShadow: '0 5.9px 54.6px -15.7px rgba(30,26,21,0.33), inset 5.5px 4.7px 18.1px 0 rgba(30,26,21,0.10)',
+      }}
+    >
+      <MobileChipIcon item={item} />
+      <span className="whitespace-nowrap font-grotesk text-[11.3px] font-medium uppercase leading-none tracking-[1.13px] text-dark">
+        {item.label}
+      </span>
     </div>
   )
 }
 
-function ChipGrid({ group, twoCol = true }: { group: Group; twoCol?: boolean }) {
+/* Mobile "and more" / "+ hundreds more" pill text */
+function MoreText({ children }: { children: string }) {
   return (
-    <div className={`grid gap-x-[10px] gap-y-[10px] justify-start ${twoCol ? 'grid-cols-[auto_auto]' : 'grid-cols-1'}`}>
-      {group.chips.map((c, i) => (
-        <ChipTag key={i} item={c} />
-      ))}
-      <div className="flex items-center whitespace-nowrap px-[10px] font-grotesk text-[13px] font-medium uppercase leading-none tracking-[1.1px] text-dark/55">
-        {group.more}
-      </div>
+    <div className="flex items-center whitespace-nowrap p-[7.8px] font-grotesk text-[11.3px] font-medium uppercase leading-none tracking-[1.13px] text-dark/80">
+      {children}
     </div>
-  )
-}
-
-/* ── Mobile Cooper orb ── */
-function CooperOrb({ size = 144 }: { size?: number }) {
-  const RATIO = 244 / 144.623
-  const total = size * RATIO
-  return (
-    <img src="/images/integ/orb.svg" alt="" aria-hidden className="pointer-events-none" style={{ width: total, height: total }} />
   )
 }
 
@@ -234,6 +250,10 @@ function useCanvasScale(targetW: number) {
 /* ── Canvas constants (match Figma: 1297×858) ── */
 const CW = 1297
 const CH = 858
+
+/* ── Mobile canvas constants (match Figma mobile card: 390×1515) ── */
+const MCW = 390
+const MCH = 1515
 
 /* L-bracket SVG paths (Figma node 65:431 ff.) */
 const V_PATH = 'M89.0874 237.378V31C89.0874 14.4315 75.6559 1 59.0874 1H0'
@@ -335,6 +355,186 @@ function BracketPair(props: Omit<Parameters<typeof Bracket>[0], 'orange'>) {
       <Bracket {...props} />
       <Bracket {...props} orange />
     </>
+  )
+}
+
+/* ── Mobile connectors (Figma groups 1000005510 / 1000005509) ──
+   Inline SVG so the orange can flow. Two grey base paths + a
+   travelling orange dash (normalized pathLength) + cream fade
+   masks over the line ends. */
+type ConnCfg = {
+  viewBox: string
+  v203: string
+  v204: string
+  rects: { x?: number; y?: number; w: number; h: number; transform?: string }[]
+}
+
+const CONN: Record<'top' | 'bottom', ConnCfg> = {
+  top: {
+    viewBox: '0 0 262.936 617.842',
+    v203: 'M93.5009 0.000177191V96.8205C93.5009 113.389 80.0695 126.82 63.5009 126.82H4.41357',
+    v204: 'M93.2847 0V96.8203C93.2847 113.389 106.716 126.82 123.285 126.82H231.936C248.505 126.82 261.936 140.252 261.936 156.82V550.639C261.936 567.207 248.505 580.639 231.936 580.639H93.2847',
+    rects: [
+      { w: 74.4062, h: 115.249, transform: 'matrix(0 1 1 0 0 90.176)' },
+      { w: 74.4062, h: 115.249, transform: 'matrix(0 1 1 0 83.2466 543.436)' },
+      { x: 61.4902, y: 0, w: 74.4062, h: 115.249 },
+    ],
+  },
+  bottom: {
+    viewBox: '0 0 281.702 513.949',
+    v203: 'M93.5009 1.71456e-06V96.8203C93.5009 113.389 80.0695 126.82 63.5009 126.82H4.41357',
+    v204: 'M93.2847 0.000556946V152.838C93.2847 169.407 106.716 182.838 123.285 182.838H217.894C234.462 182.838 247.894 196.27 247.894 212.838V450.436C247.894 467.004 234.462 480.436 217.894 480.436H177.082',
+    rects: [
+      { w: 74.4062, h: 115.249, transform: 'matrix(0 1 1 0 0 90.1758)' },
+      { w: 74.4062, h: 115.249, transform: 'matrix(0 1 1 0 166.452 439.543)' },
+      { x: 61.4902, y: 0, w: 74.4062, h: 115.249 },
+    ],
+  },
+}
+
+function MobileConnector({
+  cfg, gradId, flowRev, left, top, width, height, transform,
+}: {
+  cfg: ConnCfg; gradId: string; flowRev?: boolean
+  left: number; top: number; width: number; height: number; transform?: string
+}) {
+  const anim = `${flowRev ? 'integ-flow-rev' : 'integ-flow'} 3.2s linear infinite`
+  return (
+    <svg
+      viewBox={cfg.viewBox}
+      preserveAspectRatio="none"
+      fill="none"
+      className="absolute pointer-events-none overflow-visible"
+      style={{ left, top, width, height, transform }}
+    >
+      <defs>
+        <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="115.249" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#FFFCF1" />
+          <stop offset="1" stopColor="#FFFCF1" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+
+      {/* grey base */}
+      <path d={cfg.v203} stroke="#CCCCCC" strokeWidth={2} opacity={0.6} />
+      <path d={cfg.v204} stroke="#CCCCCC" strokeWidth={2} opacity={0.6} />
+
+      {/* travelling orange dash — halo + core */}
+      {[cfg.v203, cfg.v204].map((d, i) => (
+        <g key={i}>
+          <path d={d} pathLength={1} stroke="rgba(218,76,7,0.22)" strokeWidth={4}
+            strokeLinecap="round" strokeDasharray="0.16 0.84" style={{ animation: anim }} />
+          <path d={d} pathLength={1} stroke="rgba(218,76,7,0.95)" strokeWidth={2}
+            strokeLinecap="round" strokeDasharray="0.09 0.91" style={{ animation: anim }} />
+        </g>
+      ))}
+
+      {/* cream fade masks over the line ends */}
+      {cfg.rects.map((r, i) => (
+        <rect key={i} x={r.x} y={r.y} width={r.w} height={r.h} transform={r.transform} fill={`url(#${gradId})`} />
+      ))}
+    </svg>
+  )
+}
+
+/* ──────────────────────────────────────────
+    MOBILE — scaled 390×1515 canvas (below xl)
+    Hub-and-spoke stacked vertically (Figma node 6280:1137).
+    Capped at 390px + centered so it never balloons on tablet.
+──────────────────────────────────────── */
+function MobileIntegrations() {
+  const { ref, scale } = useCanvasScale(MCW)
+  const fade = 'linear-gradient(to right, black 72%, transparent)'
+  return (
+    <div className="mx-auto mt-[40px] w-full max-w-[390px] xl:hidden">
+      <div ref={ref} className="relative overflow-hidden rounded-[16px] border border-dark/[0.08] bg-cream-light">
+        {/* Aspect-ratio spacer */}
+        <div style={{ paddingBottom: `${(MCH / MCW) * 100}%` }} />
+
+        {/* Scaled canvas */}
+        <div
+          className="absolute top-0 left-0"
+          style={{ width: MCW, height: MCH, transformOrigin: 'top left', transform: `scale(${scale})` }}
+        >
+          {/* Grid background */}
+          <img
+            src="/images/integ/grid-bg.png"
+            alt="" aria-hidden
+            className="absolute inset-0 h-full w-full object-cover opacity-50 pointer-events-none"
+          />
+
+          {/* Connectors — flowing orange dash toward Cooper */}
+          <MobileConnector
+            cfg={CONN.top} gradId="mc-top-fade" flowRev
+            left={97.5} top={71.5} width={261.9} height={617.8}
+            transform="rotate(180deg) scaleX(-1)"
+          />
+          <MobileConnector
+            cfg={CONN.bottom} gradId="mc-bot-fade" flowRev
+            left={97.5} top={774.8} width={281.7} height={513.9}
+          />
+
+          {/* Cooper orb (visible square 119.7px; orb.svg has glow padding ⇒ render 202px) */}
+          <img
+            src="/images/integ/orb.svg"
+            alt="" aria-hidden
+            className="absolute z-10 pointer-events-none"
+            style={{ left: 93.5, top: 621.5, width: 202, height: 202, animation: 'orb-bump 4s ease-in-out infinite' }}
+          />
+
+          {/* Category labels */}
+          <div className="absolute" style={{ left: 32.7, top: 100 }}><CanvasLabel>AMS</CanvasLabel></div>
+          <div className="absolute" style={{ left: 32.7, top: 327 }}><CanvasLabel>Carriers</CanvasLabel></div>
+          <div className="absolute" style={{ left: 40.6, top: 995 }}><CanvasLabel>Documents</CanvasLabel></div>
+          <div className="absolute" style={{ left: 40.6, top: 1240 }}><CanvasLabel>Communication</CanvasLabel></div>
+
+          {/* AMS — top-left 2-col grid */}
+          <div
+            className="absolute grid grid-cols-2 justify-items-start gap-x-[3.9px] gap-y-[7.8px]"
+            style={{ left: 32.7, top: 163.5, width: 300.5 }}
+          >
+            {GROUPS.ams.chips.map((c, i) => <MobileChipTag key={i} item={c} />)}
+            <div className="col-span-2"><MoreText>{GROUPS.ams.more}</MoreText></div>
+          </div>
+
+          {/* Carriers — right, second row fades off the edge */}
+          <div className="absolute" style={{ left: 32.7, top: 377.4, width: 326.7 }}>
+            <div className="flex flex-col gap-[10.2px]">
+              <div className="flex gap-[11px]">
+                <MobileChipTag item={GROUPS.carriers.chips[0]} />
+                <MobileChipTag item={GROUPS.carriers.chips[1]} />
+              </div>
+              <div
+                className="flex gap-[11px] overflow-hidden"
+                style={{ width: 326.7, maskImage: fade, WebkitMaskImage: fade }}
+              >
+                <MobileChipTag item={GROUPS.carriers.chips[2]} />
+                <MobileChipTag item={GROUPS.carriers.chips[1]} />
+                <MobileChipTag item={GROUPS.carriers.chips[1]} />
+              </div>
+            </div>
+          </div>
+          <div className="absolute" style={{ left: 44.7, top: 486 }}><MoreText>{GROUPS.carriers.more}</MoreText></div>
+
+          {/* Documents — bottom-left 2-col grid */}
+          <div
+            className="absolute grid grid-cols-2 justify-items-start gap-x-[3.9px] gap-y-[7.8px]"
+            style={{ left: 40.6, top: 1063.8, width: 281 }}
+          >
+            {GROUPS.documents.chips.map((c, i) => <MobileChipTag key={i} item={c} />)}
+            <MoreText>{GROUPS.documents.more}</MoreText>
+          </div>
+
+          {/* Communication — bottom-right */}
+          <div
+            className="absolute flex flex-wrap items-center gap-[12.5px]"
+            style={{ left: 40.6, top: 1303.5, width: 249.3 }}
+          >
+            {GROUPS.communication.chips.map((c, i) => <MobileChipTag key={i} item={c} />)}
+            <MoreText>{GROUPS.communication.more}</MoreText>
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }
 
@@ -480,25 +680,8 @@ export default function Integrations() {
           </div>
         </div>
 
-        {/* ──────────────────────────────────────────
-            MOBILE — stacked clusters (below xl)
-        ────────────────────────────────────────── */}
-        <div className="relative mt-[40px] overflow-hidden rounded-[16px] border border-dark/[0.08] bg-cream-light xl:hidden">
-          <img
-            src="/images/integ/grid-bg.png"
-            alt="" aria-hidden
-            className="pointer-events-none absolute inset-0 w-full h-full object-cover opacity-50"
-          />
-          <div className="relative flex flex-col items-center gap-[44px] px-[24px] py-[56px]">
-            <CooperOrb size={120} />
-            <div className="flex flex-col items-start gap-[56px]">
-              <Cluster group={GROUPS.ams} />
-              <Cluster group={GROUPS.carriers} />
-              <Cluster group={GROUPS.documents} />
-              <Cluster group={GROUPS.communication} />
-            </div>
-          </div>
-        </div>
+        {/* ── Mobile (scaled 390×1515 canvas) ── */}
+        <MobileIntegrations />
 
         {/* ── Customer carrier wall ── */}
         <CarrierWall />
