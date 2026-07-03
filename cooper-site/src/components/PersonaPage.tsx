@@ -225,7 +225,7 @@ export default function PersonaPage() {
             <div className="grid grid-cols-1 items-start gap-[40px] lg:grid-cols-[minmax(0,1fr)_minmax(0,540px)] lg:gap-[80px]">
               <div className="flex flex-col gap-[32px]">
                 <div className="flex flex-col gap-[24px]">
-                  <div className="animate-fade-blur-in flex items-center gap-[6px]" style={{ animationDelay: '0.15s' }}>
+                  <div className="animate-fade-in flex items-center gap-[6px]" style={{ animationDelay: '0.15s' }}>
                     <Link to="/" className="font-sans text-[13px] text-[#68655e] no-underline hover:text-dark transition-colors">
                       HOME
                     </Link>
@@ -235,7 +235,7 @@ export default function PersonaPage() {
                     </span>
                   </div>
                   <h1
-                    className="animate-fade-blur-in font-serif text-[40px] md:text-[64px] lg:text-[72px] leading-[1.05] tracking-[-1.44px] text-[#0a0a0a] max-w-[620px]"
+                    className="animate-fade-in font-serif text-[40px] md:text-[64px] lg:text-[72px] leading-[1.05] tracking-[-1.44px] text-[#0a0a0a] max-w-[620px]"
                     style={{ animationDelay: '0.3s' }}
                   >
                     {persona.headlineAccent ? (
@@ -257,7 +257,7 @@ export default function PersonaPage() {
                     )}
                   </h1>
                 </div>
-                <div className="animate-fade-blur-in flex flex-col items-stretch gap-[12px] sm:flex-row sm:flex-wrap sm:items-center" style={{ animationDelay: '0.45s' }}>
+                <div className="animate-fade-in flex flex-col items-stretch gap-[12px] sm:flex-row sm:flex-wrap sm:items-center" style={{ animationDelay: '0.45s' }}>
                   <a
                     href="#features"
                     className="inline-flex w-full items-center justify-center rounded-[8px] border border-dark/[0.18] bg-transparent px-[28px] py-[14px] font-sans text-[16px] font-medium text-dark no-underline transition-colors hover:bg-dark/[0.04] sm:w-fit sm:justify-start"
@@ -273,7 +273,7 @@ export default function PersonaPage() {
                 </div>
               </div>
               <p
-                className="animate-fade-blur-in font-sans text-[18px] leading-[1.6] text-dark/50 lg:pt-[44px]"
+                className="animate-fade-in font-sans text-[18px] leading-[1.6] text-dark/50 lg:pt-[44px]"
                 style={{ animationDelay: '0.6s' }}
               >
                 {persona.subtitle}
@@ -281,7 +281,7 @@ export default function PersonaPage() {
             </div>
 
             {/* hero image */}
-            <div className="animate-fade-blur-in aspect-[16/9] w-full overflow-hidden bg-[#fbfbf9]" style={{ animationDelay: '0.5s' }}>
+            <div className="animate-fade-in aspect-[16/9] w-full overflow-hidden bg-[#fbfbf9]" style={{ animationDelay: '0.5s' }}>
               <img
                 src={heroImage}
                 alt=""
