@@ -1,6 +1,18 @@
 {
-  "cleanUrls": true,
+  "comment": "Prerendered routes (scripts/prerender.cjs) are served from their static .html so social scrapers get per-route meta. Everything else falls through to the SPA. Keep this list in sync with the routes in prerender.cjs.",
   "rewrites": [
+    { "source": "/personas/retail-agencies", "destination": "/personas/retail-agencies.html" },
+    { "source": "/personas/wholesale-brokers", "destination": "/personas/wholesale-brokers.html" },
+    { "source": "/personas/mgas-insurers", "destination": "/personas/mgas-insurers.html" },
+    { "source": "/personas/claims-tpas", "destination": "/personas/claims-tpas.html" },
+    { "source": "/personas/reinsurers", "destination": "/personas/reinsurers.html" },
+    { "source": "/about", "destination": "/about.html" },
+    { "source": "/demo", "destination": "/demo.html" },
+    { "source": "/careers", "destination": "/careers.html" },
+    { "source": "/privacy", "destination": "/privacy.html" },
+    { "source": "/terms", "destination": "/terms.html" },
+    { "source": "/security", "destination": "/security.html" },
+    { "source": "/subprocessors", "destination": "/subprocessors.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
