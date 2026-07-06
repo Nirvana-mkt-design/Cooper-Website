@@ -3,6 +3,13 @@ import { Link } from 'react-router-dom'
 import Navbar from './Navbar'
 import Footer from './Footer'
 import { fetchJobs, deptLabel, employmentLabel, locationLabel, type AshbyJob } from '../lib/ashby'
+import { useSeo } from '../lib/useSeo'
+
+// Keep Careers findable for candidates ("Cooper careers"/"Cooper jobs") while
+// keeping it off the homepage's sitelink candidates and low in the sitemap, so
+// it doesn't compete with the product pages on the brand result. Flip this to
+// `true` to hard-exclude Careers from search entirely (adds robots noindex).
+const CAREERS_NOINDEX = false
 
 /* ── Scroll reveal ── */
 function RevealSection({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
@@ -76,6 +83,14 @@ function deptColor(dept: string) {
 export default function CareersPage() {
   const [jobs, setJobs] = useState<AshbyJob[]>([])
   const [loading, setLoading] = useState(true)
+
+  useSeo({
+    title: 'Careers — Cooper',
+    description:
+      'Join the team building AI for insurance professionals. See open roles at Cooper.',
+    canonicalPath: '/careers',
+    noindex: CAREERS_NOINDEX,
+  })
 
   useEffect(() => {
     fetchJobs()

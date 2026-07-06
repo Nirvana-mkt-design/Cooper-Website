@@ -4,7 +4,126 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/images/cooper-logo.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!--
+      SEO / structured data
+      ----------------------
+      CANONICAL DOMAIN: everything below points at https://cooper-site-blush.vercel.app.
+      If the production domain is different, replace every occurrence of
+      "https://cooper-site-blush.vercel.app" here AND in /public/robots.txt and
+      /public/sitemap.xml.
+    -->
     <title>Cooper — AI for Insurance Professionals</title>
+    <meta
+      name="description"
+      content="Cooper is an AI platform built for insurance professionals. It automates submissions, renewals, coverage checks, certificates, and reporting for agencies, brokers, MGAs, insurers, claims TPAs, and reinsurers."
+    />
+    <link rel="canonical" href="https://cooper-site-blush.vercel.app/" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    <meta name="theme-color" content="#1a1a1a" />
+
+    <!-- Open Graph (link previews on LinkedIn, Slack, iMessage, etc.) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Cooper" />
+    <meta property="og:title" content="Cooper — AI for Insurance Professionals" />
+    <meta
+      property="og:description"
+      content="AI agent for insurance professionals. Cooper automates submissions, renewals, coverage checks, and reporting so your team stays ahead of the work."
+    />
+    <meta property="og:url" content="https://cooper-site-blush.vercel.app/" />
+    <meta property="og:image" content="https://cooper-site-blush.vercel.app/images/cooper-icon-large.png" />
+
+    <!-- Twitter / X card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Cooper — AI for Insurance Professionals" />
+    <meta
+      name="twitter:description"
+      content="AI agent for insurance professionals. Cooper automates submissions, renewals, coverage checks, and reporting so your team stays ahead of the work."
+    />
+    <meta name="twitter:image" content="https://cooper-site-blush.vercel.app/images/cooper-icon-large.png" />
+
+    <!--
+      JSON-LD structured data. Powers the Google knowledge panel (Organization)
+      and gives Google the site's primary navigation as sitelink candidates
+      (SiteNavigationElement). Sitelinks are ultimately chosen by Google, but
+      strong structured data + a sitemap make Cooper's sub-pages the obvious
+      candidates.
+
+      TODO — add real social profile URLs to `sameAs` below (LinkedIn, X, etc.)
+      to strengthen the knowledge panel. Left empty on purpose rather than guess.
+    -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://cooper-site-blush.vercel.app/#organization",
+            "name": "Cooper",
+            "url": "https://cooper-site-blush.vercel.app/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://cooper-site-blush.vercel.app/images/cooper-icon-large.png"
+            },
+            "image": "https://cooper-site-blush.vercel.app/images/cooper-icon-large.png",
+            "description": "Cooper is an AI platform built for insurance professionals. It automates submissions, renewals, coverage checks, certificates, and reporting for agencies, brokers, MGAs, insurers, claims TPAs, and reinsurers.",
+            "slogan": "AI agent for insurance professionals. Your workflows, automated.",
+            "sameAs": []
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://cooper-site-blush.vercel.app/#website",
+            "url": "https://cooper-site-blush.vercel.app/",
+            "name": "Cooper",
+            "description": "AI platform built for insurance professionals.",
+            "publisher": { "@id": "https://cooper-site-blush.vercel.app/#organization" }
+          },
+          {
+            "@type": "SiteNavigationElement",
+            "name": "Retail Agencies",
+            "description": "Cooper for retail agencies: producers sell, account managers serve, Cooper does the rest.",
+            "url": "https://cooper-site-blush.vercel.app/personas/retail-agencies"
+          },
+          {
+            "@type": "SiteNavigationElement",
+            "name": "Wholesale Brokers",
+            "description": "Cooper for wholesale brokers: place more business faster with intelligent matching.",
+            "url": "https://cooper-site-blush.vercel.app/personas/wholesale-brokers"
+          },
+          {
+            "@type": "SiteNavigationElement",
+            "name": "MGAs & Insurers",
+            "description": "Cooper for MGAs and insurers: scale underwriting without scaling headcount.",
+            "url": "https://cooper-site-blush.vercel.app/personas/mgas-insurers"
+          },
+          {
+            "@type": "SiteNavigationElement",
+            "name": "Reinsurers",
+            "description": "Cooper for reinsurers: optimize treaties and risk at portfolio scale.",
+            "url": "https://cooper-site-blush.vercel.app/personas/reinsurers"
+          },
+          {
+            "@type": "SiteNavigationElement",
+            "name": "Claims TPAs",
+            "description": "Cooper for claims TPAs: streamline claims from intake to reporting.",
+            "url": "https://cooper-site-blush.vercel.app/personas/claims-tpas"
+          },
+          {
+            "@type": "SiteNavigationElement",
+            "name": "About",
+            "description": "Our mission, team, and why we're building Cooper for insurance.",
+            "url": "https://cooper-site-blush.vercel.app/about"
+          },
+          {
+            "@type": "SiteNavigationElement",
+            "name": "Request a Demo",
+            "description": "See Cooper in action with your own data.",
+            "url": "https://cooper-site-blush.vercel.app/demo"
+          }
+        ]
+      }
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=BIZ+UDPMincho&family=Space+Grotesk:wght@500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
