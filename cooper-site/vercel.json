@@ -1,5 +1,4 @@
 {
-  "comment": "Prerendered routes (scripts/prerender.cjs) are served from their static .html so social scrapers get per-route meta. Everything else falls through to the SPA. Keep this list in sync with the routes in prerender.cjs.",
   "rewrites": [
     { "source": "/personas/retail-agencies", "destination": "/personas/retail-agencies.html" },
     { "source": "/personas/wholesale-brokers", "destination": "/personas/wholesale-brokers.html" },
