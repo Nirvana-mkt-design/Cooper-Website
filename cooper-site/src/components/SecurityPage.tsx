@@ -1,5 +1,6 @@
 import Navbar from './Navbar'
 import Footer from './Footer'
+import { useSeo } from '../lib/useSeo'
 
 const sections = [
   { id: 'commitment', label: 'Our Security Commitment' },
@@ -21,6 +22,13 @@ const h3Cls = 'font-sans font-semibold text-[16px] text-dark mb-[12px] mt-[28px]
 const ulCls = 'font-sans text-[15px] leading-[1.75] text-dark/60 mb-[16px] pl-[20px] list-disc space-y-[6px]'
 
 export default function SecurityPage() {
+  useSeo({
+    title: 'Security — Cooper',
+    description:
+      "Cooper's security program: SOC 2 Type II, encryption, access controls, and data protection.",
+    canonicalPath: '/security',
+  })
+
   return (
     <div className="min-h-screen bg-cream-light">
       <Navbar variant="light" />

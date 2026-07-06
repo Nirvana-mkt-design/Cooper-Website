@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useSeo } from '../lib/useSeo'
+import { pageJsonLd } from '../lib/pageSchema'
 
 const reasons = [
   'Explore Cooper for my team',
@@ -30,6 +32,18 @@ const stats = [
 ]
 
 export default function DemoPage() {
+  useSeo({
+    title: 'Request a Demo — Cooper',
+    description:
+      'See Cooper in action with your own data. Book a personalized demo for your insurance team.',
+    canonicalPath: '/demo',
+    jsonLd: pageJsonLd({
+      name: 'Request a Demo',
+      path: '/demo',
+      description: 'Book a personalized Cooper demo for your insurance team.',
+    }),
+  })
+
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
   const [company, setCompany] = useState('')
