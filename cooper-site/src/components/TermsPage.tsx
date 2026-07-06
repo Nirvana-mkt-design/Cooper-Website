@@ -1,5 +1,6 @@
 import Navbar from './Navbar'
 import Footer from './Footer'
+import { useSeo } from '../lib/useSeo'
 
 const sections = [
   { id: 'intro', label: 'Introduction' },
@@ -21,6 +22,12 @@ const numLabelCls = 'font-grotesk text-[11px] font-medium tracking-[1.2px] upper
 const capsBoxCls = 'font-sans text-[13px] leading-[1.7] text-dark/55 mb-[16px] bg-dark/[0.03] rounded-[8px] p-[16px]'
 
 export default function TermsPage() {
+  useSeo({
+    title: 'Terms of Service — Cooper',
+    description: 'The terms governing your use of Cooper and its services.',
+    canonicalPath: '/terms',
+  })
+
   return (
     <div className="min-h-screen bg-cream-light">
       <Navbar variant="light" />

@@ -8,6 +8,8 @@ import { vignettes } from './persona/vignettes'
 import Navbar from './Navbar'
 import PersonaTestimonial from './PersonaTestimonial'
 import Footer from './Footer'
+import { useSeo } from '../lib/useSeo'
+import { personaJsonLd } from '../lib/personaSchema'
 
 /* All testimonials pooled across every persona — used by the shared component */
 const allPersonaTestimonials = personas.flatMap((p) => p.testimonials)
@@ -157,6 +159,19 @@ export default function PersonaPage() {
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [slug])
+
+  // Per-page SEO: unique title/description/canonical + product structured data.
+  // Called unconditionally (before the 404 early-return) to satisfy the rules of
+  // hooks; the not-found case is marked noindex so Google drops dead slugs.
+  useSeo({
+    title: persona
+      ? `Cooper for ${persona.name} — AI for Insurance`
+      : 'Page not found — Cooper',
+    description: persona?.subtitle,
+    canonicalPath: persona ? `/personas/${persona.slug}` : undefined,
+    noindex: !persona,
+    jsonLd: persona ? personaJsonLd(persona) : undefined,
+  })
 
   if (!persona) {
     return (

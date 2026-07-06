@@ -1,5 +1,6 @@
 import Navbar from './Navbar'
 import Footer from './Footer'
+import { useSeo } from '../lib/useSeo'
 
 const sections = [
   { id: 'scope', label: 'Scope and Roles' },
@@ -24,6 +25,12 @@ const ulCls = 'font-sans text-[15px] leading-[1.75] text-dark/60 mb-[16px] pl-[2
 const numLabelCls = 'font-grotesk text-[11px] font-medium tracking-[1.2px] uppercase text-accent-orange block mb-[6px]'
 
 export default function PrivacyPage() {
+  useSeo({
+    title: 'Privacy Policy — Cooper',
+    description: 'How Cooper collects, uses, shares, and protects your personal information.',
+    canonicalPath: '/privacy',
+  })
+
   return (
     <div className="min-h-screen bg-cream-light">
       <Navbar variant="light" />

@@ -2,6 +2,8 @@ import React, { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from './Navbar'
 import Footer from './Footer'
+import { useSeo } from '../lib/useSeo'
+import { pageJsonLd } from '../lib/pageSchema'
 
 /* ── Scroll reveal (same pattern as HomePage) ── */
 function RevealSection({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
@@ -70,6 +72,18 @@ const helps = [
 
 
 export default function AboutPage() {
+  useSeo({
+    title: 'About Cooper — AI for Insurance Professionals',
+    description:
+      "Cooper's mission, team, and why we're building AI for insurance professionals.",
+    canonicalPath: '/about',
+    jsonLd: pageJsonLd({
+      name: 'About',
+      path: '/about',
+      description: "Cooper's mission, team, and why we're building AI for insurance.",
+    }),
+  })
+
   return (
     <div className="min-h-screen bg-white">
       <Navbar />

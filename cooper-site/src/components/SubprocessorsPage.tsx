@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import Navbar from './Navbar'
 import Footer from './Footer'
+import { useSeo } from '../lib/useSeo'
 
 const linkCls = 'text-accent-orange underline decoration-accent-orange/30 hover:decoration-accent-orange transition-colors'
 const pCls = 'font-sans text-[15px] leading-[1.75] text-dark/60 mb-[16px]'
@@ -54,6 +55,12 @@ const subprocessors = [
 ]
 
 export default function SubprocessorsPage() {
+  useSeo({
+    title: 'Subprocessors — Cooper',
+    description: 'The third-party subprocessors Cooper uses to deliver its services.',
+    canonicalPath: '/subprocessors',
+  })
+
   return (
     <div className="min-h-screen bg-cream-light">
       <Navbar variant="light" />
