@@ -51,8 +51,7 @@ export default function PrivacyPage() {
             className="flex flex-wrap gap-x-[24px] gap-y-[6px] font-sans text-[14px] text-dark/40 animate-fade-blur-in"
             style={{ animationDelay: '0.1s' }}
           >
-            <span>Effective: January 8, 2026</span>
-            <span>Last Updated: January 8, 2026</span>
+            <span>Last Updated: July 2026</span>
           </div>
         </div>
       </section>
@@ -84,11 +83,13 @@ export default function PrivacyPage() {
           <article>
             <p className={pCls}>
               Cooper AI Tech, Inc., and/or its affiliates and subsidiaries ("we," "our," or "us") provide a software
-              platform, including our AI copilot that automates manual processes for logistics companies (the
-              "Services"). This Privacy Policy describes how we collect, use, disclose and protect personal
-              information of individuals who use the Services as or on behalf of commercial fleet operators, agents,
-              or other businesses ("User" or "you(r)"). It also explains our handling of data related to drivers and
-              other customer personnel whose information might be processed as part of our Services.
+              platform, including our AI copilot that automates manual processes for insurance brokers and companies
+              (the "Services"). This Privacy Policy describes how we collect, use, disclose and protect personal
+              information of individuals who use the Services as or on behalf of insurance brokers, insurance
+              companies, or other businesses ("User" or "you(r)"). It also explains our handling of data related to
+              any persons whose information might be processed as part of our Services, including protected health
+              information ("PHI") where the Health Insurance Portability and Accountability Act of 1996 and its
+              implementing regulations ("HIPAA") apply.
             </p>
 
             {/* Scope */}
@@ -106,17 +107,36 @@ export default function PrivacyPage() {
                   visitors and business contacts.
                 </li>
                 <li>
-                  Personal information we process as a "service provider" or "processor" to our customers, for example
-                  information contained in requests for quotes, insurance policies and claims. In those cases, our
-                  customers' privacy policies govern, and we process information according to our contracts and
+                  Personal information we process as a "service provider", "processor", "business associate", or
+                  "subcontractor business associate" to our customers, for example information contained in requests
+                  for quotes, insurance policies, claims, eligibility files, underwriting materials, or other
+                  customer-provided records. In those cases, our customers' privacy policies and notices govern, and we
+                  process information according to our contracts, any applicable business associate agreement, and
                   customers' instructions.
                 </li>
               </ul>
               <p className={pCls}>
-                If we are acting as a service provider/processor, we will process such information pursuant to a data
-                processing addendum that we enter into with our customer. We will not sell or share that personal
-                information, nor use it for purposes unrelated to the contracted services, except as permitted by law
-                and our agreements.
+                If we are acting as a service provider/processor or business associate/subcontractor business
+                associate, we will process such information pursuant to a data processing addendum, business associate
+                agreement, or other applicable agreement that we enter into with our customer. We will not sell or
+                share that personal information or PHI, use it for targeted advertising, or use it for purposes
+                unrelated to the contracted services, except as permitted by law, HIPAA where applicable, our
+                agreements, and our customer instructions.
+              </p>
+              <p className={pCls}>
+                Where customer data includes PHI, we use and disclose PHI only as permitted by HIPAA, the applicable
+                business associate agreement, our services agreement, and the customer's documented instructions,
+                including to provide, secure, support, and maintain the Services; comply with law; and engage approved
+                subcontractors.
+              </p>
+              <p className={pCls}>
+                Customers are responsible for determining whether information submitted to the Services is PHI and for
+                providing any required notices, consents, authorizations, and instructions before submitting PHI or
+                directing us to process PHI.
+              </p>
+              <p className={pCls}>
+                To the extent this Privacy Policy conflicts with an applicable business associate agreement regarding
+                PHI, the business associate agreement controls.
               </p>
             </section>
 
@@ -134,48 +154,73 @@ export default function PrivacyPage() {
                   <strong className="font-medium text-dark/80">Identifiers and contact information:</strong> Name,
                   business email address, business phone number, employer, job title, and business mailing address.
                   We collect this directly from you, your employer or colleagues, from our service providers, from
-                  publicly available sources, and from our website or event interactions.
+                  publicly available sources, and from our website or event interactions. We use it to provide and
+                  support the Services; manage customer and vendor relationships; respond to inquiries; send service
+                  communications; authenticate users; and comply with legal obligations. Retention generally aligns to
+                  the duration of your business relationship with us plus a reasonable period to comply with legal,
+                  tax, and audit requirements.
                 </li>
                 <li>
                   <strong className="font-medium text-dark/80">Commercial and transactional information:</strong>{' '}
                   Account history, configuration choices, and records of interactions with us. We use it to operate,
                   maintain, secure, and improve the Services; provide support; and for billing, audit, and compliance.
+                  Retention corresponds to contractual and legal requirements.
                 </li>
                 <li>
                   <strong className="font-medium text-dark/80">Payment information:</strong> Information necessary to
                   complete billing transactions, including your full name, credit card information, and a billing
-                  address. We use third parties to process our payments and to collect payment data.
+                  address, which may be your personal address or the address of the company you are associated with. We
+                  use third parties to process our payments and to collect payment data. We use it to operate,
+                  maintain, secure, and improve the Services; provide support; and for billing, audit, and compliance.
+                  Retention corresponds to contractual and legal requirements.
                 </li>
                 <li>
                   <strong className="font-medium text-dark/80">Professional or employment-related information:</strong>{' '}
                   Work address, employer information, role, and business contact details. We use this for recruiting,
-                  hiring, HR administration, compliance, and workforce safety.
+                  hiring, HR administration, compliance, and workforce safety. Retention follows applicable employment
+                  and recordkeeping laws.
                 </li>
                 <li>
                   <strong className="font-medium text-dark/80">Audio, electronic or similar information:</strong>{' '}
                   Recordings or transcriptions of calls placed or received by our Services when enabled by a customer
-                  and permitted by law.
+                  and permitted by law. We use this to enable automated scheduling, quality assurance, and support. We
+                  provide required recording notices and obtain or rely on customer consents as applicable. Retention
+                  is limited to the purpose and duration necessary for operations, quality, dispute resolution, or
+                  compliance.
                 </li>
                 <li>
                   <strong className="font-medium text-dark/80">Sensitive Information:</strong> Geolocation data,
-                  driver's license numbers or other identifying documents provided for insurance information. We do
-                  not intend to collect sensitive personal information except where necessary for lawful and disclosed
-                  purposes.
+                  driver's license numbers or other identifying documents provided for insurance information, which may
+                  include residential address, age, date of birth, and gender. We do not intend to collect sensitive
+                  personal information except where necessary for lawful and disclosed purposes (for example, HR
+                  compliance). We will not use sensitive personal information for additional purposes without notice
+                  and, where required, consent. We will offer the ability to limit certain uses as required by law.
                 </li>
                 <li>
                   <strong className="font-medium text-dark/80">Feedback or Support Information:</strong> Personal
                   information included in your communications with us, such as surveys, customer support
-                  communications, or inquiries.
+                  communications, or inquiries. This may include your name, contact information, voice recording, and
+                  any other content or communication that you send to or share with us. We use this to provide you with
+                  customer support, and to solicit feedback to improve our products and services. Retention is limited
+                  to the purpose and duration necessary for operations, quality, dispute resolution, or compliance.
                 </li>
                 <li>
                   <strong className="font-medium text-dark/80">User-Generated Content:</strong> The Services may
                   allow you to submit free-form content (either manually or automatically through integrations),
-                  including emails, and all information in that free-form content will be processed by the Services.
+                  including emails, and all information in that free-form content will be processed by the Services. We
+                  use the information to provide you with the Services you request. If you enable this feature, you
+                  should ensure that any User Generated Content you submit is authorized for submission to the Services
+                  and does not include sensitive personal information, PHI, or other personal information unless your
+                  organization has directed or authorized that submission under its agreement with us, and, where
+                  applicable, a business associate agreement. We do not pre-screen User-Generated Content before it is
+                  input into the Services.
                 </li>
                 <li>
                   <strong className="font-medium text-dark/80">Inferences:</strong> We may derive personal
-                  information about you in the form of inferences from facts, evidence or other sources of
-                  information or data about you.
+                  information about you in the form of inferences, which are derivations of information, data,
+                  assumptions, or conclusions from facts, evidence or other sources of information or data about you. We
+                  use this to improve and provide the Services to you. Retention is limited to the purpose and duration
+                  necessary for operations, quality, dispute resolution, or compliance.
                 </li>
               </ul>
               <p className={pCls}>
@@ -192,30 +237,55 @@ export default function PrivacyPage() {
                 <li>
                   <strong className="font-medium text-dark/80">Internet or Other Network Activity:</strong> IP
                   addresses, device information, browser type, operating system, website usage patterns, and
-                  interaction data, collected through cookies and similar technologies when you use our platform.
+                  interaction data, including the content, features, and activities that you access, and the time,
+                  frequency, and duration of those activities, collected through cookies and similar technologies when
+                  you use our platform. We use it for security, to analyze performance, to improve the Services, to
+                  remember preferences, and for fraud prevention. Retention varies by signal type and is typically
+                  short for security logs unless needed to investigate or comply with law.
                 </li>
                 <li>
                   <strong className="font-medium text-dark/80">Third-Party Product Integrations:</strong> At your
-                  direction, our Services may be integrated with third-party products and services. The Services may
-                  collect information about you through these integrations, including usage data, account settings,
-                  and data you've submitted to those third-party products.
+                  direction or your instruction, our Services may be integrated with third-party products and services.
+                  The Services may collect information about you through these integrations, including usage data,
+                  account settings and preferences, data that you've submitted to those third-party products and
+                  services for processing, and other associated information. This information may be combined with
+                  other information that we have on you to create more accurate data so that we can improve the quality
+                  and performance of our Services to you. Where an integration transmits PHI, we process it only to
+                  provide the requested functionality and as permitted by the applicable business associate agreement
+                  and customer instructions.
                 </li>
               </ul>
 
               <h3 className={h3Cls}>1.3. Information You Send to Us About Others</h3>
               <p className={pCls}>
-                Through your use of the Services, you may provide us with data, including personal information, you
-                collect from your customers, prospects, or drivers who interact directly or indirectly with our
-                Services. You are responsible for collecting any and all consents and authorizations required by
-                applicable law before you share such end-user's personal information with us through the Services.
+                Through your use of the Services, you may provide us with data, including personal information, and,
+                where applicable, PHI, you collect from your customers, prospects, drivers, members, patients, or
+                other individuals who interact directly or indirectly with our Services. You are responsible for
+                collecting any and all notices, consents, authorizations and instructions required by applicable law,
+                including HIPAA where applicable, before you share such end-user's personal information or PHI with us
+                through the Services.
               </p>
 
               <h3 className={h3Cls}>1.4. Cookies and Other Technologies</h3>
               <p className={pCls}>
-                We may use cookies, SDKs, pixels, and similar technologies for functionality, security, analytics,
-                and, where applicable, advertising. On most web browsers, you will find a "help" section on the
-                toolbar with information on how to manage cookies. We recommend that you leave cookies turned on
-                because they allow you to take advantage of some of the Services' features.
+                We use cookies and similar technologies for functionality and security purposes, such as remembering
+                your preferences, analytics, and where applicable, targeted advertising. You can manage or disable
+                cookies directly through your browser settings, which may allow you to block or delete cookies. Please
+                note, however, that if you disable cookies, certain features of the Services may not function properly.
+                Please be aware that third parties, such as companies displaying advertisements on the Service or
+                providers of third-party websites and services that may be accessible from links on our Services, may
+                also set cookies or use other tracking technologies to collect information about your use of their
+                services, websites, or content. Except as otherwise described in this Privacy Policy, we do not control
+                or have access to these third-party cookies or tracking technologies.
+              </p>
+              <p className={pCls}>
+                For more information about our use of cookies and similar technologies, please refer to our Cookie
+                Policy.
+              </p>
+              <p className={pCls}>
+                We do not knowingly use cookies, pixels, SDKs, or similar technologies to collect PHI, and we do not
+                use PHI collected through or associated with the Services for targeted advertising or cross-context
+                behavioral advertising.
               </p>
             </section>
 
@@ -229,22 +299,30 @@ export default function PrivacyPage() {
                 <li><strong className="font-medium text-dark/80">Account Management:</strong> To create and manage user accounts, process transactions, and provide customer support.</li>
                 <li><strong className="font-medium text-dark/80">Communication:</strong> To communicate with you about your account, services, updates, and respond to inquiries, or to solicit feedback.</li>
                 <li><strong className="font-medium text-dark/80">Compliance with Legal Obligations:</strong> To comply with applicable state and federal laws, including insurance regulations, safety requirements, and financial services compliance, or to respond to legal, government, or regulatory requests.</li>
-                <li><strong className="font-medium text-dark/80">Analytics and Improvement:</strong> To analyze usage patterns, improve our Services, develop new features, and enhance user experiences.</li>
+                <li><strong className="font-medium text-dark/80">Analytics and Improvement:</strong> To analyze usage patterns, improve our Services, develop new features, and enhance user experiences, excluding PHI except as permitted by HIPAA, an applicable business associate agreement, and our customers' instructions.</li>
                 <li><strong className="font-medium text-dark/80">Security and Fraud Prevention:</strong> To protect our Services, detect and prevent fraud, and maintain the security of our systems and data.</li>
-                <li><strong className="font-medium text-dark/80">Marketing:</strong> To provide information about our Services to business prospects and existing customers, including industry insights and product updates.</li>
-                <li><strong className="font-medium text-dark/80">Machine Learning:</strong> To train AI and machine learning models for improved risk assessment, safety predictions, and service enhancements. We do not use customer data for AI training purposes, but may use aggregated and anonymized data.</li>
-                <li><strong className="font-medium text-dark/80">Research and Development:</strong> For internal product development purposes to conduct testing and research, and to develop new products and services.</li>
-                <li><strong className="font-medium text-dark/80">Exercise Our Rights:</strong> To prevent or take action against activities that may violate our Terms, MSA, or applicable law.</li>
+                <li><strong className="font-medium text-dark/80">Marketing:</strong> To provide information about our Services to business prospects and existing customers, including industry insights and product updates, and to display personalized or targeted content, including to display targeted advertising on third-party websites where permitted by law. We do not use PHI or customer data processed as a service provider/processor for marketing or targeted advertising.</li>
+                <li><strong className="font-medium text-dark/80">Machine Learning:</strong> To develop, train, and improve AI and machine learning models for service enhancements. We do not use customer data or PHI for AI training purposes. We may use aggregated, anonymized, or de-identified data that cannot reasonably be re-identified or attributed to a customer or individual. If the source data includes PHI, we will use only information de-identified in accordance with HIPAA.</li>
+                <li><strong className="font-medium text-dark/80">Research and Development:</strong> For internal product development purposes to conduct testing and research, to develop new products and services, and to improve existing ones.</li>
+                <li><strong className="font-medium text-dark/80">Analytics:</strong> To conduct analytics, including to better understand you and our other users, user needs, and usage trends, including to generate industry benchmarks, safety reports, and predictive models. We do not include PHI in analytics, benchmarking, or predictive models except to provide, secure, support, maintain, or troubleshoot the Services for the applicable customer as permitted by HIPAA, an applicable business associate agreement, and customer instructions; we use de-identified information where feasible.</li>
+                <li><strong className="font-medium text-dark/80">Exercise Our Rights:</strong> To prevent or take action against activities that are, or may be, in violation of our Terms, MSA, or applicable law, or to investigate disputes and claims related to our Services.</li>
               </ul>
+              <p className={pCls}>
+                When you communicate with us using one of the methods described in this Privacy Policy, we may also
+                keep a record of the time and date of any correspondence and organize this correspondence in one or
+                more electronic filing systems, an email system, or a customer relationship management system.
+              </p>
 
               <h3 className={h3Cls}>Automated Decision-Making and AI</h3>
               <p className={pCls}>
                 The Services include automation to assist with data entry, processing, comparing quotes, tracking, and
                 document processing. Where this involves profiling or automated decision-making about individuals with
                 legal or similarly significant effects, we will provide required disclosures, human-in-the-loop review
-                where appropriate, and mechanisms to exercise applicable rights. We do not use personal data to train
-                large language models, although we may use aggregated and anonymized data (provided that it cannot be
-                re-identified or otherwise be attributed to a Customer or an individual).
+                where appropriate, and mechanisms to exercise applicable rights. We do not use personal data, customer
+                data, or PHI to train large language models. We may use aggregated, anonymized, or de-identified data
+                only where it cannot be re-identified or otherwise be attributed to a customer or individual, and any
+                data derived from PHI will be de-identified in accordance with HIPAA before use for model improvement,
+                analytics, or similar secondary purposes.
               </p>
             </section>
 
@@ -255,22 +333,30 @@ export default function PrivacyPage() {
               <p className={pCls}>We share personal information in the following circumstances:</p>
               <ul className={ulCls}>
                 <li><strong className="font-medium text-dark/80">Customers:</strong> We share personal information with our customers when we are processing information on their behalf. These entities enter into agreements directly with consumers or business entities, and their processing of personal information is governed by their own privacy policies.</li>
-                <li><strong className="font-medium text-dark/80">Service Providers:</strong> We share personal information with third-party service providers who perform functions on our behalf, including cloud hosting, data analytics, payment processing, customer support, and technology services. These providers are contractually required to protect your information and use it only for the specific services they provide to us.</li>
+                <li><strong className="font-medium text-dark/80">Service Providers:</strong> We share personal information with third-party service providers who perform functions on our behalf, including cloud hosting, data analytics, payment processing, customer support, and technology services. These providers are contractually required to protect your information and use it only for the specific services they provide to us. Where a service provider creates, receives, maintains, or transmits PHI on our behalf, we require it to act as a HIPAA subcontractor and enter into a written business associate or subcontractor agreement as required by HIPAA.</li>
                 <li><strong className="font-medium text-dark/80">Integration Partners:</strong> We may share personal information as requested or directed by you to enable a requested functionality.</li>
                 <li><strong className="font-medium text-dark/80">Corporate Affiliates:</strong> We may disclose personal information to our corporate affiliates for centralized operations, HR, finance, compliance, security, and product support, consistent with this Privacy Policy and applicable law.</li>
                 <li><strong className="font-medium text-dark/80">Government Authorities:</strong> We may disclose personal information to regulatory bodies, law enforcement, or other government entities when required by law, to comply with legal process, or to protect our rights and the safety of others.</li>
-                <li><strong className="font-medium text-dark/80">Corporate Transactions:</strong> Information about our users may be disclosed and otherwise transferred to an acquirer, successor, or assignee as part of any merger, acquisition, debt financing, sale of company assets, or similar transaction.</li>
-                <li><strong className="font-medium text-dark/80">Legal and Compliance:</strong> We also disclose personal information if we believe that doing so is legally required, or is in our interest to protect our property or other legal rights.</li>
+                <li><strong className="font-medium text-dark/80">Corporate Transactions:</strong> Information about our users, including personal information, may be disclosed and otherwise transferred to an acquirer, successor, or assignee as part of any merger, acquisition, debt financing, sale of company assets, or similar transaction, as well as in the event of an insolvency, bankruptcy, or receivership in which personal information is transferred to one or more third parties as one of our business assets.</li>
+                <li><strong className="font-medium text-dark/80">Legal and Compliance:</strong> We also disclose personal information if we believe that doing so is legally required, or is in our interest to protect our property or other legal rights (including, but not limited to, enforcement of our agreements) or the rights or property of others, or otherwise to help protect the safety or security of our Services and other users of the Services.</li>
+                <li><strong className="font-medium text-dark/80">PHI Disclosures:</strong> We disclose PHI only as permitted by HIPAA, an applicable business associate agreement, our customer agreements, and customer instructions, including for treatment, payment, or health care operations when directed by a customer, to approved subcontractors, as required by law, to respond to permitted legal process, or to prevent or lessen a serious and imminent threat to health or safety where permitted by law.</li>
               </ul>
               <p className={pCls}>
                 We may share personal information for other purposes with your explicit consent or at your direction.
-                We do not sell personal information to third parties. We do not share personal information for
-                cross-context behavioral advertising or targeted advertising purposes.
+                We do not sell personal information to third parties. We may share personal information, such as
+                identifiers and online activity collected through cookies and pixels, with advertising platforms to
+                deliver targeted advertising, which may constitute "sharing" or "targeted advertising" under applicable
+                state laws. You may opt out as described in "Your Privacy Rights." We do not use PHI, or customer data
+                we process as a service provider/processor, for targeted advertising or cross-context behavioral
+                advertising.
               </p>
               <p className={pCls}>
                 We may create and use de-identified or aggregated information for analytics, service improvement, and
                 other lawful purposes. We take reasonable measures to ensure that de-identified information cannot be
-                associated with a particular individual.
+                associated with a particular individual and we maintain information as de-identified and do not attempt
+                to re-identify it, except as permitted by law to test our processes. Where de-identified information is
+                derived from PHI, we will de-identify the information in accordance with HIPAA and will not use or
+                disclose it in a manner that would identify the individual or customer.
               </p>
             </section>
 
@@ -283,7 +369,9 @@ export default function PrivacyPage() {
                 proportionate to achieve the purposes for which the information was collected or processed, or for
                 other disclosed, compatible purposes. We determine retention periods based on factors such as the
                 minimum data needed to provide and improve our Services, for security and fraud-prevention needs, to
-                meet legal obligations, and recordkeeping requirements.
+                meet legal obligations, and recordkeeping requirements. Where we process PHI, we retain and delete PHI
+                in accordance with the applicable business associate agreement, customer instructions, HIPAA
+                documentation obligations, and applicable law.
               </p>
             </section>
 
@@ -296,13 +384,14 @@ export default function PrivacyPage() {
                 <li><strong className="font-medium text-dark/80">Right to Know/Access:</strong> Request information about our collection, use, and disclosure of your personal information and obtain a copy in a portable format.</li>
                 <li><strong className="font-medium text-dark/80">Correct:</strong> Request that we correct inaccuracies in your personal information.</li>
                 <li><strong className="font-medium text-dark/80">Delete:</strong> Request that we delete personal information, subject to legal exceptions.</li>
-                <li><strong className="font-medium text-dark/80">Opt Out:</strong> Opt out of the sale of your personal information and the sharing or processing of personal information for cross-context behavioral advertising or targeted advertising, as applicable.</li>
-                <li><em className="italic">Appeal:</em> In states that provide an appeal right, appeal our decision if we decline to act on your request.</li>
-                <li><em className="italic">Non-Discrimination:</em> We will not unlawfully discriminate against you for exercising your rights.</li>
+                <li><strong className="font-medium text-dark/80">Opt Out:</strong> Opt out of the sale of your personal information and the sharing or processing of personal information for cross-context behavioral advertising or targeted advertising, as applicable. You may exercise these rights by clicking the "Do Not Sell or Share My Personal Information" link on our homepage or by following the steps provided below.</li>
+                <li><strong className="font-medium text-dark/80">Portability:</strong> Obtain a copy of your personal information in a portable, and to the extent technically feasible, readily usable format.</li>
+                <li><strong className="font-medium text-dark/80">Appeal:</strong> In states that provide an appeal right, appeal our decision if we decline to act on your request.</li>
+                <li><strong className="font-medium text-dark/80">Non-Discrimination:</strong> We will not unlawfully discriminate against you for exercising your rights.</li>
               </ul>
               <p className={pCls}>
                 You may submit a request by emailing{' '}
-                <a href="mailto:support@askcooper.ai" className={linkCls}>support@askcooper.ai</a>. We will verify
+                <a href="mailto:privacy@askcooper.ai" className={linkCls}>privacy@askcooper.ai</a>. We will verify
                 your identity consistent with applicable law before fulfilling a request. You may designate an
                 authorized agent to make a request on your behalf, subject to verification and authorization
                 requirements. If we deny your request, you may appeal by contacting{' '}
@@ -312,8 +401,10 @@ export default function PrivacyPage() {
               </p>
               <p className={pCls}>
                 For requests relating to personal information we process solely as a service provider/processor for a
-                customer, please direct your request to that Customer. We will support Customer in responding to your
-                request as required by our agreement and applicable law.
+                customer, including PHI we process as a business associate or subcontractor business associate, please
+                direct your request to that Customer or other applicable covered entity. We will support Customer in
+                responding to your request as required by our agreement, any applicable business associate agreement,
+                and applicable law.
               </p>
             </section>
 
@@ -328,7 +419,7 @@ export default function PrivacyPage() {
                 under the age of 16. If we learn that we have collected personal information from a child under the
                 age of 16 on our Services, we will delete that information as quickly as possible. If you believe
                 that we may have collected any such personal information on our Services, please notify us at{' '}
-                <a href="mailto:support@askcooper.ai" className={linkCls}>support@askcooper.ai</a>.
+                <a href="mailto:privacy@askcooper.ai" className={linkCls}>privacy@askcooper.ai</a>.
               </p>
 
               <h3 className={h3Cls}>6.2. Jurisdiction; Data Transfers</h3>
@@ -351,6 +442,7 @@ export default function PrivacyPage() {
                 This Privacy Policy applies only to the Services. The Services may be integrated with other websites,
                 products and services provided or operated by entities not affiliated with or related to Cooper AI
                 ("Third-Party Products"). The policies and procedures we described here do not apply to Third-Party
+                Products. The integrations do not imply that Cooper AI endorses or has reviewed the Third-Party
                 Products. We suggest contacting those providers directly for information on their privacy policies.
               </p>
 
@@ -383,7 +475,8 @@ export default function PrivacyPage() {
               </p>
               <p className={pCls}>
                 For purposes of this section, the term 'Personal Information' has the meaning given in the CCPA and
-                does not include information exempted from the scope of the CCPA. This section does not apply to our
+                does not include information exempted from the scope of the CCPA, including PHI and other medical
+                information regulated by HIPAA to the extent exempt under the CCPA. This section does not apply to our
                 collection, use, and sharing of personal information of our internal staff.
               </p>
               <p className={pCls}>
@@ -395,13 +488,21 @@ export default function PrivacyPage() {
                 <strong className="font-medium text-dark/80">Sensitive Personal Information:</strong> We do not
                 collect or process sensitive personal information for purposes of inferring characteristics about
                 consumers, and we do not use or disclose sensitive personal information for purposes other than those
-                permitted by the CCPA regulations. Accordingly, the consumers' "Right to Limit" under the CCPA does
-                not apply to our current practices.
+                permitted by the CCPA regulations. PHI is handled as described above and, where HIPAA applies, in
+                accordance with the applicable business associate agreement. Accordingly, the consumers' "Right to
+                Limit" under the CCPA does not apply to our current practices. If that changes, we will provide a
+                Notice of Right to Limit and honor requests as required by law.
               </p>
               <p className={pCls}>
-                <strong className="font-medium text-dark/80">Sales and Sharing:</strong> We do not sell your personal
-                information or share your personal information as those terms are defined by the CCPA. We also do not
-                have actual knowledge that we sell or share personal information of consumers under 16 years old.
+                <strong className="font-medium text-dark/80">Sales and Sharing:</strong> Under the CCPA, 'sales' and
+                'sharing' are broadly defined, respectively, and include disclosing or making available personal
+                information in exchange for monetary or other valuable consideration or for purposes of cross-context
+                behavioral advertising. We do not sell your personal information, but we may share your personal
+                information as such term is defined by the CCPA. California residents may opt out of this sharing by
+                clicking the "Do Not Sell or Share My Personal Information" link on our homepage or by following the
+                steps provided below. We do not sell PHI or share PHI for cross-context behavioral advertising or
+                targeted advertising, and we do not have actual knowledge that we sell or share personal information of
+                consumers under 16 years old.
               </p>
               <p className={pCls}>
                 <strong className="font-medium text-dark/80">Recordkeeping:</strong> We maintain records of consumer
@@ -433,7 +534,9 @@ export default function PrivacyPage() {
                 Residents of states with comprehensive privacy laws (including Virginia, Colorado, Connecticut, Utah,
                 Texas, Oregon, Montana, Tennessee, Indiana, Iowa, Delaware, and others as they become effective) may
                 have rights similar to those described above. Where these laws impose additional or different
-                requirements, we will comply and provide state-specific supplements as necessary.
+                requirements, e.g., consent for certain sensitive data, data protection assessments for targeted
+                advertising or profiling, or disclosures about automated decision-making, we will comply and provide
+                state-specific supplements as necessary.
               </p>
               <p className={pCls}>
                 To the extent we process de-identified personal information, we will maintain and use it in a
@@ -473,7 +576,7 @@ export default function PrivacyPage() {
               <p className={pCls}>For privacy-related questions, requests, or complaints, please contact:</p>
               <p className={pCls}>
                 <strong className="font-medium text-dark/80">Email:</strong>{' '}
-                <a href="mailto:support@askcooper.ai" className={linkCls}>support@askcooper.ai</a>
+                <a href="mailto:privacy@askcooper.ai" className={linkCls}>privacy@askcooper.ai</a>
               </p>
               <p className={pCls}>
                 <strong className="font-medium text-dark/80">Address:</strong> Cooper AI Tech, Inc., PO Box 190326,
