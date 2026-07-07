@@ -103,7 +103,7 @@
   100% {
     transform: translateY(0);
     opacity: 1;
-    filter: blur(0px);
+    filter: none;
   }
 }
 
@@ -115,7 +115,7 @@
   }
   100% {
     opacity: 1;
-    filter: blur(0px);
+    filter: none;
     transform: translateY(0);
   }
 }
@@ -342,7 +342,7 @@
   100% {
     opacity: 1;
     transform: translateY(0);
-    filter: blur(0px);
+    filter: none;
   }
 }
 
@@ -401,3 +401,26 @@
 }
 .ashby-description h2 { font-size: 22px; line-height: 28px; }
 .ashby-description h3 { font-size: 18px; line-height: 24px; }
+
+/* ── Safari-only fix ──
+   Safari keeps a rasterized (blurred) GPU layer after a `filter: blur()`
+   animation and never repaints the text at full resolution, even once the
+   filter reaches none. Terminating on `filter: none` is not enough. So, for
+   Safari only, we redefine every blur-based keyframe without `filter` — the
+   fade/rise entrance is preserved, the blur (and the buggy layer) is dropped.
+   `@supports (background: -webkit-named-image(i))` matches Safari only, so
+   Chrome/Firefox/Edge keep the original blur-in effect untouched. */
+@supports (background: -webkit-named-image(i)) {
+  @keyframes fade-blur-in {
+    0%   { opacity: 0; transform: translateY(16px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes reveal-up {
+    0%   { opacity: 0; transform: translateY(32px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes slot-roll-in {
+    0%   { opacity: 0; transform: translateY(100%); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+}
