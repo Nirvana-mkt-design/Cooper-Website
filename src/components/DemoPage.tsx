@@ -24,13 +24,6 @@ function isWorkEmail(email: string): boolean {
 
 type FormState = 'idle' | 'submitting' | 'success' | 'error'
 
-const reasons = [
-  'Explore Cooper for my team',
-  'See a specific use case',
-  'Evaluate Cooper Enterprise',
-  'Request professional services',
-]
-
 const testimonials = [
   {
     quote: 'Cooper transformed how we process submissions. What took hours now takes minutes.',
@@ -54,13 +47,21 @@ const stats = [
 
 const trustedBy = ['Hartford', 'Travelers', 'Chubb', 'Zurich', 'Nationwide']
 
+const HEAR_ABOUT_US = [
+  'LinkedIn',
+  'Word of mouth / referral',
+  'Google search',
+  'Industry event or conference',
+  'Press / news article',
+  'Other',
+]
+
 export default function DemoPage() {
-  const { trackLead, getMarketingConsent } = useMetaPixel()
+  const { trackLead } = useMetaPixel()
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
-  const [company, setCompany] = useState('')
-  const [reason, setReason] = useState('')
+  const [hearAbout, setHearAbout] = useState('')
   const [formState, setFormState] = useState<FormState>('idle')
   const [errorMsg, setErrorMsg] = useState('')
   const [nameError, setNameError] = useState('')
@@ -93,8 +94,7 @@ export default function DemoPage() {
     setErrorMsg('')
 
     const noteParts: string[] = []
-    if (company) noteParts.push(`Company: ${company}`)
-    if (reason) noteParts.push(`Reason for demo: ${reason}`)
+    if (hearAbout) noteParts.push(`How did you hear about us: ${hearAbout}`)
     const adParamsRaw = sessionStorage.getItem('cooper_ad_params')
     if (adParamsRaw) {
       try {
@@ -110,9 +110,6 @@ export default function DemoPage() {
       email,
       phone,
       message: noteParts.join('\n\n'),
-      event_id: eventId,
-      event_source_url: window.location.href,
-      marketing_consent: getMarketingConsent(),
     }
 
     try {
@@ -204,29 +201,18 @@ export default function DemoPage() {
                 </div>
 
                 <div>
-                  <label className="font-sans text-[13px] font-medium text-dark/70 mb-[6px] block">Company</label>
-                  <input
-                    type="text"
-                    value={company}
-                    onChange={(e) => setCompany(e.target.value)}
-                    placeholder="Acme Insurance"
-                    required
-                    className="w-full font-sans text-[15px] text-dark bg-white border border-dark/[0.12] rounded-[8px] px-[14px] py-[12px] outline-none focus:border-accent-orange/50 focus:ring-2 focus:ring-accent-orange/10 transition-all placeholder:text-dark/25"
-                  />
-                </div>
-
-                <div>
-                  <label className="font-sans text-[13px] font-medium text-dark/70 mb-[6px] block">Reason for demo</label>
+                  <label className="font-sans text-[13px] font-medium text-dark/70 mb-[6px] block">
+                    How did you hear about us? <span className="font-normal text-dark/30">(optional)</span>
+                  </label>
                   <select
-                    value={reason}
-                    onChange={(e) => setReason(e.target.value)}
-                    required
+                    value={hearAbout}
+                    onChange={(e) => setHearAbout(e.target.value)}
                     className="w-full font-sans text-[15px] text-dark bg-white border border-dark/[0.12] rounded-[8px] px-[14px] py-[12px] outline-none focus:border-accent-orange/50 focus:ring-2 focus:ring-accent-orange/10 transition-all appearance-none cursor-pointer"
                     style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%231e1a15' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round' opacity='0.3'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 14px center' }}
                   >
-                    <option value="" disabled>Select a reason...</option>
-                    {reasons.map((r) => (
-                      <option key={r} value={r}>{r}</option>
+                    <option value="">Select one...</option>
+                    {HEAR_ABOUT_US.map((o) => (
+                      <option key={o} value={o}>{o}</option>
                     ))}
                   </select>
                 </div>
