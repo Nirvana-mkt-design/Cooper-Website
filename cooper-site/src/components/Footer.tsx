@@ -29,9 +29,7 @@ export default function Footer() {
               <img src="/images/cooper-logo-full.svg" alt="Cooper" className="h-[44px] lg:h-[56px] w-auto" />
             </div>
             <p className="font-sans text-[15px] leading-[1.6] text-dark/50 max-w-[280px]">
-              AI agent for insurance professionals.
-              <br />
-              Your workflows, automated.
+              Your AI coworker for insurance, from intake to renewal.
             </p>
           </div>
 

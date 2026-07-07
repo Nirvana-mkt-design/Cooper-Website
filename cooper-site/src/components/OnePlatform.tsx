@@ -5,7 +5,7 @@ const tabs = [
     id: 'submission',
     label: 'Build the submission',
     category: 'Submissions',
-    title: 'Submission, built. Forward the docs, get a finished package.',
+    title: 'Forward your docs, Cooper gives you a finished package.',
     subtitle: '',
     description:
       'Send Cooper the email and attachments, or point it at your AMS and SharePoint. It reads every dec page, loss run, and application, fills the ACORD forms, and assembles the whole submission.',
@@ -19,7 +19,7 @@ const tabs = [
     id: 'portals',
     label: 'Fill the portals',
     category: 'Carrier Portals',
-    title: 'Pick your portals and Cooper fills them in.',
+    title: 'Pick your portals, Cooper fills them in.',
     subtitle: '',
     description:
       'Cooper logs into each carrier portal and enters the same risk across all of them. The real forms, uploads, and clicks. You stop re-keying identical data ten times.',
@@ -33,7 +33,7 @@ const tabs = [
     id: 'proposals',
     label: 'Turn quotes into proposals',
     category: 'Proposals',
-    title: 'Proposal, drafted. Quotes in, client-ready out.',
+    title: 'Send your quotes, Cooper drafts a complete proposal.',
     subtitle: '',
     description:
       "As quotes come back, Cooper normalizes every carrier's terms into one comparison and drafts the proposal in your agency's format. Ready to send, not just ready to read.",

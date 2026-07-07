@@ -12,21 +12,19 @@ const reasons = [
 
 const testimonials = [
   {
-    quote: 'The policy comparison alone saves us 15 hours a week. Cooper reads every document and gives us clean side-by-side breakdowns.',
-    name: 'James Mitchell',
-    role: 'Head of Underwriting, Trident MGA',
-    photo: '/images/testimonial-james.webp',
+    quote: 'Cooper is literally a magic wand.',
+    name: 'Claims Examiner',
+    role: 'Boutique claims TPA',
   },
   {
-    quote: 'Cooper caught coverage gaps we had been missing for months. Our loss ratio improved and our clients noticed immediately.',
-    name: 'Maria Santos',
-    role: 'Managing Director, Lighthouse Re',
-    photo: '/images/testimonial-maria.webp',
+    quote: 'The coverage analysis is amazing, I absolutely love it. If we were to do that on our own, it would probably take five hours in itself.',
+    name: 'Commercial Lines Account Manager',
+    role: 'Independent retail agency',
   },
 ]
 
 const stats = [
-  { value: '8.5 hrs', label: 'Selling time back per producer' },
+  { value: '25 hrs', label: 'back to the team to sell' },
   { value: '95%', label: 'Fewer manual re-entry errors' },
   { value: '12×', label: 'Faster submission-to-market' },
 ]
@@ -210,19 +208,11 @@ export default function DemoPage() {
               className="bg-cream-light border border-dark/[0.08] rounded-[12px] p-[24px]"
             >
               <p className="font-serif text-[16px] leading-[1.5] text-dark/80 mb-[16px] italic">
-                "{t.quote}"
+                &ldquo;{t.quote}&rdquo;
               </p>
-              <div className="flex items-center gap-[12px]">
-                <img
-                  src={t.photo}
-                  alt=""
-                  className="w-[36px] h-[36px] rounded-full object-cover"
-                  style={{ filter: 'grayscale(40%)' }}
-                />
-                <div>
-                  <div className="font-sans text-[13px] font-medium text-dark">{t.name}</div>
-                  <div className="font-sans text-[12px] text-dark/40">{t.role}</div>
-                </div>
+              <div>
+                <div className="font-sans text-[13px] font-medium text-dark">{t.name}</div>
+                <div className="font-sans text-[12px] text-dark/40">{t.role}</div>
               </div>
             </div>
           ))}

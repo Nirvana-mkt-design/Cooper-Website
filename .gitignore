@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Personal, non-committed Claude memory / working notes
+CLAUDE.local.md
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

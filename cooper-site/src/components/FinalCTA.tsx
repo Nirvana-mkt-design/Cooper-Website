@@ -62,7 +62,7 @@ export default function FinalCTA() {
 
         {/* Subtitle */}
         <p className="font-sans text-[17.8px] leading-[1.5] text-white/70 max-w-[480px] mb-[32px]">
-          See Cooper in action with your own submissions. No generic demo. We show how it works for your&nbsp;team.
+          See Cooper in action with your own data. No generic demo. We show how Cooper fits in with your&nbsp;team.
         </p>
 
         {/* Button */}

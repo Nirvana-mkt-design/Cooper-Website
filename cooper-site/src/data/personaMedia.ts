@@ -54,21 +54,21 @@ export const statsBands: Record<string, Stat[]> = {
     { value: '97%', label: 'carrier tasks completed autonomously' },
   ],
   'wholesale-brokers': [
-    { value: '78%', label: 'less submission-to-proposal time' },
-    { value: '3.4×', label: 'market submissions match accuracy' },
+    { value: '4×', label: 'more submissions out to market' },
+    { value: '80%+', label: 'less time building each proposal' },
   ],
   'mgas-insurers': [
-    { value: '71%', label: 'less underwriting decision time' },
-    { value: '2.8×', label: 'premium per underwriter, no new hires' },
-    { value: '23%', label: 'less pre-audit leakage' },
+    { value: '95%', label: 'less time reading loss runs' },
+    { value: '3×', label: 'premium per underwriter' },
+    { value: '80%', label: 'of pre-audit leakage caught' },
   ],
   'claims-tpas': [
-    { value: '60%', label: 'less FNOL-to-assignment time' },
-    { value: '48%', label: 'more claims handled per adjuster' },
+    { value: '24/7', label: 'FNOL captured the moment it lands' },
+    { value: '0', label: 'claims sitting unassigned overnight' },
   ],
   reinsurers: [
     { value: '85%', label: 'less bordereaux normalization time' },
-    { value: '2.4×', label: 'treaties renewed per analyst' },
+    { value: '3×', label: 'treaties renewed per analyst' },
     { value: '99%', label: 'treaty term & accumulation accuracy' },
   ],
 }
