@@ -102,13 +102,21 @@ export default function DemoPage() {
     const noteParts: string[] = []
     if (company) noteParts.push(`Company: ${company}`)
     if (reason) noteParts.push(`Reason for demo: ${reason}`)
-    const adParamsRaw = sessionStorage.getItem('cooper_ad_params')
-    if (adParamsRaw) {
-      try {
-        const adParams = JSON.parse(adParamsRaw) as Record<string, string>
-        noteParts.push(`[Ad attribution: ${Object.entries(adParams).map(([k, v]) => `${k}=${v}`).join(' | ')}]`)
-      } catch { /* ignore */ }
-    }
+
+    const utmFields: Record<string, string> = {}
+    try {
+      const adParams = JSON.parse(sessionStorage.getItem('cooper_ad_params') ?? '{}') as Record<string, string>
+      // Salesforce Web-to-Lead custom field IDs
+      if (adParams.utm_campaign) utmFields['00NVt00000L7cu8'] = adParams.utm_campaign
+      if (adParams.utm_content)  utmFields['00NVt00000L7cu9'] = adParams.utm_content
+      if (adParams.utm_source)   utmFields['00NVt00000L7cuA'] = adParams.utm_source
+      if (adParams.utm_term)     utmFields['00NVt00000L7cuB'] = adParams.utm_term
+
+      // Click IDs — no dedicated SF fields yet, append to notes for visibility
+      const CLICK_ID_KEYS = ['gclid', 'fbclid', 'msclkid', 'ttclid', 'li_fat_id', 'twclid']
+      const clickIds = CLICK_ID_KEYS.filter(k => adParams[k]).map(k => `${k}=${adParams[k]}`).join(' | ')
+      if (clickIds) noteParts.push(`[Click IDs: ${clickIds}]`)
+    } catch { /* ignore */ }
 
     const eventId = crypto.randomUUID()
     const payload = {
@@ -119,6 +127,7 @@ export default function DemoPage() {
       message: noteParts.join('\n\n'),
       event_id: eventId,
       event_source_url: window.location.href,
+      ...utmFields,
     }
 
     try {
