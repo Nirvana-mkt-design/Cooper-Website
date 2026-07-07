@@ -8,6 +8,12 @@ export interface SeoOptions {
   description?: string
   /** Root-relative path for the canonical URL, e.g. "/personas/retail-agencies". */
   canonicalPath?: string
+  /**
+   * Open Graph / Twitter preview image. Accepts a root-relative path
+   * (e.g. "/images/og/retail.png") or an absolute URL. When omitted, the page
+   * inherits the site-wide og:image from index.html.
+   */
+  image?: string
   /** When true, adds <meta name="robots" content="noindex, follow">. */
   noindex?: boolean
   /** JSON-LD structured data (single object or an array). Injected as a script tag. */
@@ -57,12 +63,17 @@ function upsertCanonical(href: string | undefined) {
  *
  * Google renders the app before indexing, so these client-set tags are read.
  */
-export function useSeo({ title, description, canonicalPath, noindex, jsonLd }: SeoOptions) {
+export function useSeo({ title, description, canonicalPath, image, noindex, jsonLd }: SeoOptions) {
   // Serialize jsonLd so the effect re-runs only when its content changes.
   const jsonLdKey = jsonLd ? JSON.stringify(jsonLd) : ''
 
   useEffect(() => {
     const canonical = canonicalPath ? absoluteUrl(canonicalPath) : undefined
+    const imageUrl = image
+      ? image.startsWith('http')
+        ? image
+        : absoluteUrl(image)
+      : undefined
 
     const prevTitle = document.title
     document.title = title
@@ -73,8 +84,10 @@ export function useSeo({ title, description, canonicalPath, noindex, jsonLd }: S
       upsertMeta('property', 'og:title', title),
       upsertMeta('property', 'og:description', description),
       upsertMeta('property', 'og:url', canonical),
+      upsertMeta('property', 'og:image', imageUrl),
       upsertMeta('name', 'twitter:title', title),
       upsertMeta('name', 'twitter:description', description),
+      upsertMeta('name', 'twitter:image', imageUrl),
       noindex ? upsertMeta('name', 'robots', 'noindex, follow') : () => {},
     ]
 
@@ -93,5 +106,5 @@ export function useSeo({ title, description, canonicalPath, noindex, jsonLd }: S
       script?.remove()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [title, description, canonicalPath, noindex, jsonLdKey])
+  }, [title, description, canonicalPath, image, noindex, jsonLdKey])
 }
