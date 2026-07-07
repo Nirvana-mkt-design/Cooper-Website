@@ -82,7 +82,7 @@ function HomePage() {
         <HowCooperHelps />
       </RevealSection>
       <RevealSection>
-        <OnePlatform />
+        <BuiltForEveryRole />
       </RevealSection>
       <RevealSection>
         <Metrics />
@@ -92,7 +92,7 @@ function HomePage() {
         <Testimonial />
       </RevealSection> */}
       <RevealSection>
-        <BuiltForEveryRole />
+        <OnePlatform />
       </RevealSection>
 
       {/* <RevealSection>
