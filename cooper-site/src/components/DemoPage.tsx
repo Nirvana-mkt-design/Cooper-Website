@@ -103,20 +103,19 @@ export default function DemoPage() {
     if (company) noteParts.push(`Company: ${company}`)
     if (reason) noteParts.push(`Reason for demo: ${reason}`)
 
-    const utmFields: Record<string, string> = {}
-    try {
-      const adParams = JSON.parse(sessionStorage.getItem('cooper_ad_params') ?? '{}') as Record<string, string>
-      // Salesforce Web-to-Lead custom field IDs
-      if (adParams.utm_campaign) utmFields['00NVt00000L7cu8'] = adParams.utm_campaign
-      if (adParams.utm_content)  utmFields['00NVt00000L7cu9'] = adParams.utm_content
-      if (adParams.utm_source)   utmFields['00NVt00000L7cuA'] = adParams.utm_source
-      if (adParams.utm_term)     utmFields['00NVt00000L7cuB'] = adParams.utm_term
+    // Extract GA4 client_id from _ga cookie (format: GA1.1.XXXXXXXXXX.XXXXXXXXXX)
+    const gaCookie = document.cookie.split(';').map(c => c.trim()).find(c => c.startsWith('_ga='))
+    const gaParts = gaCookie?.split('=')[1]?.split('.')
+    const gaClientId = gaParts && gaParts.length >= 4 ? `${gaParts[2]}.${gaParts[3]}` : ''
 
-      // Click IDs — no dedicated SF fields yet, append to notes for visibility
-      const CLICK_ID_KEYS = ['gclid', 'fbclid', 'msclkid', 'ttclid', 'li_fat_id', 'twclid']
-      const clickIds = CLICK_ID_KEYS.filter(k => adParams[k]).map(k => `${k}=${adParams[k]}`).join(' | ')
-      if (clickIds) noteParts.push(`[Click IDs: ${clickIds}]`)
-    } catch { /* ignore */ }
+    const adParams = (() => {
+      try { return JSON.parse(sessionStorage.getItem('cooper_ad_params') ?? '{}') as Record<string, string> } catch { return {} }
+    })()
+
+    // Click IDs — append to notes for Salesforce visibility (no dedicated SF fields yet)
+    const CLICK_ID_KEYS = ['gclid', 'fbclid', 'msclkid', 'ttclid', 'li_fat_id', 'twclid']
+    const clickIds = CLICK_ID_KEYS.filter(k => adParams[k]).map(k => `${k}=${adParams[k]}`).join(' | ')
+    if (clickIds) noteParts.push(`[Click IDs: ${clickIds}]`)
 
     const eventId = crypto.randomUUID()
     const payload = {
@@ -127,7 +126,18 @@ export default function DemoPage() {
       message: noteParts.join('\n\n'),
       event_id: eventId,
       event_source_url: window.location.href,
-      ...utmFields,
+      ga_client_id: gaClientId,
+      utm_source: adParams.utm_source ?? '',
+      utm_medium: adParams.utm_medium ?? '',
+      utm_campaign: adParams.utm_campaign ?? '',
+      utm_term: adParams.utm_term ?? '',
+      utm_content: adParams.utm_content ?? '',
+      gclid: adParams.gclid ?? '',
+      fbclid: adParams.fbclid ?? '',
+      msclkid: adParams.msclkid ?? '',
+      ttclid: adParams.ttclid ?? '',
+      li_fat_id: adParams.li_fat_id ?? '',
+      twclid: adParams.twclid ?? '',
     }
 
     try {
