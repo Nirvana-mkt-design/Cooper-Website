@@ -515,7 +515,7 @@ function MobileIntegrations() {
               </div>
             </div>
           </div>
-          <div className="absolute" style={{ left: 44.7, top: 542 }}><MoreText>{GROUPS.carriers.more}</MoreText></div>
+          <div className="absolute" style={{ left: 44.7, top: 560 }}><MoreText>{GROUPS.carriers.more}</MoreText></div>
 
           {/* Documents — bottom-left 2-col grid */}
           <div
