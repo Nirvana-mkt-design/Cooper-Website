@@ -4,7 +4,10 @@
 ─────────────────────────────────────────────────────────────── */
 
 const ORG = 'cooper-ai'
-const API_KEY = '135c73fbc7510e7f91c16dbaac5e11d24694a3c3a9e1bccf23f9f0ceef4330e1'
+// Read-only Ashby Posting API key. Provided via env (VITE_ASHBY_POSTING_API_KEY)
+// so it isn't hardcoded in source. Note: VITE_ vars are still embedded in the
+// client bundle at build time — this is for rotation/hygiene, not true secrecy.
+const API_KEY = import.meta.env.VITE_ASHBY_POSTING_API_KEY
 const BASE = 'https://api.ashbyhq.com/posting-api'
 const HEADERS = { 'ashby-api-key': API_KEY }
 
