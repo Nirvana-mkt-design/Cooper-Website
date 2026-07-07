@@ -56,18 +56,18 @@ function XIcon() {
 
 /* ── Struggle vs help data ── */
 const struggles = [
-  'Rekeying the same data into ACORD 125 / 137',
-  'Filling submissions across six carrier portals',
-  'Chasing missing documents over email',
-  'Reading loss runs to spot the real exposure',
-  'Comparing quotes to advise the client',
+  'Re-marketing renewals one carrier at a time',
+  'Triaging a flood of retailer submissions',
+  'Clearing submissions before underwriting starts',
+  'Keying first notice of loss from calls and email',
+  'Reading bordereaux and treaty submissions line by line',
 ]
 const helps = [
-  'Fills ACORD 125 / 137 from the source documents',
-  'Submits the risk across every carrier in parallel',
-  'Chases and collects missing documents for you',
-  'Reads the loss runs and surfaces the real exposure',
-  'Builds the quote comparison so you advise faster',
+  'Re-markets the renewal across every carrier in one pass',
+  'Sorts and routes inbound submissions as they arrive',
+  'Clears and de-dupes the submission queue in minutes',
+  'Captures FNOL from the email or call notes for you',
+  'Parses bordereaux into structured data in seconds',
 ]
 
 
@@ -146,7 +146,7 @@ export default function AboutPage() {
           {/* Bottom-right — body text */}
           <div className="flex lg:justify-end mt-[80px]">
             <p className="font-sans text-[17.8px] leading-[1.5] text-cream-light max-w-full lg:max-w-[465px] animate-fade-blur-in" style={{ animationDelay: '0.2s' }}>
-              Cooper is AI built for insurance. Not another platform of menus and fixed workflows, but a teammate that does the document-heavy work the way your best people do, and adapts to how your shop actually runs.
+              Cooper is your AI coworker for the entire insurance workflow from intake to renewal. Not another platform of menus and fixed workflows. Cooper does the document-heavy work the way your best people do, and adapts to how your shop actually runs.
             </p>
           </div>
         </div>
@@ -209,7 +209,7 @@ export default function AboutPage() {
               The Problem
             </span>
             <h2 className="font-serif text-[30px] md:text-[44px] lg:text-[54px] leading-[1.1] text-dark mb-[56px] lg:mb-[72px] max-w-[880px] animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
-              Insurance brokers are drowning in busywork. Cooper gives you time back to focus on judgment.
+              Brokers are drowning in busywork. Cooper lets you focus on judgment.
             </h2>
 
             {/* Description + two columns (struggle / help) */}
@@ -217,7 +217,7 @@ export default function AboutPage() {
 
               {/* Left — description */}
               <p className="font-sans text-[15px] lg:text-[16px] leading-[1.7] text-dark/55 max-w-[320px]">
-                Insurance runs on email, Excel, a browser, and a CRM. None of them were built for the expertise the work actually takes. Cooper handles the busywork and does the legwork behind every judgment call, so your people can focus on the decisions.
+                In insurance, a wrong answer costs more than a slow one. Cooper checks instead of guessing and asks instead of assuming. Our customers hand Cooper their most important work only when they trust it completely.
               </p>
 
               {/* Where teams struggle */}
@@ -273,7 +273,7 @@ export default function AboutPage() {
                     Careers
                   </span>
                   <h2 className="font-serif text-[36px] md:text-[34px] lg:text-[42px] leading-[1.15] text-white mb-[36px] animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
-                    Join us in bringing insurance brokers to the future.
+                    Come build the insurance coworker.
                   </h2>
                   <Link
                     to="/careers"
@@ -287,7 +287,7 @@ export default function AboutPage() {
                 {/* Right — body text */}
                 <div className="flex-1 flex lg:justify-end w-full">
                   <p className="font-sans text-[15px] leading-[24.75px] text-white/80 max-w-full lg:max-w-[380px] animate-fade-blur-in" style={{ animationDelay: '0.2s' }}>
-                    We're a small team giving Cooper the judgment of a great insurance professional. If that's your kind of problem, we're hiring across engineering, design, and go-to-market.
+                    We're a small team teaching Cooper the judgment of a top insurance professional. If that's your kind of problem, join us. We're hiring across engineering, product, operations, and go-to-market.
                   </p>
                 </div>
               </div>

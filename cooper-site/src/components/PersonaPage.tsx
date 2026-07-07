@@ -295,12 +295,6 @@ export default function PersonaPage() {
                   </h1>
                 </div>
                 <div className="animate-fade-in flex flex-col items-stretch gap-[12px] sm:flex-row sm:flex-wrap sm:items-center" style={{ animationDelay: '0.45s' }}>
-                  <a
-                    href="#features"
-                    className="inline-flex w-full items-center justify-center rounded-[8px] border border-dark/[0.18] bg-transparent px-[28px] py-[14px] font-sans text-[16px] font-medium text-dark no-underline transition-colors hover:bg-dark/[0.04] sm:w-fit sm:justify-start"
-                  >
-                    See how it works
-                  </a>
                   <Link
                     to="/demo"
                     className="inline-flex w-full items-center justify-center rounded-[8px] bg-[#1e1a15] px-[32px] py-[14px] text-center font-sans text-[16px] font-medium text-cream-light no-underline transition-opacity hover:opacity-90 sm:w-fit sm:justify-start sm:text-left"

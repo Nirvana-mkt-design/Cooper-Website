@@ -4,42 +4,35 @@ const testimonials = [
   {
     id: 1,
     quote:
-      '\u201CCooper transformed how we process submissions. What took hours now takes minutes. It\u2019s like having an insurance expert available 24/7. Cooper has become essential to scaling fast and staying competitive.\u201D',
-    name: 'Rushil Goel, CEO Nirvana Insurance',
-    photo: '/images/testimonial-rushil.webp',
-    logo: '/images/nirvana-logo.webp',
-    logoAlt: 'Nirvana',
+      '\u201CIt has really opened the minds of our producers and a lot of our team who were previously very closed off to the idea of using AI.\u201D',
+    name: 'Operations Director, Specialty Commercial Brokerage',
   },
   {
     id: 2,
-    quote:
-      '\u201COur producers used to spend half their day chasing missing documents. Cooper handles that automatically now \u2014 flagging gaps, pulling data, and keeping everything organized. We\u2019ve doubled our submission volume without adding headcount.\u201D',
-    name: 'Sarah Chen, VP Operations Apex Brokerage',
-    photo: '/images/testimonial-sarah.webp',
-    logo: '/images/nirvana-logo.webp',
-    logoAlt: 'Apex',
+    quote: '\u201CCooper is literally a magic wand.\u201D',
+    name: 'Claims Examiner, Boutique Claims TPA',
   },
   {
     id: 3,
     quote:
-      '\u201CThe policy comparison alone saves us 15 hours a week. Cooper reads every document, highlights what matters, and gives us side-by-side breakdowns that used to take our senior underwriters an entire afternoon.\u201D',
-    name: 'James Mitchell, Head of Underwriting Trident MGA',
-    photo: '/images/testimonial-james.webp',
-    logo: '/images/nirvana-logo.webp',
-    logoAlt: 'Trident',
+      '\u201CWe now have the capacity to get submissions out same day. It used to be \u2018we can\u2019t do this today, we\u2019ll get it out tomorrow morning.\u2019 Now anything we get in a day, we can get out to market, which is huge.\u201D',
+    name: 'Marketing Manager, Specialty Commercial Brokerage',
   },
   {
     id: 4,
     quote:
-      '\u201CWe were skeptical about AI in insurance, but Cooper proved us wrong in the first week. It caught coverage gaps we\u2019d been missing for months. Our loss ratio improved and our clients noticed the difference immediately.\u201D',
-    name: 'Maria Santos, Managing Director Lighthouse Re',
-    photo: '/images/testimonial-maria.webp',
-    logo: '/images/nirvana-logo.webp',
-    logoAlt: 'Lighthouse',
+      '\u201CThe coverage analysis is amazing, I absolutely love it. If we were to do that on our own, it would probably take five hours in itself.\u201D',
+    name: 'Commercial Lines Account Manager, Independent Retail Agency',
+  },
+  {
+    id: 5,
+    quote:
+      '\u201CI get a lot of documents from the producer, and now I can just forward them to Cooper instead of going into the system. I really like that a lot.\u201D',
+    name: 'Account Manager, Independent Retail Agency',
   },
 ]
 
-const DURATION = 10000
+const DURATION = 12000
 
 export default function Testimonial() {
   const [active, setActive] = useState(0)
@@ -90,62 +83,15 @@ export default function Testimonial() {
       <div className="max-w-[1440px] mx-auto">
         {/* Card */}
         <div className="relative">
-          {/* Outer border box (quote side) */}
-          <div className="ml-[33px] border border-dark">
-            <div className="grid grid-cols-[342px_1fr] min-h-[387px]">
-              {/* Left — Photo (overlaps border) */}
-              <div className="relative">
-                <div
-                  className="absolute top-[-32px] left-[-33px] w-[343px] h-[346px] border border-dark overflow-hidden"
-                  style={{ boxShadow: '0px 7.5px 69.6px -20px rgba(0,0,0,0.33)' }}
-                >
-                  <img
-                    key={`photo-${animKey}`}
-                    src={t.photo}
-                    alt=""
-                    className="w-full h-full object-cover animate-fade-blur-in"
-                    style={{ mixBlendMode: 'luminosity' }}
-                  />
-                  {/* Radial vignette */}
-                  <div
-                    className="absolute inset-0 opacity-24"
-                    style={{
-                      background:
-                        'radial-gradient(ellipse at 43% 92%, rgba(0,0,0,0) 0%, rgba(28,11,5,1) 100%)',
-                    }}
-                  />
-                  {/* Bottom blur fade (progressive) */}
-                  <div
-                    className="absolute bottom-0 left-0 w-full h-[140px] pointer-events-none"
-                    style={{
-                      opacity: 0.84,
-                      backdropFilter: 'blur(40px)',
-                      WebkitBackdropFilter: 'blur(40px)',
-                      maskImage: 'linear-gradient(to top, black 0%, black 20%, transparent 100%)',
-                      WebkitMaskImage: 'linear-gradient(to top, black 0%, black 20%, transparent 100%)',
-                      background: 'linear-gradient(to top, rgba(237,231,217,0.5) 0%, rgba(237,231,217,0.2) 40%, transparent 100%)',
-                    }}
-                  />
-                </div>
-              </div>
-
-              {/* Right — Quote content */}
-              <div className="flex flex-col justify-center px-[62px] py-[50px]" key={`content-${animKey}`}>
-                <blockquote className="font-serif text-[24px] leading-[1.5] text-dark mb-[32px] max-w-[790px] animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
-                  {t.quote}
-                </blockquote>
-                <div className="flex items-center gap-[24px] animate-fade-blur-in" style={{ animationDelay: '0.3s' }}>
-                  <p className="font-grotesk font-medium text-[14.5px] tracking-[1.45px] uppercase text-dark">
-                    {t.name}
-                  </p>
-                  <img
-                    src={t.logo}
-                    alt={t.logoAlt}
-                    className="h-[24px] w-auto"
-                    style={{ mixBlendMode: 'luminosity' }}
-                  />
-                </div>
-              </div>
+          {/* Quote card */}
+          <div className="border border-dark">
+            <div className="flex flex-col justify-center min-h-[387px] px-6 py-[50px] md:px-[62px]" key={`content-${animKey}`}>
+              <blockquote className="font-serif text-[24px] lg:text-[30px] leading-[1.5] text-dark mb-[32px] max-w-[900px] animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
+                {t.quote}
+              </blockquote>
+              <p className="font-grotesk font-medium text-[14.5px] tracking-[1.45px] uppercase text-dark animate-fade-blur-in" style={{ animationDelay: '0.3s' }}>
+                {t.name}
+              </p>
             </div>
           </div>
 

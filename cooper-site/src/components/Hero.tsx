@@ -71,7 +71,7 @@ export default function Hero() {
             <span className="animate-fade-blur-in block" style={{ animationDelay: '0.8s' }}>Less busywork.</span>
           </h1>
           <p className="animate-fade-blur-in font-sans font-normal text-[17.8px] leading-[1.5] text-[#FFFCF1] max-w-[536px]" style={{ animationDelay: '1.1s' }}>
-            Cooper is AI built for insurance, bringing your workflows together and automating what slows you down.
+            Cooper is your AI coworker for insurance, bringing your workflows together and automating what slows you down.
           </p>
         </div>
       </div>

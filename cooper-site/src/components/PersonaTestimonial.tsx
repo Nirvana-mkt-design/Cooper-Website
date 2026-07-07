@@ -7,7 +7,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import type { TestimonialItem } from '../data/personas'
 
-const DURATION = 9000
+const DURATION = 11000
 
 function usePrefersReducedMotion() {
   const [reduce, setReduce] = useState(

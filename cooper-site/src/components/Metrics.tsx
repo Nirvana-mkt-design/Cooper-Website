@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
 
 const metrics = [
-  { end: 8.5, decimals: 1, suffix: ' hrs', label: 'Selling time back per producer', note: 'every week' },
-  { end: 95, decimals: 0, suffix: '%', label: 'Fewer manual re-entry errors', note: 'from day one' },
-  { end: 12, decimals: 0, suffix: '×', label: 'Faster submission-to-market', note: 'end to end' },
+  { end: 25, decimals: 0, suffix: ' hrs', label: 'back to the team to sell' },
+  { end: 95, decimals: 0, suffix: '%', label: 'Fewer manual re-entry errors' },
+  { end: 12, decimals: 0, suffix: '×', label: 'Faster submission-to-market' },
 ]
 
 function useCountUp(end: number, duration: number, start: boolean, decimals = 0) {
@@ -59,9 +59,6 @@ function AnimatedMetric({ metric, delay }: { metric: typeof metrics[0]; delay: n
       </span>
       <span className={`font-grotesk font-medium text-[14.5px] tracking-[1.45px] uppercase text-cream-light leading-[1.5] transition-opacity duration-500 ${visible ? 'opacity-100' : 'opacity-0'}`} style={{ transitionDelay: '0.3s' }}>
         {metric.label}
-      </span>
-      <span className={`font-sans text-[16px] leading-[1.2] text-cream-light/50 transition-opacity duration-500 ${visible ? 'opacity-100' : 'opacity-0'}`} style={{ transitionDelay: '0.5s' }}>
-        {metric.note}
       </span>
     </div>
   )

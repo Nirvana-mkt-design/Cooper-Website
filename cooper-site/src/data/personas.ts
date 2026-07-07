@@ -45,7 +45,7 @@ export const personas: Persona[] = [
     name: 'Retail Agencies',
     label: 'RETAIL AGENCIES',
     headline: 'Producers sell. Account managers serve. Cooper does the rest.',
-    headlineLead: 'Producers Sell. Account Managers Serve.',
+    headlineLead: 'Producers Sell. Managers Serve.',
     headlineAccent: 'Cooper does the rest.',
     subtitle:
       'Built for both sides of the agency. Cooper handles the data entry, submissions, renewals, and certificate work that buries your service team, so producers stay in front of clients and account managers stay ahead of the book.',
@@ -99,34 +99,29 @@ export const personas: Persona[] = [
     testimonialRole: 'Regional P&C Agency',
     testimonials: [
       {
-        quote: 'Every time we meet, people learn something new they can use Cooper for — they\'re just excited.',
-        author: 'Holly Otlewski',
-        role: 'Marketing Manager, Transtar Insurance Brokers',
+        quote: 'It has really opened the minds of our producers and a lot of our team who were previously very closed off to the idea of using AI.',
+        author: '',
+        role: 'Operations Director, Specialty Commercial Brokerage',
       },
       {
-        quote: 'It\'s probably cut down the time it takes from getting submission information to getting it out to market. Probably pretty close to in half.',
-        author: 'Holly Otlewski',
-        role: 'Marketing Manager, Transtar Insurance Brokers',
+        quote: 'Cooper is literally a magic wand.',
+        author: '',
+        role: 'Claims Examiner, Boutique Claims TPA',
       },
       {
-        quote: 'Now anything we get in a day, we can get out to market, as long as we have everything. Which is huge.',
-        author: 'Holly Otlewski',
-        role: 'Marketing Manager, Transtar Insurance Brokers',
+        quote: 'We now have the capacity to get submissions out same day. It used to be ‘we can’t do this today, we’ll get it out tomorrow morning.’ Now anything we get in a day, we can get out to market, which is huge.',
+        author: '',
+        role: 'Marketing Manager, Specialty Commercial Brokerage',
       },
       {
         quote: 'The coverage analysis is amazing, I absolutely love it. If we were to do that on our own, it would probably take five hours in itself.',
-        author: 'Debbie Butcher',
-        role: 'Account Executive, HBW Insurance',
+        author: '',
+        role: 'Commercial Lines Account Manager, Independent Retail Agency',
       },
       {
         quote: 'I get a lot of documents from the producer, and now I can just forward them to Cooper instead of going into the system. I really like that a lot.',
-        author: 'Debbie Butcher',
-        role: 'Account Executive, HBW Insurance',
-      },
-      {
-        quote: 'They haven\'t come back with any issues recently — so I think we\'re good.',
-        author: 'Heidi',
-        role: 'Breinholt Insurance Group',
+        author: '',
+        role: 'Account Manager, Independent Retail Agency',
       },
     ],
     ctaText: 'See how Cooper works for your agency',
@@ -135,7 +130,9 @@ export const personas: Persona[] = [
     slug: 'wholesale-brokers',
     name: 'Wholesale Brokers',
     label: 'WHOLESALE BROKERS',
-    headline: 'The first quote back wins. Make sure it\'s yours.',
+    headline: 'The first quote back wins. Cooper ensures it\'s yours.',
+    headlineLead: 'The first quote back wins.',
+    headlineAccent: 'Cooper ensures it\'s yours.',
     subtitle:
       'Cooper triages submissions, matches risks to markets, and gets proposals out while the deal is still warm. Your brokers place more business, faster.',
     features: [
@@ -171,7 +168,9 @@ export const personas: Persona[] = [
     slug: 'mgas-insurers',
     name: 'MGAs & Insurers',
     label: 'MGAS & INSURERS',
-    headline: 'Scale underwriting without scaling headcount',
+    headline: 'Without scaling headcount, Cooper scales underwriting.',
+    headlineLead: 'Without scaling headcount,',
+    headlineAccent: 'Cooper scales underwriting.',
     subtitle:
       'Cooper enforces your guidelines, prices risks consistently, and keeps every program audit-ready, so you grow your book without growing your team.',
     features: [
@@ -207,7 +206,9 @@ export const personas: Persona[] = [
     slug: 'claims-tpas',
     name: 'Claims TPAs',
     label: 'CLAIMS TPAS',
-    headline: 'Handle more claims without missing a beat',
+    headline: 'Without adding adjusters, Cooper scales your claims desk.',
+    headlineLead: 'Without adding adjusters,',
+    headlineAccent: 'Cooper scales your claims desk.',
     subtitle:
       'Cooper takes care of intake, coverage checks, and reporting, so your adjusters focus on the files that need real judgment.',
     features: [
@@ -243,7 +244,9 @@ export const personas: Persona[] = [
     slug: 'reinsurers',
     name: 'Reinsurers',
     label: 'REINSURERS',
-    headline: 'Walk into renewal season prepared, not scrambling',
+    headline: 'Without wrangling a single bordereau, Cooper models your book.',
+    headlineLead: 'Without wrangling a single bordereau,',
+    headlineAccent: 'Cooper models your book.',
     subtitle:
       'Cooper cleans cedent data, tracks accumulation, enforces treaty terms, and assembles renewal files, so your team focuses on pricing and relationships.',
     features: [
