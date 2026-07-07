@@ -54,7 +54,13 @@ export default function Footer() {
 
         <div className="flex justify-between items-center">
           <span className="font-sans text-[13px] text-dark/30">© 2025 Cooper. All rights reserved.</span>
-          <div className="flex gap-[20px]">
+          <div className="flex gap-[20px] items-center">
+            <button
+              onClick={() => window.Cookiebot?.renew()}
+              className="font-sans text-[13px] text-dark/30 hover:text-dark/50 transition-colors cursor-pointer bg-transparent border-none p-0"
+            >
+              Manage Cookies
+            </button>
             <a href="#" className="font-sans text-[13px] text-dark/30 hover:text-dark/50 transition-colors no-underline">Privacy</a>
             <a href="#" className="font-sans text-[13px] text-dark/30 hover:text-dark/50 transition-colors no-underline">Terms</a>
           </div>
