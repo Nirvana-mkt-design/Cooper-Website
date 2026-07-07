@@ -485,7 +485,7 @@ function MobileIntegrations() {
 
           {/* Category labels */}
           <div className="absolute" style={{ left: 32.7, top: 100 }}><CanvasLabel>Records</CanvasLabel></div>
-          <div className="absolute" style={{ left: 32.7, top: 327 }}><CanvasLabel>Carriers</CanvasLabel></div>
+          <div className="absolute" style={{ left: 32.7, top: 383 }}><CanvasLabel>Carriers</CanvasLabel></div>
           <div className="absolute" style={{ left: 40.6, top: 995 }}><CanvasLabel>Documents</CanvasLabel></div>
           <div className="absolute" style={{ left: 40.6, top: 1240 }}><CanvasLabel>Communication</CanvasLabel></div>
 
@@ -499,7 +499,7 @@ function MobileIntegrations() {
           </div>
 
           {/* Carriers — right, second row fades off the edge */}
-          <div className="absolute" style={{ left: 32.7, top: 377.4, width: 326.7 }}>
+          <div className="absolute" style={{ left: 32.7, top: 433.4, width: 326.7 }}>
             <div className="flex flex-col gap-[10.2px]">
               <div className="flex gap-[11px]">
                 <MobileChipTag item={GROUPS.carriers.chips[0]} />
@@ -515,7 +515,7 @@ function MobileIntegrations() {
               </div>
             </div>
           </div>
-          <div className="absolute" style={{ left: 44.7, top: 486 }}><MoreText>{GROUPS.carriers.more}</MoreText></div>
+          <div className="absolute" style={{ left: 44.7, top: 542 }}><MoreText>{GROUPS.carriers.more}</MoreText></div>
 
           {/* Documents — bottom-left 2-col grid */}
           <div
