@@ -28,6 +28,7 @@ const logo = {
   chubb:         '/images/chips/chubb.png',
   outlook:       '/images/logo-outlook.webp',
   teams:         '/images/logo-teams.png',
+  slack:         '/images/logo-slack.webp',
 }
 
 type Group = { label: string; chips: Chip[]; more: string }
@@ -38,12 +39,12 @@ const GROUPS: Record<'ams' | 'carriers' | 'documents' | 'communication', Group> 
     more: 'And more...',
     chips: [
       { src: logo.epic,      label: 'Applied Epic' },
-      { src: logo.hawksoft,  label: 'HawkSoft' },
-      { src: logo.ams360,    label: 'AMS360' },
-      { src: logo.ezlynx,    label: 'EzLynx', h: 21, maxW: 42 },
       { src: logo.guidewire, label: 'Guidewire' },
-      { src: logo.hubspot,   label: 'HubSpot', h: 22 },
+      { src: logo.ams360,    label: 'AMS360' },
+      { src: logo.hawksoft,  label: 'HawkSoft' },
       { src: logo.salesforce, label: 'Salesforce', h: 20, maxW: 42 },
+      { src: logo.hubspot,   label: 'HubSpot', h: 22 },
+      { src: logo.ezlynx,    label: 'EzLynx', h: 21, maxW: 42 },
     ],
   },
   carriers: {
@@ -65,11 +66,12 @@ const GROUPS: Record<'ams' | 'carriers' | 'documents' | 'communication', Group> 
     ],
   },
   communication: {
-    label: 'Communication',
+    label: 'Communications',
     more: 'And more...',
     chips: [
       { src: logo.outlook, label: 'Outlook' },
       { src: logo.teams,   label: 'Teams' },
+      { src: logo.slack,   label: 'Slack' },
     ],
   },
 }
@@ -77,8 +79,8 @@ const GROUPS: Record<'ams' | 'carriers' | 'documents' | 'communication', Group> 
 /* Desktop carrier scroll — names only (no logos) */
 const SCROLL_NAMES = [
   'Chubb', 'Zurich', 'AIG', 'CNA', 'Markel',
-  'Progressive', 'The Hanover', 'Hiscox', 'Nationwide',
-  'The Hartford', 'Berkley', 'Amtrust',
+  'The Hanover', 'Hiscox', 'The Hartford',
+  'Berkley', 'Amtrust',
 ]
 
 /* ── Shared chip components ── */
@@ -119,8 +121,8 @@ function ChipTag({ item }: { item: Chip }) {
   )
 }
 
-/* Text-only pill for carrier scroll */
-function TextChip({ label }: { label: string }) {
+/* Text-only pill for carrier scroll + "And more" markers */
+function TextChip({ label, muted }: { label: string; muted?: boolean }) {
   return (
     <div
       className="relative inline-flex w-fit items-center rounded-[30px] px-[20px] py-[10px] h-[46px]"
@@ -131,7 +133,7 @@ function TextChip({ label }: { label: string }) {
         boxShadow: '0 7px 60px -20px rgba(30,26,21,0.33), inset 7px 6px 23px 0 rgba(30,26,21,0.10)',
       }}
     >
-      <span className="whitespace-nowrap font-grotesk text-[14.5px] font-medium uppercase leading-none tracking-[1.45px] text-dark">
+      <span className={`whitespace-nowrap font-grotesk text-[14.5px] font-medium uppercase leading-none tracking-[1.45px] ${muted ? 'text-dark/55' : 'text-dark'}`}>
         {label}
       </span>
     </div>
@@ -198,7 +200,26 @@ function MobileChipTag({ item }: { item: Chip }) {
   )
 }
 
-/* Mobile "and more" / "+ hundreds more" pill text */
+/* Mobile text-only pill (matches MobileChipTag, no icon) — for "And more" markers */
+function MobileTextChip({ label, muted }: { label: string; muted?: boolean }) {
+  return (
+    <div
+      className="relative inline-flex w-fit items-center rounded-[23.5px] px-[15.7px] py-[7.8px]"
+      style={{
+        border: '0.784px solid transparent',
+        background:
+          'linear-gradient(#fffcf1, #fffcf1) padding-box, linear-gradient(154deg, rgba(30,26,21,0.29) 6%, rgba(30,26,21,0) 100%) border-box',
+        boxShadow: '0 5.9px 54.6px -15.7px rgba(30,26,21,0.33), inset 5.5px 4.7px 18.1px 0 rgba(30,26,21,0.10)',
+      }}
+    >
+      <span className={`whitespace-nowrap font-grotesk text-[11.3px] font-medium uppercase leading-none tracking-[1.13px] ${muted ? 'text-dark/55' : 'text-dark'}`}>
+        {label}
+      </span>
+    </div>
+  )
+}
+
+/* Mobile "+ hundreds more" pill text (unboxed marker) */
 function MoreText({ children }: { children: string }) {
   return (
     <div className="flex items-center whitespace-nowrap p-[7.8px] font-grotesk text-[11.3px] font-medium uppercase leading-none tracking-[1.13px] text-dark/80">
@@ -487,7 +508,7 @@ function MobileIntegrations() {
           <div className="absolute" style={{ left: 32.7, top: 100 }}><CanvasLabel>Records</CanvasLabel></div>
           <div className="absolute" style={{ left: 32.7, top: 383 }}><CanvasLabel>Carriers</CanvasLabel></div>
           <div className="absolute" style={{ left: 40.6, top: 995 }}><CanvasLabel>Documents</CanvasLabel></div>
-          <div className="absolute" style={{ left: 40.6, top: 1240 }}><CanvasLabel>Communication</CanvasLabel></div>
+          <div className="absolute" style={{ left: 40.6, top: 1240 }}><CanvasLabel>Communications</CanvasLabel></div>
 
           {/* AMS — top-left 2-col grid */}
           <div
@@ -495,7 +516,7 @@ function MobileIntegrations() {
             style={{ left: 32.7, top: 163.5, width: 300.5 }}
           >
             {GROUPS.ams.chips.map((c, i) => <MobileChipTag key={i} item={c} />)}
-            <div className="col-span-2"><MoreText>{GROUPS.ams.more}</MoreText></div>
+            <MobileTextChip label={GROUPS.ams.more} muted />
           </div>
 
           {/* Carriers — right, second row fades off the edge */}
@@ -523,16 +544,16 @@ function MobileIntegrations() {
             style={{ left: 40.6, top: 1063.8, width: 281 }}
           >
             {GROUPS.documents.chips.map((c, i) => <MobileChipTag key={i} item={c} />)}
-            <MoreText>{GROUPS.documents.more}</MoreText>
+            <MobileTextChip label={GROUPS.documents.more} muted />
           </div>
 
-          {/* Communication — bottom-right */}
+          {/* Communications — bottom-right 2-col grid */}
           <div
-            className="absolute flex flex-wrap items-center gap-[12.5px]"
+            className="absolute grid grid-cols-2 justify-items-start gap-x-[3.9px] gap-y-[7.8px]"
             style={{ left: 40.6, top: 1303.5, width: 249.3 }}
           >
             {GROUPS.communication.chips.map((c, i) => <MobileChipTag key={i} item={c} />)}
-            <MoreText>{GROUPS.communication.more}</MoreText>
+            <MobileTextChip label={GROUPS.communication.more} muted />
           </div>
         </div>
       </div>
@@ -605,7 +626,7 @@ export default function Integrations() {
             <BracketPair left={717} top={424} outerW={261} outerH={124} innerW={124} innerH={261} innerTransform="rotate(-90deg) scaleY(-1)"  path={H_PATH} viewBox={H_VB} />
 
             {/* ── Category labels — float near center ── */}
-            <div className="absolute" style={{ left: 431, top: 297, transform: 'translateY(-50%)' }}>
+            <div className="absolute" style={{ left: 431, top: 360, transform: 'translateY(-50%)' }}>
               <CanvasLabel>Records</CanvasLabel>
             </div>
             <div className="absolute" style={{ left: 746, top: 297, transform: 'translateY(-50%)' }}>
@@ -615,21 +636,19 @@ export default function Integrations() {
               <CanvasLabel>Documents</CanvasLabel>
             </div>
             <div className="absolute" style={{ left: 719, top: 538, transform: 'translateY(-50%)' }}>
-              <CanvasLabel>Communication</CanvasLabel>
+              <CanvasLabel>Communications</CanvasLabel>
             </div>
 
             {/* ── AMS chip group — top-left ── */}
             <div className="absolute" style={{ left: 178, top: 125 }}>
-              <div className="grid gap-x-[5px] gap-y-[10px]" style={{ gridTemplateColumns: 'auto auto' }}>
+              <div className="grid gap-x-[14px] gap-y-[10px]" style={{ gridTemplateColumns: 'auto auto' }}>
                 {GROUPS.ams.chips.map((c, i) => <ChipTag key={i} item={c} />)}
-                <div className="flex items-center px-[10px] font-grotesk text-[13px] font-medium uppercase tracking-[1.1px] text-dark/55 whitespace-nowrap">
-                  {GROUPS.ams.more}
-                </div>
+                <TextChip label={GROUPS.ams.more} muted />
               </div>
             </div>
 
             {/* ── Carriers chip group — top-right ── */}
-            <div className="absolute" style={{ left: 799, top: 115, width: 416, overflow: 'hidden' }}>
+            <div className="absolute" style={{ left: 799, top: 130, width: 416, overflow: 'hidden' }}>
               <div className="flex flex-col gap-[13px]">
                 <div className="flex gap-[14px] items-center">
                   <ChipTag item={GROUPS.carriers.chips[0]} />
@@ -639,29 +658,30 @@ export default function Integrations() {
                   <ChipTag item={GROUPS.carriers.chips[2]} />
                   <DesktopCarrierScroll />
                 </div>
-                <div className="px-[10px] font-grotesk text-[13px] font-medium uppercase tracking-[1.1px] text-dark/50">
-                  {GROUPS.carriers.more}
-                </div>
               </div>
+            </div>
+
+            {/* ── "+ hundreds more" — floats off to the side of the diagram ── */}
+            <div
+              className="absolute font-grotesk text-[13px] font-medium uppercase tracking-[1.1px] text-dark/45 whitespace-nowrap"
+              style={{ left: 1040, top: 792 }}
+            >
+              {GROUPS.carriers.more}
             </div>
 
             {/* ── Documents chip group — bottom-left ── */}
             <div className="absolute" style={{ left: 200, top: 630 }}>
-              <div className="grid gap-x-[5px] gap-y-[10px]" style={{ gridTemplateColumns: 'auto auto' }}>
+              <div className="grid gap-x-[14px] gap-y-[10px]" style={{ gridTemplateColumns: 'auto auto' }}>
                 {GROUPS.documents.chips.map((c, i) => <ChipTag key={i} item={c} />)}
-                <div className="flex items-center px-[10px] font-grotesk text-[13px] font-medium uppercase tracking-[1.1px] text-dark/55 whitespace-nowrap">
-                  {GROUPS.documents.more}
-                </div>
+                <TextChip label={GROUPS.documents.more} muted />
               </div>
             </div>
 
-            {/* ── Communication chip group — bottom-right ── */}
+            {/* ── Communications chip group — bottom-right ── */}
             <div className="absolute" style={{ left: 814, top: 634 }}>
-              <div className="flex flex-wrap gap-[16px] items-center">
+              <div className="grid gap-x-[14px] gap-y-[10px]" style={{ gridTemplateColumns: 'auto auto' }}>
                 {GROUPS.communication.chips.map((c, i) => <ChipTag key={i} item={c} />)}
-                <div className="px-[10px] font-grotesk text-[13px] font-medium uppercase tracking-[1.1px] text-dark/55 whitespace-nowrap">
-                  {GROUPS.communication.more}
-                </div>
+                <TextChip label={GROUPS.communication.more} muted />
               </div>
             </div>
 

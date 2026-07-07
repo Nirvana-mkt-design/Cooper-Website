@@ -10,7 +10,6 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 type Carrier = { name: string; src: string }
 
 const ALL_CARRIERS: Carrier[] = [
-  { name: 'Nationwide', src: '/images/carriers/nationwide.png' },
   { name: 'The Hartford', src: '/images/carriers/the-hartford.png' },
   { name: 'Liberty Mutual', src: '/images/carriers/liberty-mutual.png' },
   { name: 'Zurich', src: '/images/carriers/zurich.png' },
@@ -18,7 +17,6 @@ const ALL_CARRIERS: Carrier[] = [
   { name: 'Chubb', src: '/images/carriers/chubb.png' },
   { name: 'CNA', src: '/images/carriers/cna.png' },
   { name: 'Markel', src: '/images/carriers/markel.png' },
-  { name: 'Progressive', src: '/images/carriers/progressive.png' },
   { name: 'AIG', src: '/images/carriers/aig.png' },
   { name: 'Berkley', src: '/images/carriers/berkley.png' },
   { name: 'Cincinnati', src: '/images/carriers/cincinnati.png' },
