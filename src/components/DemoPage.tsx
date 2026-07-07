@@ -79,7 +79,7 @@ export default function DemoPage() {
   }
 
   function handlePhoneBlur() {
-    setPhoneError(phone && !isValidPhoneNumber(phone, 'US') ? 'Please enter a valid phone number.' : '')
+    setPhoneError(phone && !isValidPhoneNumber(phone) ? 'Please enter a valid phone number with country code (e.g. +1 555 000 0000).' : '')
   }
 
   const apiOrigin = import.meta.env.VITE_API_ORIGIN ?? 'https://api.askcooper.ai'
@@ -89,7 +89,7 @@ export default function DemoPage() {
     let valid = true
     if (!name.trim()) { setNameError('Please enter your name.'); valid = false }
     if (!isWorkEmail(email)) { setEmailError('Please use a work email address.'); valid = false }
-    if (!isValidPhoneNumber(phone, 'US')) { setPhoneError('Please enter a valid phone number.'); valid = false }
+    if (!isValidPhoneNumber(phone)) { setPhoneError('Please enter a valid phone number with country code (e.g. +1 555 000 0000).'); valid = false }
     if (!valid) return
     setNameError(''); setEmailError(''); setPhoneError('')
     setFormState('sending_code')
