@@ -22,7 +22,7 @@ function isWorkEmail(email: string): boolean {
   return !PERSONAL_EMAIL_DOMAINS.has(domain)
 }
 
-type FormState = 'idle' | 'submitting' | 'success' | 'error'
+type FormState = 'idle' | 'sending_code' | 'code_sent' | 'submitting' | 'success' | 'error'
 
 const testimonials = [
   {
@@ -63,6 +63,7 @@ export default function DemoPage() {
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [hearAbout, setHearAbout] = useState('')
+  const [code, setCode] = useState('')
   const [formState, setFormState] = useState<FormState>('idle')
   const [errorMsg, setErrorMsg] = useState('')
   const [nameError, setNameError] = useState('')
@@ -81,19 +82,39 @@ export default function DemoPage() {
     setPhoneError(phone && !isValidPhoneNumber(phone, 'US') ? 'Please enter a valid phone number.' : '')
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  const apiOrigin = import.meta.env.VITE_API_ORIGIN ?? 'https://api.askcooper.ai'
+
+  async function handleSendCode(e: React.FormEvent) {
     e.preventDefault()
     let valid = true
-    const nameParts = name.trim().split(/\s+/)
     if (!name.trim()) { setNameError('Please enter your name.'); valid = false }
     if (!isWorkEmail(email)) { setEmailError('Please use a work email address.'); valid = false }
     if (!isValidPhoneNumber(phone, 'US')) { setPhoneError('Please enter a valid phone number.'); valid = false }
     if (!valid) return
-
     setNameError(''); setEmailError(''); setPhoneError('')
+    setFormState('sending_code')
+    setErrorMsg('')
+    try {
+      const res = await fetch(`${apiOrigin}/api/v1/demo-requests/send-code/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone }),
+      })
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      setFormState('code_sent')
+    } catch {
+      setFormState('idle')
+      setErrorMsg('Failed to send verification code. Please try again.')
+    }
+  }
+
+  async function handleVerifyAndSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!code.trim()) return
     setFormState('submitting')
     setErrorMsg('')
 
+    const nameParts = name.trim().split(/\s+/)
     const noteParts: string[] = []
     if (hearAbout) noteParts.push(`How did you hear about us: ${hearAbout}`)
     const adParamsRaw = sessionStorage.getItem('cooper_ad_params')
@@ -105,22 +126,27 @@ export default function DemoPage() {
     }
 
     const eventId = crypto.randomUUID()
-    const payload = {
-      first_name: nameParts[0],
-      last_name: nameParts.slice(1).join(' '),
-      email,
-      phone,
-      message: noteParts.join('\n\n'),
-    }
-
     try {
-      const apiOrigin = import.meta.env.VITE_API_ORIGIN ?? 'https://api.askcooper.ai'
       const res = await fetch(`${apiOrigin}/api/v1/demo-requests/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          first_name: nameParts[0],
+          last_name: nameParts.slice(1).join(' '),
+          email,
+          phone,
+          code,
+          message: noteParts.join('\n\n'),
+        }),
       })
-      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      if (!res.ok) {
+        if (res.status === 422) {
+          setFormState('code_sent')
+          setErrorMsg('Invalid or expired code. Please check and try again.')
+          return
+        }
+        throw new Error(`HTTP ${res.status}`)
+      }
       setFormState('success')
       trackLead(eventId)
       window.oaiq?.('measure', 'lead_created', { type: 'customer_action' })
@@ -157,83 +183,120 @@ export default function DemoPage() {
                 Schedule a 1:1 session with an insurance AI expert from our team. We'll show you Cooper with your own workflows - no generic demo.
               </p>
 
-              <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-[20px] max-w-[440px]">
-                <div>
-                  <label className="font-sans text-[13px] font-medium text-dark/70 mb-[6px] block">Full name</label>
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    onBlur={handleNameBlur}
-                    placeholder="Jane Smith"
-                    required
-                    className="w-full font-sans text-[15px] text-dark bg-white border border-dark/[0.12] rounded-[8px] px-[14px] py-[12px] outline-none focus:border-accent-orange/50 focus:ring-2 focus:ring-accent-orange/10 transition-all placeholder:text-dark/25"
-                  />
-                  {nameError && <p className="font-sans text-[12px] text-accent-red mt-[4px]">{nameError}</p>}
-                </div>
-
-                <div>
-                  <label className="font-sans text-[13px] font-medium text-dark/70 mb-[6px] block">Work email</label>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => { setEmail(e.target.value); if (emailError) setEmailError('') }}
-                    onBlur={handleEmailBlur}
-                    placeholder="jane@company.com"
-                    required
-                    className="w-full font-sans text-[15px] text-dark bg-white border border-dark/[0.12] rounded-[8px] px-[14px] py-[12px] outline-none focus:border-accent-orange/50 focus:ring-2 focus:ring-accent-orange/10 transition-all placeholder:text-dark/25"
-                  />
-                  {emailError && <p className="font-sans text-[12px] text-accent-red mt-[4px]">{emailError}</p>}
-                </div>
-
-                <div>
-                  <label className="font-sans text-[13px] font-medium text-dark/70 mb-[6px] block">Phone</label>
-                  <input
-                    type="tel"
-                    value={phone}
-                    onChange={(e) => { setPhone(e.target.value); if (phoneError) setPhoneError('') }}
-                    onBlur={handlePhoneBlur}
-                    placeholder="+1 (555) 000-0000"
-                    required
-                    autoComplete="tel"
-                    className="w-full font-sans text-[15px] text-dark bg-white border border-dark/[0.12] rounded-[8px] px-[14px] py-[12px] outline-none focus:border-accent-orange/50 focus:ring-2 focus:ring-accent-orange/10 transition-all placeholder:text-dark/25"
-                  />
-                  {phoneError && <p className="font-sans text-[12px] text-accent-red mt-[4px]">{phoneError}</p>}
-                </div>
-
-                <div>
-                  <label className="font-sans text-[13px] font-medium text-dark/70 mb-[6px] block">
-                    How did you hear about us? <span className="font-normal text-dark/30">(optional)</span>
-                  </label>
-                  <select
-                    value={hearAbout}
-                    onChange={(e) => setHearAbout(e.target.value)}
-                    className="w-full font-sans text-[15px] text-dark bg-white border border-dark/[0.12] rounded-[8px] px-[14px] py-[12px] outline-none focus:border-accent-orange/50 focus:ring-2 focus:ring-accent-orange/10 transition-all appearance-none cursor-pointer"
-                    style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%231e1a15' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round' opacity='0.3'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 14px center' }}
+              {formState === 'code_sent' || formState === 'submitting' ? (
+                /* Step 2: verify code */
+                <form onSubmit={handleVerifyAndSubmit} noValidate className="flex flex-col gap-[20px] max-w-[440px]">
+                  <p className="font-sans text-[15px] text-dark/60 leading-[1.6]">
+                    We sent a 6-digit code to <strong className="text-dark">{phone}</strong>. Enter it below to confirm your number.
+                  </p>
+                  <div>
+                    <label className="font-sans text-[13px] font-medium text-dark/70 mb-[6px] block">Verification code</label>
+                    <input
+                      type="text"
+                      value={code}
+                      onChange={(e) => setCode(e.target.value)}
+                      placeholder="123456"
+                      required
+                      autoComplete="one-time-code"
+                      className="w-full font-sans text-[15px] text-dark bg-white border border-dark/[0.12] rounded-[8px] px-[14px] py-[12px] outline-none focus:border-accent-orange/50 focus:ring-2 focus:ring-accent-orange/10 transition-all placeholder:text-dark/25"
+                    />
+                  </div>
+                  {errorMsg && <p className="font-sans text-[13px] text-accent-red">{errorMsg}</p>}
+                  <button
+                    type="submit"
+                    disabled={formState === 'submitting'}
+                    className="w-full font-sans font-medium text-[15px] text-cream-light bg-accent-orange rounded-[8px] px-[24px] py-[14px] mt-[8px] hover:opacity-90 disabled:opacity-50 transition-opacity cursor-pointer"
                   >
-                    <option value="">Select one...</option>
-                    {HEAR_ABOUT_US.map((o) => (
-                      <option key={o} value={o}>{o}</option>
-                    ))}
-                  </select>
-                </div>
+                    {formState === 'submitting' ? 'Submitting…' : 'Verify and submit'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setFormState('idle'); setCode(''); setErrorMsg('') }}
+                    className="font-sans text-[13px] text-dark/40 hover:text-dark/70 underline bg-none border-none cursor-pointer transition-colors"
+                  >
+                    Edit details or resend code
+                  </button>
+                </form>
+              ) : (
+                /* Step 1: collect details */
+                <form onSubmit={handleSendCode} noValidate className="flex flex-col gap-[20px] max-w-[440px]">
+                  <div>
+                    <label className="font-sans text-[13px] font-medium text-dark/70 mb-[6px] block">Full name</label>
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      onBlur={handleNameBlur}
+                      placeholder="Jane Smith"
+                      required
+                      className="w-full font-sans text-[15px] text-dark bg-white border border-dark/[0.12] rounded-[8px] px-[14px] py-[12px] outline-none focus:border-accent-orange/50 focus:ring-2 focus:ring-accent-orange/10 transition-all placeholder:text-dark/25"
+                    />
+                    {nameError && <p className="font-sans text-[12px] text-accent-red mt-[4px]">{nameError}</p>}
+                  </div>
 
-                {formState === 'error' && (
-                  <p className="font-sans text-[13px] text-accent-red">{errorMsg}</p>
-                )}
+                  <div>
+                    <label className="font-sans text-[13px] font-medium text-dark/70 mb-[6px] block">Work email</label>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => { setEmail(e.target.value); if (emailError) setEmailError('') }}
+                      onBlur={handleEmailBlur}
+                      placeholder="jane@company.com"
+                      required
+                      className="w-full font-sans text-[15px] text-dark bg-white border border-dark/[0.12] rounded-[8px] px-[14px] py-[12px] outline-none focus:border-accent-orange/50 focus:ring-2 focus:ring-accent-orange/10 transition-all placeholder:text-dark/25"
+                    />
+                    {emailError && <p className="font-sans text-[12px] text-accent-red mt-[4px]">{emailError}</p>}
+                  </div>
 
-                <button
-                  type="submit"
-                  disabled={formState === 'submitting'}
-                  className="w-full font-sans font-medium text-[15px] text-cream-light bg-accent-orange rounded-[8px] px-[24px] py-[14px] mt-[8px] hover:opacity-90 disabled:opacity-50 transition-opacity cursor-pointer"
-                >
-                  {formState === 'submitting' ? 'Sending…' : 'Book a demo'}
-                </button>
+                  <div>
+                    <label className="font-sans text-[13px] font-medium text-dark/70 mb-[6px] block">Phone</label>
+                    <input
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => { setPhone(e.target.value); if (phoneError) setPhoneError('') }}
+                      onBlur={handlePhoneBlur}
+                      placeholder="+1 (555) 000-0000"
+                      required
+                      autoComplete="tel"
+                      className="w-full font-sans text-[15px] text-dark bg-white border border-dark/[0.12] rounded-[8px] px-[14px] py-[12px] outline-none focus:border-accent-orange/50 focus:ring-2 focus:ring-accent-orange/10 transition-all placeholder:text-dark/25"
+                    />
+                    {phoneError && <p className="font-sans text-[12px] text-accent-red mt-[4px]">{phoneError}</p>}
+                  </div>
 
-                <p className="font-sans text-[12px] text-dark/30 leading-[1.5]">
-                  By submitting this form, you agree to our privacy policy and consent to receiving communications from Cooper.
-                </p>
-              </form>
+                  <div>
+                    <label className="font-sans text-[13px] font-medium text-dark/70 mb-[6px] block">
+                      How did you hear about us? <span className="font-normal text-dark/30">(optional)</span>
+                    </label>
+                    <select
+                      value={hearAbout}
+                      onChange={(e) => setHearAbout(e.target.value)}
+                      className="w-full font-sans text-[15px] text-dark bg-white border border-dark/[0.12] rounded-[8px] px-[14px] py-[12px] outline-none focus:border-accent-orange/50 focus:ring-2 focus:ring-accent-orange/10 transition-all appearance-none cursor-pointer"
+                      style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%231e1a15' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round' opacity='0.3'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 14px center' }}
+                    >
+                      <option value="">Select one...</option>
+                      {HEAR_ABOUT_US.map((o) => (
+                        <option key={o} value={o}>{o}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {errorMsg && (
+                    <p className="font-sans text-[13px] text-accent-red">{errorMsg}</p>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={formState === 'sending_code'}
+                    className="w-full font-sans font-medium text-[15px] text-cream-light bg-accent-orange rounded-[8px] px-[24px] py-[14px] mt-[8px] hover:opacity-90 disabled:opacity-50 transition-opacity cursor-pointer"
+                  >
+                    {formState === 'sending_code' ? 'Sending code…' : 'Continue'}
+                  </button>
+
+                  <p className="font-sans text-[12px] text-dark/30 leading-[1.5]">
+                    By submitting this form, you agree to our privacy policy and consent to receiving communications from Cooper.
+                  </p>
+                </form>
+              )}
             </>
           ) : (
             /* Success state — Calendly embed placeholder */
