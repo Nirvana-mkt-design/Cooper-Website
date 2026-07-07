@@ -48,11 +48,12 @@ const stats = [
 const trustedBy = ['Hartford', 'Travelers', 'Chubb', 'Zurich', 'Nationwide']
 
 const HEAR_ABOUT_US = [
+  'Facebook/Instagram',
   'LinkedIn',
-  'Word of mouth / referral',
-  'Google search',
-  'Industry event or conference',
-  'Press / news article',
+  'Google Search',
+  'Referral',
+  'Event/Conferences',
+  'Press/News Article',
   'Other',
 ]
 
