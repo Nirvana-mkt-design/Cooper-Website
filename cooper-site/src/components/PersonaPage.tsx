@@ -253,7 +253,7 @@ export default function PersonaPage() {
                     </span>
                   </div>
                   <h1
-                    className="animate-fade-in font-serif text-[32px] md:text-[42px] lg:text-[52px] leading-[1.08] tracking-[-1px] text-[#0a0a0a] max-w-[620px]"
+                    className="animate-fade-in font-serif text-[28px] md:text-[38px] lg:text-[46px] leading-[1.08] tracking-[-1px] text-[#0a0a0a] max-w-[620px]"
                     style={{ animationDelay: '0.3s' }}
                   >
                     {persona.headlineAccent ? (
@@ -285,7 +285,7 @@ export default function PersonaPage() {
                           </>
                         ) : (
                           <span
-                            className="animate-headline-accent block"
+                            className="animate-headline-accent inline box-decoration-clone"
                             style={{ animationDelay: '1.5s' }}
                           >
                             {persona.headlineAccent}

@@ -217,14 +217,18 @@ export default function DemoPage() {
           ))}
         </div>
 
-        {/* Security badges */}
-        <div className="flex gap-[16px]">
-          {['SOC 2', 'HIPAA'].map((badge) => (
+        {/* Security badges — same seals as the desktop Security & compliance section */}
+        <div className="flex flex-wrap gap-[12px]">
+          {[
+            { label: 'SOC 2', icon: '/images/icon-soc2.webp' },
+            { label: 'HIPAA', icon: '/images/icon-hipaa.webp' },
+          ].map((badge) => (
             <span
-              key={badge}
-              className="font-grotesk text-[10px] tracking-[1px] uppercase text-dark/30 border border-dark/[0.08] rounded-[4px] px-[10px] py-[4px]"
+              key={badge.label}
+              className="inline-flex items-center gap-[8px] font-grotesk text-[10px] tracking-[1px] uppercase text-dark/40 border border-dark/[0.08] rounded-[6px] px-[12px] py-[6px]"
             >
-              {badge}
+              <img src={badge.icon} alt="" className="h-[22px] w-[22px] object-contain opacity-70" />
+              {badge.label}
             </span>
           ))}
         </div>
