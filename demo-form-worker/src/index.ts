@@ -16,6 +16,7 @@ export interface Env {
 }
 
 const ALLOWED_ORIGINS = new Set([
+  'https://cooper-site-blush.vercel.app', // current production domain
   'https://askcooper.ai',
   'https://www.askcooper.ai',
   'https://askcooper.vercel.app',
