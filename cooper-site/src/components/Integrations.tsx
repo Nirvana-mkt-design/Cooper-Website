@@ -392,7 +392,7 @@ function MobileIntegrations() {
 
           {/* labels */}
           <div className="absolute" style={{ left: 32.7, top: 100 }}><MobileLabel>{GROUPS.ams.label}</MobileLabel></div>
-          <div className="absolute" style={{ left: 32.7, top: 383 }}><MobileLabel>{GROUPS.carriers.label}</MobileLabel></div>
+          <div className="absolute" style={{ left: 32.7, top: 338 }}><MobileLabel>{GROUPS.carriers.label}</MobileLabel></div>
           <div className="absolute" style={{ left: 40.6, top: 995 }}><MobileLabel>{GROUPS.documents.label}</MobileLabel></div>
           <div className="absolute" style={{ left: 40.6, top: 1240 }}><MobileLabel>{GROUPS.communication.label}</MobileLabel></div>
 
@@ -403,7 +403,7 @@ function MobileIntegrations() {
           </div>
 
           {/* Carriers — second row fades off the edge */}
-          <div className="absolute" style={{ left: 32.7, top: 433.4, width: 326.7 }}>
+          <div className="absolute" style={{ left: 32.7, top: 388.4, width: 326.7 }}>
             <div className="flex flex-col gap-[10.2px]">
               <div className="flex gap-[11px]">
                 <MobileChip item={GROUPS.carriers.chips[0]} />
@@ -414,7 +414,7 @@ function MobileIntegrations() {
               </div>
             </div>
           </div>
-          <div className="absolute" style={{ left: 44.7, top: 520 }}><MobileMore>{GROUPS.carriers.more}</MobileMore></div>
+          <div className="absolute" style={{ left: 44.7, top: 475 }}><MobileMore>{GROUPS.carriers.more}</MobileMore></div>
 
           {/* Documents — bottom-left 2-col grid */}
           <div className="absolute grid grid-cols-2 justify-items-start gap-x-[3.9px] gap-y-[7.8px]" style={{ left: 40.6, top: 1063.8, width: 281 }}>
