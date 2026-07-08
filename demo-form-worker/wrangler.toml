@@ -1,0 +1,20 @@
+name = "cooper-demo-form"
+main = "src/index.ts"
+compatibility_date = "2025-06-01"
+account_id = "9825652eddd6004835ed77dff998075c"
+workers_dev = true
+
+# D1 database that temporarily stores demo-request leads.
+# This is a STOPGAP store on Cooper's Cloudflare account. The marketing site
+# posts here (with Turnstile verification) until the leads are wired back into
+# the team's own API (api.askcooper.ai). See README for the handoff steps.
+[[d1_databases]]
+binding = "DB"
+database_name = "cooper-demo-leads"
+database_id = "31b271d3-61d6-4e52-8f4c-825c7408d864"
+
+[observability]
+enabled = true
+
+# Secret set out-of-band (never committed):
+#   echo -n "<turnstile secret>" | wrangler secret put TURNSTILE_SECRET_KEY
