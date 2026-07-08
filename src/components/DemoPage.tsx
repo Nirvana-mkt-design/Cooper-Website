@@ -82,7 +82,7 @@ export default function DemoPage() {
     setPhoneError(phone && !isValidPhoneNumber(phone) ? 'Please enter a valid phone number with country code (e.g. +1 555 000 0000).' : '')
   }
 
-  const apiOrigin = import.meta.env.VITE_API_ORIGIN ?? 'https://api.askcooper.ai'
+  const apiOrigin = 'https://api.askcooper.ai'
 
   async function handleSendCode(e: React.FormEvent) {
     e.preventDefault()
