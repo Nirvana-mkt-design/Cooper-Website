@@ -1,55 +1,18 @@
 import { Link } from 'react-router-dom'
-import { useEffect, useState } from 'react'
 
 /**
- * Mobile-only floating "Request a Demo" CTA.
- * Pinned to the bottom of the viewport, it hides when the user scrolls down
- * and reappears when they scroll up (and whenever near the top of the page).
+ * Mobile-only "Request a Demo" CTA, used on the home page only.
+ * Pinned to the bottom of the viewport and always visible (it stays fixed
+ * rather than hiding on scroll).
  *
  * Behind the button sits the same frosted glassmorphism fade used at the
  * bottom of the hero: a backdrop blur that's strongest at the bottom and
  * dissolves upward, so page content softly blurs behind the CTA.
  */
 export default function MobileStickyCTA() {
-  const [hidden, setHidden] = useState(false)
-
-  useEffect(() => {
-    let lastY = window.scrollY
-    let ticking = false
-
-    const update = () => {
-      const y = window.scrollY
-      const delta = y - lastY
-
-      // Always show near the very top; otherwise follow scroll direction with a
-      // small threshold so tiny jitters don't toggle the button.
-      if (y < 80) {
-        setHidden(false)
-      } else if (delta > 6) {
-        setHidden(true)
-      } else if (delta < -6) {
-        setHidden(false)
-      }
-
-      lastY = y
-      ticking = false
-    }
-
-    const onScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(update)
-        ticking = true
-      }
-    }
-
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-
   return (
     <div
-      className="lg:hidden fixed inset-x-0 bottom-0 z-30 h-[190px] flex items-end pointer-events-none transition-transform duration-300 ease-out"
-      style={{ transform: hidden ? 'translateY(100%)' : 'translateY(0)' }}
+      className="lg:hidden fixed inset-x-0 bottom-0 z-30 h-[190px] flex items-end pointer-events-none"
     >
       {/* Frosted glassmorphism fade — same recipe as the hero bottom bar. */}
       <div
@@ -70,12 +33,7 @@ export default function MobileStickyCTA() {
       >
         <Link
           to="/demo"
-          className="pointer-events-auto flex w-full items-center justify-center gap-3 rounded-[18px] border border-white/25 px-6 py-[20px] font-sans text-[18px] text-cream-light no-underline shadow-[0_8px_30px_rgba(0,0,0,0.18)]"
-          style={{
-            background: 'rgba(30,26,21,0.28)',
-            backdropFilter: 'blur(18px)',
-            WebkitBackdropFilter: 'blur(18px)',
-          }}
+          className="pointer-events-auto flex w-full items-center justify-center gap-3 rounded-[18px] border border-white/15 bg-accent-orange px-6 py-[20px] font-sans text-[18px] text-cream-light no-underline shadow-[0_8px_30px_rgba(217,86,17,0.35)] hover:opacity-90 transition-opacity"
         >
           <img
             src="/images/cooper-icon.svg"

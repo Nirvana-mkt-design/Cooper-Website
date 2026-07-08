@@ -227,6 +227,10 @@ function MobileChipTag({ item }: { item: Chip }) {
     <div
       className="relative inline-flex w-fit items-center gap-[7.8px] rounded-[23.5px] px-[15.7px] py-[7.8px]"
       style={{
+        // Match the height of the logo chips so text-only pills ("+ hundreds
+        // more" / "And more...") don't render shorter than their neighbours:
+        // default icon height (24 * M) + vertical padding + border.
+        minHeight: 24 * M + 2 * 7.8 + 2 * 0.784,
         border: '0.784px solid transparent',
         background:
           'linear-gradient(#fffcf1, #fffcf1) padding-box, linear-gradient(154deg, rgba(30,26,21,0.29) 6%, rgba(30,26,21,0) 100%) border-box',
@@ -354,7 +358,6 @@ function MobileChip({ item }: { item: Chip }) {
 
 function MobileIntegrations() {
   const { ref, scale } = useCanvasScale(MCW)
-  const fade = 'linear-gradient(to right, black 72%, transparent)'
   return (
     <div className="mx-auto mt-[40px] w-full max-w-[390px] xl:hidden">
       <div ref={ref} className="relative overflow-hidden rounded-[16px] border border-dark/[0.08] bg-cream-light">
@@ -389,29 +392,22 @@ function MobileIntegrations() {
 
           {/* labels */}
           <div className="absolute" style={{ left: 32.7, top: 100 }}><MobileLabel>{GROUPS.ams.label}</MobileLabel></div>
-          <div className="absolute" style={{ left: 32.7, top: 338 }}><MobileLabel>{GROUPS.carriers.label}</MobileLabel></div>
+          <div className="absolute" style={{ left: 32.7, top: 314 }}><MobileLabel>{GROUPS.carriers.label}</MobileLabel></div>
           <div className="absolute" style={{ left: 40.6, top: 995 }}><MobileLabel>{GROUPS.documents.label}</MobileLabel></div>
           <div className="absolute" style={{ left: 40.6, top: 1240 }}><MobileLabel>{GROUPS.communication.label}</MobileLabel></div>
 
-          {/* AMS — top-left 2-col grid */}
-          <div className="absolute grid grid-cols-2 justify-items-start gap-x-[3.9px] gap-y-[7.8px]" style={{ left: 32.7, top: 163.5, width: 300.5 }}>
+          {/* AMS — natural-wrap grid (even spacing, pills sit adjacent) */}
+          <div className="absolute flex flex-wrap items-center gap-x-[8px] gap-y-[7.8px]" style={{ left: 32.7, top: 163.5, width: 300.5 }}>
             {GROUPS.ams.chips.map((c, i) => <MobileChip key={i} item={c} />)}
             <MobileMore>{GROUPS.ams.more}</MobileMore>
           </div>
 
-          {/* Carriers — second row fades off the edge */}
-          <div className="absolute" style={{ left: 32.7, top: 388.4, width: 326.7 }}>
-            <div className="flex flex-col gap-[10.2px]">
-              <div className="flex gap-[11px]">
-                <MobileChip item={GROUPS.carriers.chips[0]} />
-                <MobileChip item={GROUPS.carriers.chips[1]} />
-              </div>
-              <div className="flex gap-[11px] overflow-hidden" style={{ width: 326.7, maskImage: fade, WebkitMaskImage: fade }}>
-                {GROUPS.carriers.chips.slice(2).map((c, i) => <MobileChip key={i} item={c} />)}
-              </div>
-            </div>
+          {/* Carriers — natural-wrap grid (all pills visible, no fade-off edge).
+              Nudged up as a block so the wrapped rows clear the flow line. */}
+          <div className="absolute flex flex-wrap items-center gap-x-[11px] gap-y-[10.2px]" style={{ left: 32.7, top: 364.4, width: 300.5 }}>
+            {GROUPS.carriers.chips.map((c, i) => <MobileChip key={i} item={c} />)}
+            <MobileMore>{GROUPS.carriers.more}</MobileMore>
           </div>
-          <div className="absolute" style={{ left: 44.7, top: 475 }}><MobileMore>{GROUPS.carriers.more}</MobileMore></div>
 
           {/* Documents — bottom-left 2-col grid */}
           <div className="absolute grid grid-cols-2 justify-items-start gap-x-[3.9px] gap-y-[7.8px]" style={{ left: 40.6, top: 1063.8, width: 281 }}>
