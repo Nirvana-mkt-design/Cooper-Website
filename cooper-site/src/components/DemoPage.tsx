@@ -1,7 +1,23 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { isValidPhoneNumber } from 'libphonenumber-js'
 import { useSeo } from '../lib/useSeo'
 import { pageJsonLd } from '../lib/pageSchema'
+import { useMetaPixel } from '../hooks/use-meta-pixel'
+
+const PERSONAL_EMAIL_DOMAINS = new Set([
+  'gmail.com', 'googlemail.com', 'yahoo.com', 'yahoo.co.uk', 'yahoo.co.in',
+  'hotmail.com', 'hotmail.co.uk', 'outlook.com', 'live.com', 'msn.com',
+  'icloud.com', 'me.com', 'mac.com', 'aol.com', 'protonmail.com',
+  'proton.me', 'pm.me', 'zoho.com', 'yandex.com', 'yandex.ru',
+  'mail.com', 'gmx.com', 'gmx.net', 'inbox.com',
+])
+
+function isWorkEmail(email: string): boolean {
+  const domain = email.split('@')[1]?.toLowerCase()
+  if (!domain) return false
+  return !PERSONAL_EMAIL_DOMAINS.has(domain)
+}
 
 const reasons = [
   'Explore Cooper for my team',
@@ -29,6 +45,8 @@ const stats = [
   { value: '12×', label: 'Faster submission-to-market' },
 ]
 
+type FormState = 'idle' | 'submitting' | 'success' | 'error'
+
 export default function DemoPage() {
   useSeo({
     title: 'Request a Demo — Cooper',
@@ -42,15 +60,99 @@ export default function DemoPage() {
     }),
   })
 
+  const { trackLead, trackOpenAiLead } = useMetaPixel()
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
+  const [phone, setPhone] = useState('')
   const [company, setCompany] = useState('')
   const [reason, setReason] = useState('')
-  const [submitted, setSubmitted] = useState(false)
+  const [formState, setFormState] = useState<FormState>('idle')
+  const [errorMsg, setErrorMsg] = useState('')
+  const [nameError, setNameError] = useState('')
+  const [emailError, setEmailError] = useState('')
+  const [phoneError, setPhoneError] = useState('')
 
-  const handleSubmit = (e: React.FormEvent) => {
+  function handleNameBlur() {
+    setNameError(!name.trim() ? 'Please enter your name.' : '')
+  }
+
+  function handleEmailBlur() {
+    setEmailError(email && !isWorkEmail(email) ? 'Please use a work email address.' : '')
+  }
+
+  function handlePhoneBlur() {
+    setPhoneError(phone && !isValidPhoneNumber(phone, 'US') ? 'Please enter a valid phone number.' : '')
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    setSubmitted(true)
+    let valid = true
+    if (!name.trim()) { setNameError('Please enter your name.'); valid = false }
+    if (!isWorkEmail(email)) { setEmailError('Please use a work email address.'); valid = false }
+    if (!isValidPhoneNumber(phone, 'US')) { setPhoneError('Please enter a valid phone number.'); valid = false }
+    if (!valid) return
+
+    setNameError(''); setEmailError(''); setPhoneError('')
+    setFormState('submitting')
+    setErrorMsg('')
+
+    const nameParts = name.trim().split(/\s+/)
+    const noteParts: string[] = []
+    if (company) noteParts.push(`Company: ${company}`)
+    if (reason) noteParts.push(`Reason for demo: ${reason}`)
+
+    // Extract GA4 client_id from _ga cookie (format: GA1.1.XXXXXXXXXX.XXXXXXXXXX)
+    const gaCookie = document.cookie.split(';').map(c => c.trim()).find(c => c.startsWith('_ga='))
+    const gaParts = gaCookie?.split('=')[1]?.split('.')
+    const gaClientId = gaParts && gaParts.length >= 4 ? `${gaParts[2]}.${gaParts[3]}` : ''
+
+    const adParams = (() => {
+      try { return JSON.parse(sessionStorage.getItem('cooper_ad_params') ?? '{}') as Record<string, string> } catch { return {} }
+    })()
+
+    // Click IDs — append to notes for Salesforce visibility (no dedicated SF fields yet)
+    const CLICK_ID_KEYS = ['gclid', 'fbclid', 'msclkid', 'ttclid', 'li_fat_id', 'twclid']
+    const clickIds = CLICK_ID_KEYS.filter(k => adParams[k]).map(k => `${k}=${adParams[k]}`).join(' | ')
+    if (clickIds) noteParts.push(`[Click IDs: ${clickIds}]`)
+
+    const eventId = crypto.randomUUID()
+    const payload = {
+      first_name: nameParts[0],
+      last_name: nameParts.slice(1).join(' '),
+      email,
+      phone,
+      message: noteParts.join('\n\n'),
+      event_id: eventId,
+      event_source_url: window.location.href,
+      ga_client_id: gaClientId,
+      utm_source: adParams.utm_source ?? '',
+      utm_medium: adParams.utm_medium ?? '',
+      utm_campaign: adParams.utm_campaign ?? '',
+      utm_term: adParams.utm_term ?? '',
+      utm_content: adParams.utm_content ?? '',
+      gclid: adParams.gclid ?? '',
+      fbclid: adParams.fbclid ?? '',
+      msclkid: adParams.msclkid ?? '',
+      ttclid: adParams.ttclid ?? '',
+      li_fat_id: adParams.li_fat_id ?? '',
+      twclid: adParams.twclid ?? '',
+    }
+
+    try {
+      const apiOrigin = import.meta.env.VITE_API_ORIGIN ?? 'https://api.askcooper.ai'
+      const res = await fetch(`${apiOrigin}/api/v1/demo-requests/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      setFormState('success')
+      trackLead(eventId)
+      trackOpenAiLead()
+    } catch {
+      setFormState('error')
+      setErrorMsg('Something went wrong. Please try again or email us at contact@askcooper.ai.')
+    }
   }
 
   return (
@@ -70,7 +172,7 @@ export default function DemoPage() {
 
         {/* Form area */}
         <div className="flex-1">
-          {!submitted ? (
+          {formState !== 'success' ? (
             <>
               <h1 className="font-serif text-[26px] md:text-[34px] lg:text-[36px] leading-[1.2] text-dark mb-[12px]">
                 Book a Cooper demo
@@ -79,17 +181,19 @@ export default function DemoPage() {
                 Schedule a 1:1 session with an insurance AI expert from our team. We'll show you Cooper with your own workflows, no generic demo.
               </p>
 
-              <form onSubmit={handleSubmit} className="flex flex-col gap-[20px] max-w-[440px]">
+              <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-[20px] max-w-[440px]">
                 <div>
                   <label className="font-sans text-[13px] font-medium text-dark/70 mb-[6px] block">Full name</label>
                   <input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
+                    onBlur={handleNameBlur}
                     placeholder="Jane Smith"
                     required
                     className="w-full font-sans text-[15px] text-dark bg-white border border-dark/[0.12] rounded-[8px] px-[14px] py-[12px] outline-none focus:border-accent-orange/50 focus:ring-2 focus:ring-accent-orange/10 transition-all placeholder:text-dark/25"
                   />
+                  {nameError && <p className="font-sans text-[12px] text-red-500 mt-[4px]">{nameError}</p>}
                 </div>
 
                 <div>
@@ -97,11 +201,28 @@ export default function DemoPage() {
                   <input
                     type="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => { setEmail(e.target.value); if (emailError) setEmailError('') }}
+                    onBlur={handleEmailBlur}
                     placeholder="jane@company.com"
                     required
                     className="w-full font-sans text-[15px] text-dark bg-white border border-dark/[0.12] rounded-[8px] px-[14px] py-[12px] outline-none focus:border-accent-orange/50 focus:ring-2 focus:ring-accent-orange/10 transition-all placeholder:text-dark/25"
                   />
+                  {emailError && <p className="font-sans text-[12px] text-red-500 mt-[4px]">{emailError}</p>}
+                </div>
+
+                <div>
+                  <label className="font-sans text-[13px] font-medium text-dark/70 mb-[6px] block">Phone</label>
+                  <input
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => { setPhone(e.target.value); if (phoneError) setPhoneError('') }}
+                    onBlur={handlePhoneBlur}
+                    placeholder="+1 (555) 000-0000"
+                    required
+                    autoComplete="tel"
+                    className="w-full font-sans text-[15px] text-dark bg-white border border-dark/[0.12] rounded-[8px] px-[14px] py-[12px] outline-none focus:border-accent-orange/50 focus:ring-2 focus:ring-accent-orange/10 transition-all placeholder:text-dark/25"
+                  />
+                  {phoneError && <p className="font-sans text-[12px] text-red-500 mt-[4px]">{phoneError}</p>}
                 </div>
 
                 <div>
@@ -111,7 +232,6 @@ export default function DemoPage() {
                     value={company}
                     onChange={(e) => setCompany(e.target.value)}
                     placeholder="Acme Insurance"
-                    required
                     className="w-full font-sans text-[15px] text-dark bg-white border border-dark/[0.12] rounded-[8px] px-[14px] py-[12px] outline-none focus:border-accent-orange/50 focus:ring-2 focus:ring-accent-orange/10 transition-all placeholder:text-dark/25"
                   />
                 </div>
@@ -121,7 +241,6 @@ export default function DemoPage() {
                   <select
                     value={reason}
                     onChange={(e) => setReason(e.target.value)}
-                    required
                     className="w-full font-sans text-[15px] text-dark bg-white border border-dark/[0.12] rounded-[8px] px-[14px] py-[12px] outline-none focus:border-accent-orange/50 focus:ring-2 focus:ring-accent-orange/10 transition-all appearance-none cursor-pointer"
                     style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%231e1a15' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round' opacity='0.3'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 14px center' }}
                   >
@@ -132,15 +251,22 @@ export default function DemoPage() {
                   </select>
                 </div>
 
+                {formState === 'error' && (
+                  <p className="font-sans text-[13px] text-red-500">{errorMsg}</p>
+                )}
+
                 <button
                   type="submit"
-                  className="w-full font-sans font-medium text-[15px] text-cream-light bg-accent-orange rounded-[8px] px-[24px] py-[14px] mt-[8px] hover:opacity-90 transition-opacity cursor-pointer"
+                  disabled={formState === 'submitting'}
+                  className="w-full font-sans font-medium text-[15px] text-cream-light bg-accent-orange rounded-[8px] px-[24px] py-[14px] mt-[8px] hover:opacity-90 disabled:opacity-50 transition-opacity cursor-pointer"
                 >
-                  Book a demo
+                  {formState === 'submitting' ? 'Sending...' : 'Book a demo'}
                 </button>
 
                 <p className="font-sans text-[12px] text-dark/30 leading-[1.5]">
-                  By submitting this form, you agree to our privacy policy and consent to receiving communications from Cooper.
+                  By submitting this form you agree to our{' '}
+                  <Link to="/privacy" className="underline">Privacy Policy</Link>
+                  . We'll reach out within 1-2 business days.
                 </p>
               </form>
             </>
