@@ -44,9 +44,9 @@ export const personas: Persona[] = [
     slug: 'retail-agencies',
     name: 'Retail Agencies',
     label: 'RETAIL AGENCIES',
-    headline: 'The first quote back wins. Cooper ensures it\'s yours.',
+    headline: 'The first quote back wins. Cooper makes it yours.',
     headlineLead: 'The first quote back wins.',
-    headlineAccent: 'Cooper ensures it\'s yours.',
+    headlineAccent: 'Cooper makes it yours.',
     subtitle:
       'Producers sell, account managers serve, Cooper does the rest. The submissions, carrier supplements, renewals, and certificates are handled end to end, so your team stays ahead of the book.',
     roleBalance: [
@@ -130,11 +130,11 @@ export const personas: Persona[] = [
     slug: 'wholesale-brokers',
     name: 'Wholesale Brokers',
     label: 'WHOLESALE BROKERS',
-    headline: 'Even for accounts that stall, Cooper finds the market to write them.',
-    headlineLead: 'Even for accounts that stall,',
-    headlineAccent: 'Cooper finds the market to write them.',
+    headline: 'Every risk has an appetite. Cooper places it.',
+    headlineLead: 'Every risk has an appetite.',
+    headlineAccent: 'Cooper places it.',
     subtitle:
-      'Cooper triages submissions, matches each risk to the markets most likely to write it, and drafts the proposal. Your brokers place more business.',
+      'Cooper triages submissions, matches each risk to the markets most likely to write it, and drafts the submission. Your brokers place more business.',
     features: [
       {
         title: 'Know which submissions are worth your time',
@@ -161,7 +161,7 @@ export const personas: Persona[] = [
     testimonialAuthor: 'VP of Brokerage',
     testimonialRole: 'National Wholesale Broker',
     testimonials: [],
-    ctaText: 'See Cooper place more business.',
+    ctaText: 'See how Cooper helps place risk',
   },
   {
     slug: 'mgas-insurers',
@@ -205,9 +205,9 @@ export const personas: Persona[] = [
     slug: 'claims-tpas',
     name: 'Claims TPA',
     label: 'CLAIMS TPA',
-    headline: 'First notice starts the clock. Cooper closes it out.',
-    headlineLead: 'First notice starts the clock.',
-    headlineAccent: 'Cooper closes it out.',
+    headline: 'Claims run on cycle time. Cooper keeps them moving.',
+    headlineLead: 'Claims run on cycle time.',
+    headlineAccent: 'Cooper keeps them moving.',
     subtitle:
       'Cooper handles intake, coverage checks, and reporting, so your adjusters resolve the files that need real judgment faster.',
     features: [
@@ -217,14 +217,14 @@ export const personas: Persona[] = [
           'Cooper takes first notice of loss from phone, email, portal, or fax, matches it to the policy, and opens a structured claim file, acknowledged within SLA every time.',
       },
       {
-        title: 'Surface subrogation and recovery signals',
-        description:
-          'Cooper reads the file and flags possible subrogation, third-party involvement, and prior-loss patterns early, so recovery opportunities surface while they still matter. Cooper flags, the adjuster decides.',
-      },
-      {
         title: 'Coverage calls backed by the actual policy',
         description:
           'Cooper reads the specific policy against the facts of each loss, lays out limits, deductibles, and exclusions that apply, and shows the contract language, so adjusters make the right call,\u00a0fast.',
+      },
+      {
+        title: 'Surface subrogation and recovery signals',
+        description:
+          'Cooper reads the file and flags possible subrogation, third-party involvement, and prior-loss patterns early, so recovery opportunities surface while they still matter. Cooper flags, the adjuster decides.',
       },
       {
         title: 'Reporting that\'s always ready',
@@ -237,7 +237,7 @@ export const personas: Persona[] = [
     testimonialAuthor: 'VP of Claims Operations',
     testimonialRole: 'National Claims TPA',
     testimonials: [],
-    ctaText: 'See Cooper streamline your claims',
+    ctaText: 'See how Cooper helps adjust claims',
   },
   {
     slug: 'reinsurers',
