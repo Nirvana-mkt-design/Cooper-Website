@@ -164,8 +164,7 @@ export default function DemoPage() {
         })
       } else {
         // Default: post straight to the team's API (original behavior).
-        const apiOrigin = import.meta.env.VITE_API_ORIGIN ?? 'https://api.askcooper.ai'
-        res = await fetch(`${apiOrigin}/api/v1/demo-requests/`, {
+        res = await fetch(`https://api.askcooper.ai/api/v1/demo-requests/`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
