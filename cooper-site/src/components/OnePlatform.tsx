@@ -10,7 +10,7 @@ const tabs = [
     description:
       'Send Cooper the email and attachments, or point it at your AMS and SharePoint. It reads every dec page, loss run, and application, fills the ACORD forms, and assembles the whole submission.',
     checks: [
-      'Pulls exposures, drivers, and prior losses into the right fields',
+      'Pulls exposures and prior losses into the right fields',
       'Fills the ACORD forms and carrier supplements automatically',
       'Flags only what is truly missing for you to confirm',
     ],
@@ -36,7 +36,7 @@ const tabs = [
     title: 'Send your quotes, Cooper drafts a complete proposal.',
     subtitle: '',
     description:
-      "As quotes come back, Cooper normalizes every carrier's terms into one comparison and drafts the proposal in your agency's format. Ready to send, not just ready to read.",
+      "As quotes come back, Cooper normalizes every carrier's terms into one comparison and drafts the proposal in your agency's format. Ready to bind, not just ready to read.",
     checks: [
       'Normalizes mismatched quotes into one clean comparison',
       'Flags coverage differences and silent downgrades',

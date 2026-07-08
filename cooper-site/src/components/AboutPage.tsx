@@ -178,17 +178,17 @@ export default function AboutPage() {
                 <h2
                   className="font-serif text-[28px] md:text-[36px] lg:text-[42px] leading-[1.15] text-dark mb-[32px] animate-fade-blur-in"
                 >
-                  Cooper works with you as an AI coworker, not an app.
+                  The expertise was never the problem. The busywork was.
                 </h2>
                 <div className="flex flex-col gap-[20px] animate-fade-blur-in" style={{ animationDelay: '0.15s' }}>
                   <p className="font-sans text-[17px] leading-[1.7] text-dark/60">
-                    A great coworker follows instructions, adapts to your process, and figures out the right move when nobody wrote the playbook.
+                    We come from insurance and the technology reshaping it. We've sat with the submissions, the renewals, the endless forms, and watched good people spend their days on work no one should have to do by hand.
                   </p>
                   <p className="font-sans text-[17px] leading-[1.7] text-dark/60">
-                    Software has never worked that way. It stays boxed in by rigid interfaces and fixed menus. We hold Cooper to the coworker standard and grow it by teaching, not by adding features.
+                    It never had to be this way. The expertise these teams bring is the hard part, and they're great at it. The busywork around it is just friction, and friction is a solvable problem.
                   </p>
                   <p className="font-sans text-[17px] leading-[1.7] text-dark/60">
-                    Founded by a team with deep expertise in insurance and the technology to reshape it, we've lived the busywork firsthand. That's why we built Cooper to handle it, so brokers get their time back for the work only people can do.
+                    So we built Cooper to take it on: a coworker that does the real work, learns how each shop runs, and gives people their time back for the parts only they can do. That's the company we're building.
                   </p>
                 </div>
               </div>
@@ -209,7 +209,7 @@ export default function AboutPage() {
               The Problem
             </span>
             <h2 className="font-serif text-[30px] md:text-[44px] lg:text-[54px] leading-[1.1] text-dark mb-[56px] lg:mb-[72px] max-w-[880px] animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
-              Brokers are drowning in busywork. Cooper lets you focus on judgment.
+              Insurance teams are buried in busywork. Cooper lets them focus on judgment.
             </h2>
 
             {/* Description + two columns (struggle / help) */}
