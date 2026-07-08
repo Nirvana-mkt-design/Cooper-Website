@@ -76,7 +76,6 @@ export default function Footer() {
           <div className="flex gap-[20px]">
             <Link to="/privacy" className="font-sans text-[13px] text-dark/30 hover:text-dark/50 transition-colors no-underline">Privacy</Link>
             <Link to="/terms" className="font-sans text-[13px] text-dark/30 hover:text-dark/50 transition-colors no-underline">Terms</Link>
-            <Link to="/security" className="font-sans text-[13px] text-dark/30 hover:text-dark/50 transition-colors no-underline">Security</Link>
           </div>
         </div>
       </div>
