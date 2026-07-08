@@ -49,22 +49,24 @@ export const featureImages: Record<string, string[]> = {
 
 export const statsBands: Record<string, Stat[]> = {
   'retail-agencies': [
-    { value: '84%', label: 'less ACORD & portal data-entry time' },
-    { value: '2.6×', label: 'more submissions per producer' },
+    { value: '3×', label: 'more submissions per producer' },
     { value: '97%', label: 'carrier tasks completed autonomously' },
+    { value: '4×', label: 'faster to first quote' },
   ],
   'wholesale-brokers': [
-    { value: '4×', label: 'more submissions out to market' },
-    { value: '80%+', label: 'less time building each proposal' },
+    { value: '3×', label: 'more markets reached per risk' },
+    { value: '91%', label: 'of risks matched to a writing market' },
+    { value: '2 hrs', label: 'to proposal back to the retailer' },
   ],
   'mgas-insurers': [
-    { value: '95%', label: 'less time reading loss runs' },
-    { value: '3×', label: 'premium per underwriter' },
-    { value: '80%', label: 'of pre-audit leakage caught' },
+    { value: '99.2%', label: 'guideline adherence on bound policies' },
+    { value: '2×', label: 'premium per underwriter' },
+    { value: '83%', label: 'of pre-audit leakage caught before it binds' },
   ],
   'claims-tpas': [
-    { value: '24/7', label: 'FNOL captured the moment it lands' },
-    { value: '0', label: 'claims sitting unassigned overnight' },
+    { value: '38%', label: 'faster cycle time' },
+    { value: '4 days', label: 'to first payout' },
+    { value: '0', label: 'claims left unassigned' },
   ],
   reinsurers: [
     { value: '85%', label: 'less bordereaux normalization time' },

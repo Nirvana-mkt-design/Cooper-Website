@@ -21,11 +21,11 @@ const ORIGIN = 'https://cooper-site-blush.vercel.app'
 const DEFAULT_OG = `${ORIGIN}/images/og-default.png`
 
 const personas = [
-  ['retail-agencies', 'Retail Agencies', 'Built for both sides of the agency. Cooper handles the data entry, submissions, renewals, and certificate work that buries your service team, so producers stay in front of clients and account managers stay ahead of the book.'],
-  ['wholesale-brokers', 'Wholesale Brokers', 'Cooper triages submissions, matches risks to markets, and gets proposals out while the deal is still warm. Your brokers place more business, faster.'],
-  ['mgas-insurers', 'MGAs & Insurers', 'Cooper enforces your guidelines, prices risks consistently, and keeps every program audit-ready, so you grow your book without growing your team.'],
-  ['claims-tpas', 'Claims TPAs', 'Cooper takes care of intake, coverage checks, and reporting, so your adjusters focus on the files that need real judgment.'],
-  ['reinsurers', 'Reinsurers', 'Cooper cleans cedent data, tracks accumulation, enforces treaty terms, and assembles renewal files, so your team focuses on pricing and relationships.'],
+  ['retail-agencies', 'Retail Agencies', 'Producers sell, account managers serve, Cooper does the rest. The submissions, carrier supplements, renewals, and certificates are handled end to end, so your team stays ahead of the book.'],
+  ['wholesale-brokers', 'Wholesale Brokers', 'Cooper triages submissions, matches each risk to the markets most likely to write it, and drafts the proposal. Your brokers place more business.'],
+  ['mgas-insurers', 'MGA & Insurers', 'Cooper prices to your rating logic, refers what\'s outside appetite with the reason attached, and keeps every program audit-ready, so a lean team covers more programs.'],
+  ['claims-tpas', 'Claims TPA', 'Cooper handles intake, coverage checks, and reporting, so your adjusters resolve the files that need real judgment faster.'],
+  // Reinsurers is pulled pre-launch (fast-follow rebuild): route redirects, so no prerendered page.
 ]
 
 /** path, title, description, ogImage */
@@ -41,7 +41,6 @@ const routes = [
   { path: '/careers', title: 'Careers — Cooper', description: 'Join the team building AI for insurance professionals. See open roles at Cooper.', ogImage: DEFAULT_OG },
   { path: '/privacy', title: 'Privacy Policy — Cooper', description: 'How Cooper collects, uses, shares, and protects your personal information.', ogImage: DEFAULT_OG },
   { path: '/terms', title: 'Terms of Service — Cooper', description: 'The terms governing your use of Cooper and its services.', ogImage: DEFAULT_OG },
-  { path: '/security', title: 'Security — Cooper', description: "Cooper's security program: SOC 2 Type II, encryption, access controls, and data protection.", ogImage: DEFAULT_OG },
   { path: '/subprocessors', title: 'Subprocessors — Cooper', description: 'The third-party subprocessors Cooper uses to deliver its services.', ogImage: DEFAULT_OG },
 ]
 

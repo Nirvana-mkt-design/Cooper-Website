@@ -1,6 +1,6 @@
 /* ──────────────────────────────────────────────────────────────
    Integrations — "Works with the tools you already use".
-   Four category clusters (AMS, Carriers, Documents, Communication)
+   Four category clusters (Records, Carriers, Documents, Communications)
    arranged around a central orange Cooper orb, linked by dashed
    orthogonal connectors over a faint grid. Followed by the
    customer carrier wall.
@@ -46,6 +46,8 @@ const logo = {
   travelers: '/images/chips/travelers.png',
   libertymutual: '/images/chips/liberty-mutual.png',
   chubb: '/images/chips/chubb.png',
+  zurich: '/images/chips/zurich.png',
+  hanover: '/images/chips/hanover.svg',
   outlook: '/images/logo-outlook.webp',
   teams: '/images/logo-teams.png',
   slack: '/images/logo-slack.webp',
@@ -55,7 +57,7 @@ type Group = { label: string; chips: Chip[]; more: string }
 
 const GROUPS: Record<'ams' | 'carriers' | 'documents' | 'communication', Group> = {
   ams: {
-    label: 'AMS',
+    label: 'Records',
     more: 'And more...',
     chips: [
       { src: logo.epic, label: 'Applied Epic' },
@@ -72,8 +74,8 @@ const GROUPS: Record<'ams' | 'carriers' | 'documents' | 'communication', Group> 
       { src: logo.travelers, label: 'Travelers', h: 22 },
       { src: logo.libertymutual, label: 'Liberty Mutual', h: 28 },
       { src: logo.chubb, label: 'Chubb', crop: true },
-      { label: 'Markel', text: true },
-      { label: 'The Hanover', text: true },
+      { src: logo.zurich, label: 'Zurich', h: 24, maxW: 28 },
+      { src: logo.hanover, label: 'The Hanover', h: 24, maxW: 26 },
     ],
   },
   documents: {
@@ -88,7 +90,7 @@ const GROUPS: Record<'ams' | 'carriers' | 'documents' | 'communication', Group> 
     ],
   },
   communication: {
-    label: 'Communication',
+    label: 'Communications',
     more: 'And more...',
     chips: [
       { src: logo.outlook, label: 'Outlook' },
@@ -139,11 +141,9 @@ function ChipTag({ item }: { item: Chip }) {
 }
 
 function Cluster({ group }: { group: Group }) {
-  const more = (
-    <div className="flex items-center whitespace-nowrap px-[10px] font-grotesk text-[14.5px] font-medium uppercase leading-none tracking-[1.45px] text-dark">
-      {group.more}
-    </div>
-  )
+  // "And more..." / "+ hundreds more" render as text-only pills, matching the
+  // logo chips around them.
+  const more = <ChipTag item={{ label: group.more, text: true }} />
   return (
     <div className="flex flex-col gap-[26px]">
       <span className="font-grotesk text-[14.5px] font-medium uppercase leading-none tracking-[1.45px] text-dark underline decoration-dotted decoration-dark/40 underline-offset-[5px]">
@@ -241,13 +241,10 @@ function MobileChipTag({ item }: { item: Chip }) {
   )
 }
 
-/* Unboxed "And more..." / "+ hundreds more" marker (plain text). */
+/* "And more..." / "+ hundreds more" marker, rendered as a text-only pill to
+   match the chips around it. */
 function MobileMore({ children }: { children: string }) {
-  return (
-    <div className="flex items-center whitespace-nowrap p-[7.8px] font-grotesk text-[11.3px] font-medium uppercase leading-none tracking-[1.13px] text-dark/80">
-      {children}
-    </div>
-  )
+  return <MobileChipTag item={{ label: children, text: true }} />
 }
 
 function MobileLabel({ children }: { children: string }) {

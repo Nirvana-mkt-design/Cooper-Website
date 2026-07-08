@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, type ComponentType } from 'react'
 import { Link } from 'react-router-dom'
 import CooperLogo from './CooperLogo'
 import {
-  Storefront, Handshake, Buildings, ChartLine, ClipboardText,
+  Storefront, Handshake, Buildings, ClipboardText,
   UsersThree, ChartBar, ShieldCheck,
   Info, Envelope,
   Newspaper, Package, Monitor,
@@ -37,18 +37,17 @@ const productPanel: NavPanel = {
     {
       label: 'By role',
       items: [
-        { title: 'Retail Agencies', desc: 'Cooper adapts to your workflow.', href: '/personas/retail-agencies', icon: Storefront },
-        { title: 'Wholesale Brokers', desc: 'Place more business faster with intelligent matching.', href: '/personas/wholesale-brokers', icon: Handshake },
-        { title: 'Insurers & MGAs', desc: 'Scale underwriting without scaling headcount.', href: '/personas/mgas-insurers', icon: Buildings },
-        { title: 'Reinsurers', desc: 'Optimize treaties and risk at portfolio scale.', href: '/personas/reinsurers', icon: ChartLine },
-        { title: 'Claims TPAs', desc: 'Streamline claims from intake to reporting.', href: '/personas/claims-tpas', icon: ClipboardText },
+        { title: 'Retail Agencies', desc: 'Get the first quote back and win the account.', href: '/personas/retail-agencies', icon: Storefront },
+        { title: 'Wholesale Brokers', desc: 'Point every risk at the market that will write it.', href: '/personas/wholesale-brokers', icon: Handshake },
+        { title: 'MGA & Insurers', desc: 'Underwrite by your guidelines, at scale.', href: '/personas/mgas-insurers', icon: Buildings },
+        { title: 'Claims TPA', desc: 'Faster cycle times, from first notice to close.', href: '/personas/claims-tpas', icon: ClipboardText },
       ],
     },
   ],
   featured: {
     badge: 'Featured',
     title: 'Cooper for Submissions',
-    desc: 'See how teams process submissions 3x faster, from intake to bound policy, fully automated.',
+    desc: 'See how teams process submissions 12x faster, from intake to bound policy, fully automated.',
     link: 'Learn more',
     image: '/images/persona/persona-retail-1.webp',
   },

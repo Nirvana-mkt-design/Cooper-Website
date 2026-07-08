@@ -3,12 +3,11 @@ import { Link } from 'react-router-dom'
 const useCasesCol1 = [
   { label: 'Retail Agencies', to: '/personas/retail-agencies' },
   { label: 'Wholesale Brokers', to: '/personas/wholesale-brokers' },
-  { label: 'MGAs & Insurers', to: '/personas/mgas-insurers' },
 ]
 
 const useCasesCol2 = [
-  { label: 'Claims TPAs', to: '/personas/claims-tpas' },
-  { label: 'Reinsurers', to: '/personas/reinsurers' },
+  { label: 'MGA & Insurers', to: '/personas/mgas-insurers' },
+  { label: 'Claims TPA', to: '/personas/claims-tpas' },
 ]
 
 const companyLinks = [

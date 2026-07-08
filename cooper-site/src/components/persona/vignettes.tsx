@@ -168,7 +168,7 @@ export const vignettes: Record<string, ReactNode[]> = {
           </>
         }
       />
-      <Row attn className="mt-[10px]"><B>Written to Epic + 6 carrier portals</B><St kind="ok">✓ no retype</St></Row>
+      <Row attn className="mt-[10px]"><B>Written to Epic + 6 carrier portals</B><St kind="ok">✓ no re-entry</St></Row>
     </VigWindow>,
     <VigWindow title="Submission · ready to quote">
       <Stack>

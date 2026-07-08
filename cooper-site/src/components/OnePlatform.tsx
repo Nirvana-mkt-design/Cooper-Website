@@ -22,7 +22,7 @@ const tabs = [
     title: 'Pick your portals, Cooper fills them in.',
     subtitle: '',
     description:
-      'Cooper logs into each carrier portal and enters the same risk across all of them. The real forms, uploads, and clicks. You stop re-keying identical data ten times.',
+      'Cooper logs into each carrier portal and enters the same risk across all of them. The real forms, uploads, and clicks. You stop re-entering identical data ten times.',
     checks: [
       'Drives live carrier portals, not just PDFs',
       'Submits one risk across every market in parallel',
@@ -644,7 +644,7 @@ export default function OnePlatform() {
           Spotlight Use Case
         </p>
         <h2 className="font-serif text-[36px] md:text-[38px] leading-[1.2] text-dark text-center mb-[40px] md:mb-[60px]">
-          Commercial Brokers
+          Agencies & Brokers
         </h2>
 
         {/* Mobile accordion */}

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 
 const rotatingWords = [
-  'Acords',
+  'ACORDs',
   'Submissions',
   'Loss Runs',
   'Renewals',

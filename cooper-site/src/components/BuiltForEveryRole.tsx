@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 
-const topRoles = [
+const roles = [
   {
     tag: 'Retail Agencies',
     slug: 'retail-agencies',
@@ -14,25 +14,16 @@ const topRoles = [
     desc: 'Submissions arrive in every format imaginable. Cooper cleans them up, steers each risk to the markets likely to write it, then lines up quotes so you can respond while the deal\'s still warm.',
   },
   {
-    tag: 'MGAs & Insurers',
+    tag: 'MGA & Insurers',
     slug: 'mgas-insurers',
     title: 'Scale underwriting\nwithout scaling headcount',
     desc: 'Cooper runs each risk against the program\'s guidelines and flags anything outside appetite before it binds. When bordereaux are due, it pulls them together, so a lean team can cover more programs.',
   },
-]
-
-const bottomRoles = [
   {
-    tag: 'Claims TPAs',
+    tag: 'Claims TPA',
     slug: 'claims-tpas',
     title: 'Streamline claims from\nintake to reporting',
     desc: 'When a claim comes in, Cooper captures the details, checks them against the policy, and gives adjusters what they need to make the call. Loss runs are ready whenever a carrier asks.',
-  },
-  {
-    tag: 'Reinsurers',
-    slug: 'reinsurers',
-    title: 'Optimize treaties and\nrisk at portfolio scale',
-    desc: 'Cedent reports get validated as they land, and exposure is tracked across the portfolio, not one treaty at a time. You\'ll see concentration building well before it\'s a problem.',
   },
 ]
 
@@ -74,36 +65,31 @@ export default function BuiltForEveryRole() {
             </h2>
           </div>
           <p className="font-sans text-[16px] leading-[1.5] text-dark/70 max-w-full lg:max-w-[452px] pt-0 lg:pt-[24px]">
-            Whether you're a retail broker, wholesale underwriter, or claims adjuster, Cooper works the way you already work.
+            Whether you're a retail agency, wholesale broker, MGA, insurer, or claims TPA, Cooper works the way you already work.
           </p>
         </div>
 
-        {/* Cards container — single border wrapper */}
+        {/* Cards container, single border wrapper. Four roles in a 2x2 grid:
+            one column stacked on mobile, two columns from sm up. Dividers adapt
+            to the collapsing grid (horizontal between stacked cards, vertical
+            between columns once they exist). */}
         <div className="border border-dark">
-          {/* Top row - 3 cards. Dividers adapt to the collapsing grid:
-              horizontal between stacked cards on mobile, vertical between
-              columns once they exist (sm = 2 col, lg = 3 col). */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-            {topRoles.map((role, i) => (
-              <div
-                key={role.tag}
-                className={`border-dark ${i < 2 ? 'border-b lg:border-b-0' : ''} ${i === 0 ? 'sm:border-r' : ''} ${i === 1 ? 'lg:border-r' : ''}`}
-              >
-                <RoleCard {...role} />
-              </div>
-            ))}
-          </div>
-
-          {/* Divider */}
-          <div className="border-t border-dark" />
-
-          {/* Bottom row - 2 cards */}
-          <div className="grid grid-cols-1 lg:grid-cols-2">
-            {bottomRoles.map((role, i) => (
-              <div key={role.tag} className={i === 0 ? 'border-dark border-b lg:border-b-0 lg:border-r' : ''}>
-                <RoleCard {...role} />
-              </div>
-            ))}
+          <div className="grid grid-cols-1 sm:grid-cols-2">
+            {roles.map((role, i) => {
+              const cls = [
+                'border-dark',
+                i === 0 && 'border-b sm:border-r',
+                i === 1 && 'border-b',
+                i === 2 && 'border-b sm:border-b-0 sm:border-r',
+              ]
+                .filter(Boolean)
+                .join(' ')
+              return (
+                <div key={role.tag} className={cls}>
+                  <RoleCard {...role} />
+                </div>
+              )
+            })}
           </div>
         </div>
       </div>

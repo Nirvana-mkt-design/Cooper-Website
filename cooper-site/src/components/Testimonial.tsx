@@ -89,7 +89,7 @@ export default function Testimonial() {
               <blockquote className="font-serif text-[24px] lg:text-[30px] leading-[1.5] text-dark mb-[32px] max-w-[900px] animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
                 {t.quote}
               </blockquote>
-              <p className="font-grotesk font-medium text-[14.5px] tracking-[1.45px] uppercase text-dark animate-fade-blur-in" style={{ animationDelay: '0.3s' }}>
+              <p className="font-grotesk font-semibold text-[16px] tracking-[1.45px] uppercase text-accent-orange animate-fade-blur-in" style={{ animationDelay: '0.3s' }}>
                 {t.name}
               </p>
             </div>
