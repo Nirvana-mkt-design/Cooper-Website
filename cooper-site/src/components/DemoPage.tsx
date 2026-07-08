@@ -351,9 +351,9 @@ export default function DemoPage() {
           ].map((badge) => (
             <span
               key={badge.label}
-              className="inline-flex items-center gap-[8px] font-grotesk text-[10px] tracking-[1px] uppercase text-dark/40 border border-dark/[0.08] rounded-[6px] px-[12px] py-[6px]"
+              className="inline-flex items-center gap-[10px] font-grotesk text-[12px] tracking-[1px] uppercase text-dark/40 border border-dark/[0.08] rounded-[8px] px-[14px] py-[8px]"
             >
-              <img src={badge.icon} alt="" className="h-[22px] w-[22px] object-contain opacity-70" />
+              <img src={badge.icon} alt="" className="h-[40px] w-[40px] object-contain opacity-70" />
               {badge.label}
             </span>
           ))}
