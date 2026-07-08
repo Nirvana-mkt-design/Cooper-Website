@@ -116,7 +116,7 @@ export default function CarrierWall() {
                 src={carrier.src}
                 alt={carrier.name}
                 loading="lazy"
-                className="max-h-[44px] w-auto max-w-[78%] object-contain opacity-[0.5] grayscale"
+                className="max-h-[50px] w-auto max-w-[78%] object-contain opacity-[0.5] grayscale"
               />
             </div>
           </div>

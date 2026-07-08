@@ -59,9 +59,8 @@ export default function DemoPage() {
       <div className="w-full lg:flex-1 flex flex-col px-5 md:px-12 lg:px-[80px] py-[48px] max-w-full lg:max-w-[680px]">
         {/* Logo + back */}
         <div className="flex items-center gap-[16px] mb-[60px]">
-          <Link to="/" className="flex items-center gap-[8px] no-underline">
-            <img src="/images/cooper-icon.svg" alt="" className="w-[32px] h-[32px]" />
-            <span className="font-serif text-[22px] text-dark">Cooper</span>
+          <Link to="/" className="flex items-center no-underline">
+            <img src="/images/cooper-logo-full.svg" alt="Cooper" className="h-[26px] w-auto" />
           </Link>
           <span className="text-dark/20">|</span>
           <Link to="/" className="font-sans text-[14px] text-dark/40 hover:text-dark/70 no-underline transition-colors">
