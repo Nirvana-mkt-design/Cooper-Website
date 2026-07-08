@@ -4,6 +4,16 @@ import { isValidPhoneNumber } from 'libphonenumber-js'
 import { useSeo } from '../lib/useSeo'
 import { pageJsonLd } from '../lib/pageSchema'
 import { useMetaPixel } from '../hooks/use-meta-pixel'
+import Turnstile from './Turnstile'
+
+// Anti-spam + stopgap lead store.
+// When both env vars are set, the form posts to the Cloudflare Worker
+// (Turnstile-verified) instead of the team's API. Leave them empty and the
+// form keeps posting to api.askcooper.ai exactly as before, so a deploy without
+// the env vars never breaks the live form.
+const DEMO_ENDPOINT = import.meta.env.VITE_DEMO_ENDPOINT as string | undefined
+const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY as string | undefined
+const USE_WORKER = Boolean(DEMO_ENDPOINT && TURNSTILE_SITE_KEY)
 
 const PERSONAL_EMAIL_DOMAINS = new Set([
   'gmail.com', 'googlemail.com', 'yahoo.com', 'yahoo.co.uk', 'yahoo.co.in',
@@ -71,6 +81,10 @@ export default function DemoPage() {
   const [nameError, setNameError] = useState('')
   const [emailError, setEmailError] = useState('')
   const [phoneError, setPhoneError] = useState('')
+  const [captchaToken, setCaptchaToken] = useState('')
+  const [captchaError, setCaptchaError] = useState('')
+  // Bumping this key remounts the widget to mint a fresh (single-use) token after a failed submit.
+  const [captchaKey, setCaptchaKey] = useState(0)
 
   function handleNameBlur() {
     setNameError(!name.trim() ? 'Please enter your name.' : '')
@@ -90,9 +104,10 @@ export default function DemoPage() {
     if (!name.trim()) { setNameError('Please enter your name.'); valid = false }
     if (!isWorkEmail(email)) { setEmailError('Please use a work email address.'); valid = false }
     if (!isValidPhoneNumber(phone, 'US')) { setPhoneError('Please enter a valid phone number.'); valid = false }
+    if (USE_WORKER && !captchaToken) { setCaptchaError('Please complete the verification below.'); valid = false }
     if (!valid) return
 
-    setNameError(''); setEmailError(''); setPhoneError('')
+    setNameError(''); setEmailError(''); setPhoneError(''); setCaptchaError('')
     setFormState('submitting')
     setErrorMsg('')
 
@@ -139,12 +154,23 @@ export default function DemoPage() {
     }
 
     try {
-      const apiOrigin = import.meta.env.VITE_API_ORIGIN ?? 'https://api.askcooper.ai'
-      const res = await fetch(`${apiOrigin}/api/v1/demo-requests/`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      })
+      let res: Response
+      if (USE_WORKER) {
+        // Stopgap: Turnstile-verified Cloudflare Worker → D1.
+        res = await fetch(DEMO_ENDPOINT as string, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...payload, turnstile_token: captchaToken }),
+        })
+      } else {
+        // Default: post straight to the team's API (original behavior).
+        const apiOrigin = import.meta.env.VITE_API_ORIGIN ?? 'https://api.askcooper.ai'
+        res = await fetch(`${apiOrigin}/api/v1/demo-requests/`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        })
+      }
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
       setFormState('success')
       trackLead(eventId)
@@ -152,6 +178,11 @@ export default function DemoPage() {
     } catch {
       setFormState('error')
       setErrorMsg('Something went wrong. Please try again or email us at contact@askcooper.ai.')
+      // Turnstile tokens are single-use — mint a fresh one for the retry.
+      if (USE_WORKER) {
+        setCaptchaToken('')
+        setCaptchaKey((k) => k + 1)
+      }
     }
   }
 
@@ -250,6 +281,18 @@ export default function DemoPage() {
                     ))}
                   </select>
                 </div>
+
+                {USE_WORKER && TURNSTILE_SITE_KEY && (
+                  <div>
+                    <Turnstile
+                      key={captchaKey}
+                      siteKey={TURNSTILE_SITE_KEY}
+                      onToken={(t) => { setCaptchaToken(t); setCaptchaError('') }}
+                      onExpire={() => setCaptchaToken('')}
+                    />
+                    {captchaError && <p className="font-sans text-[12px] text-red-500 mt-[4px]">{captchaError}</p>}
+                  </div>
+                )}
 
                 {formState === 'error' && (
                   <p className="font-sans text-[13px] text-red-500">{errorMsg}</p>

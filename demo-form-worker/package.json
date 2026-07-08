@@ -1,0 +1,15 @@
+{
+  "name": "cooper-demo-form-worker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Stopgap Cloudflare Worker that verifies Turnstile and stores Cooper demo-request leads in D1.",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250601.0",
+    "wrangler": "^4.108.0"
+  }
+}
