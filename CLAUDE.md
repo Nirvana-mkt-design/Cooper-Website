@@ -8,13 +8,14 @@ Cooper is an AI platform built for insurance professionals. This repo contains t
 - Vite 8
 - Tailwind CSS 4
 - React Router (SPA with client-side routing)
-- Deployed via Vercel CLI to https://askcooper.vercel.app
+- Deployed to Vercel, production URL https://cooper-site-blush.vercel.app
 
 ## Vercel Projects (do not confuse)
-- **askcooper.vercel.app** — The live marketing site (THIS project)
+- **`cooper-site` (team `stratuu` / Nimbuu)** → **https://cooper-site-blush.vercel.app** — the REAL live marketing site (THIS project). It has **Git integration**: merging a PR to `main` auto-deploys production. No manual deploy needed.
+- **`cooper-site` (team `hygordezign-3139`)** → askcooper.ai / cooper-site-two.vercel.app — a personal DUPLICATE. Deploying here does NOT update the live site. Do not use it.
 - **cooper-wireframe.vercel.app** — A separate wireframe project (NOT this repo)
 
-Always deploy from `cooper-site/` directory and alias to `askcooper.vercel.app`.
+Production env vars (Ashby key, Turnstile, demo endpoint) already live on the `stratuu/cooper-site` project. To publish: **merge to `main`** and let Git integration deploy. If a manual deploy is ever needed, run it against the right team: `vercel link --scope stratuu --project cooper-site --yes` then `vercel --prod --scope stratuu` from the repo root (project rootDirectory is `cooper-site`).
 
 ## Session Start — Identity Check
 
@@ -50,8 +51,8 @@ Then add them to `.github/asana-config.json` under `user_mappings` with `registe
 ## Workflow Rules
 
 - **Do NOT auto-commit or auto-push.** Only commit and push when the user explicitly asks.
-- Deploy to Vercel: `cd cooper-site && npx vercel --prod`, then `npx vercel alias <deploy-url> askcooper.vercel.app`
-- When deploying, ALWAYS deploy from `cooper-site/` (not from root — root has a conflicting vercel.json)
+- **Publish = merge to `main`.** The `stratuu/cooper-site` project auto-deploys to https://cooper-site-blush.vercel.app via Git integration. No manual `vercel --prod` needed.
+- If a manual deploy is ever required, run from the **repo root** (project rootDirectory is `cooper-site`) with the correct team: `vercel --prod --scope stratuu`. Do NOT deploy to the personal `hygordezign-3139` duplicate. (The root `vercel.json` is a leftover and unused by the real project.)
 
 ## Asana Integration
 

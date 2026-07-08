@@ -1,18 +1,35 @@
 import { Link } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 
 /**
  * Mobile-only "Request a Demo" CTA, used on the home page only.
- * Pinned to the bottom of the viewport and always visible (it stays fixed
- * rather than hiding on scroll).
+ * Pinned to the bottom of the viewport and always visible while scrolling,
+ * but it slides away once the footer comes into view (the footer has its own
+ * "Request a Demo" link, so the sticky CTA would just overlap it).
  *
  * Behind the button sits the same frosted glassmorphism fade used at the
  * bottom of the hero: a backdrop blur that's strongest at the bottom and
  * dissolves upward, so page content softly blurs behind the CTA.
  */
 export default function MobileStickyCTA() {
+  const [hidden, setHidden] = useState(false)
+
+  useEffect(() => {
+    const footer = document.querySelector('footer')
+    if (!footer) return
+    // Hide the CTA as soon as any part of the footer enters the viewport.
+    const observer = new IntersectionObserver(
+      ([entry]) => setHidden(entry.isIntersecting),
+      { threshold: 0 }
+    )
+    observer.observe(footer)
+    return () => observer.disconnect()
+  }, [])
+
   return (
     <div
-      className="lg:hidden fixed inset-x-0 bottom-0 z-30 h-[190px] flex items-end pointer-events-none"
+      className="lg:hidden fixed inset-x-0 bottom-0 z-30 h-[190px] flex items-end pointer-events-none transition-transform duration-300 ease-out"
+      style={{ transform: hidden ? 'translateY(100%)' : 'translateY(0)' }}
     >
       {/* Frosted glassmorphism fade — same recipe as the hero bottom bar. */}
       <div
