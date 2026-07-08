@@ -97,7 +97,7 @@ export function KV({ k, v, accent = false }: { k: string; v: ReactNode; accent?:
   return (
     <div className="flex justify-between gap-[10px] border-b border-[#E2D9CF] py-[5px] font-sans text-[12.5px] last:border-0">
       <span className="text-dark/55">{k}</span>
-      <b className="font-semibold" style={{ color: accent ? '#d95611' : '#1e1a15' }}>{v}</b>
+      <b className="font-semibold text-right" style={{ color: accent ? '#d95611' : '#1e1a15' }}>{v}</b>
     </div>
   )
 }
@@ -179,7 +179,15 @@ export const vignettes: Record<string, ReactNode[]> = {
       </Stack>
     </VigWindow>,
     <VigWindow title="Renewal · coverage diff">
-      <Row className="mb-[10px]"><B>Renews in 16 days · 2026-07-16</B><St kind="warn">● upcoming</St></Row>
+      <div
+        className="relative mb-[10px] flex items-center justify-center border-b px-[11px] py-[8px] font-sans text-[12.5px] text-dark/70"
+        style={{ borderColor: '#E2D9CF' }}
+      >
+        <B>Renews in 16 days · 2026-07-16</B>
+        <span className="absolute right-[11px] top-1/2 -translate-y-1/2">
+          <St kind="warn">● upcoming</St>
+        </span>
+      </div>
       <DiffRow header cells={['Term', 'Expiring', 'Renewal']} />
       <DiffRow cells={['Wind/hail deduct.', '2% TIV', '5% TIV']} accentIdx={2} />
       <DiffRow cells={['Equipment sublimit', '$250k', '$100k']} accentIdx={2} />
