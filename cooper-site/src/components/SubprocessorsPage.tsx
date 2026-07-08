@@ -71,10 +71,10 @@ export default function SubprocessorsPage() {
           {/* Breadcrumb back to Security */}
           <nav className="flex items-center gap-[8px] mb-[28px] animate-fade-blur-in">
             <Link
-              to="/security"
+              to="/"
               className="font-sans text-[13px] text-dark/40 hover:text-dark/70 no-underline transition-colors"
             >
-              Security
+              Home
             </Link>
             <span className="font-sans text-[13px] text-dark/20">/</span>
             <span className="font-sans text-[13px] text-dark/70">Subprocessors</span>

@@ -24,9 +24,9 @@ const testimonials = [
 ]
 
 const stats = [
-  { value: '25 hrs', label: 'back to the team to sell' },
-  { value: '95%', label: 'Fewer manual re-entry errors' },
-  { value: '12×', label: 'Faster submission-to-market' },
+  { value: '18 hrs/wk', label: 'back to the team to sell' },
+  { value: '93%', label: 'fewer re-entry errors' },
+  { value: '4×', label: 'faster to first quote' },
 ]
 
 export default function DemoPage() {

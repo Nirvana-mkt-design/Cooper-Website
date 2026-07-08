@@ -4,9 +4,8 @@ import { useState, useEffect } from 'react'
 const roles = [
   { label: 'Retail Agencies', slug: 'retail-agencies', delay: '1.6s' },
   { label: 'Wholesale Brokers', slug: 'wholesale-brokers', delay: '1.75s' },
-  { label: 'MGAs & Insurers', slug: 'mgas-insurers', delay: '1.9s' },
-  { label: 'Claims TPAs', slug: 'claims-tpas', delay: '2.05s' },
-  { label: 'Reinsurers', slug: 'reinsurers', delay: '2.2s' },
+  { label: 'MGA & Insurers', slug: 'mgas-insurers', delay: '1.9s' },
+  { label: 'Claims TPA', slug: 'claims-tpas', delay: '2.05s' },
 ]
 
 export default function Hero() {

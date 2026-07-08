@@ -44,11 +44,11 @@ export const personas: Persona[] = [
     slug: 'retail-agencies',
     name: 'Retail Agencies',
     label: 'RETAIL AGENCIES',
-    headline: 'Producers sell. Account managers serve. Cooper does the rest.',
-    headlineLead: 'Producers Sell. Managers Serve.',
-    headlineAccent: 'Cooper does the rest.',
+    headline: 'The first quote back wins. Cooper ensures it\'s yours.',
+    headlineLead: 'The first quote back wins.',
+    headlineAccent: 'Cooper ensures it\'s yours.',
     subtitle:
-      'Built for both sides of the agency. Cooper handles the data entry, submissions, renewals, and certificate work that buries your service team, so producers stay in front of clients and account managers stay ahead of the book.',
+      'Producers sell, account managers serve, Cooper does the rest. The submissions, carrier supplements, renewals, and certificates are handled end to end, so your team stays ahead of the book.',
     roleBalance: [
       {
         label: 'For producers',
@@ -63,19 +63,19 @@ export const personas: Persona[] = [
         label: 'For account managers',
         title: 'The busywork, off your desk',
         points: [
-          'No re-keying between AMS and carrier portals',
+          'No re-entry between AMS and carrier portals',
           'COIs and endorsements that check themselves',
           'Every renewal date tracked, nothing slips',
         ],
       },
     ],
-    demoHeadline: 'Stop retyping the same account ten times',
+    demoHeadline: 'Stop re-entering the same account ten times',
     demoSubtitle: 'See Cooper in action with your own data.',
     features: [
       {
-        title: 'Stop typing the same data twice',
+        title: 'Stop re-entering the same data twice',
         description:
-          'Cooper reads your dec pages, loss runs, and emails, then writes the details straight into Applied Epic, AMS360, HawkSoft, or whatever system you use, and into every carrier portal. You review instead of retype.',
+          'Cooper reads your dec pages, loss runs, and emails, then writes the details straight into Applied Epic, AMS360, HawkSoft, or whatever system you use, and into every carrier portal. You review instead of re-entering.',
       },
       {
         title: 'Walk into every meeting quote-ready',
@@ -94,7 +94,7 @@ export const personas: Persona[] = [
       },
     ],
     testimonialQuote:
-      'We used to spend half the day re-keying data. Now our producers actually have time to sell.',
+      'We used to spend half the day re-entering data. Now our producers actually have time to sell.',
     testimonialAuthor: 'Agency Principal',
     testimonialRole: 'Regional P&C Agency',
     testimonials: [
@@ -130,11 +130,11 @@ export const personas: Persona[] = [
     slug: 'wholesale-brokers',
     name: 'Wholesale Brokers',
     label: 'WHOLESALE BROKERS',
-    headline: 'The first quote back wins. Cooper ensures it\'s yours.',
-    headlineLead: 'The first quote back wins.',
-    headlineAccent: 'Cooper ensures it\'s yours.',
+    headline: 'Even for accounts that stall, Cooper finds the market to write them.',
+    headlineLead: 'Even for accounts that stall,',
+    headlineAccent: 'Cooper finds the market to write them.',
     subtitle:
-      'Cooper triages submissions, matches risks to markets, and gets proposals out while the deal is still warm. Your brokers place more business, faster.',
+      'Cooper triages submissions, matches each risk to the markets most likely to write it, and drafts the proposal. Your brokers place more business.',
     features: [
       {
         title: 'Know which submissions are worth your time',
@@ -147,7 +147,7 @@ export const personas: Persona[] = [
           'Cooper learns from your carriers\' guidelines and your own quoting history, then points each risk at the markets most likely to write it competitively instantly with the reasoning shown.',
       },
       {
-        title: 'Respond first and win the deal',
+        title: 'Turn quotes into proposals that win',
         description:
           'Cooper normalizes every carrier\'s quote into one clean comparison, drafts the proposal in your style, and gets it back to the retailer while the deal is still warm.',
       },
@@ -157,22 +157,21 @@ export const personas: Persona[] = [
           'Cooper issues the binder, files surplus-lines tax and stamping, and attaches the diligent-search affidavit, so placement and compliance happen in one step instead of two.',
       },
     ],
-    testimonialQuote:
-      'The first quote back usually wins. Cooper makes sure that\'s us.',
+    testimonialQuote: '',
     testimonialAuthor: 'VP of Brokerage',
     testimonialRole: 'National Wholesale Broker',
     testimonials: [],
-    ctaText: 'See how Cooper places business faster',
+    ctaText: 'See Cooper place more business.',
   },
   {
     slug: 'mgas-insurers',
-    name: 'MGAs & Insurers',
-    label: 'MGAS & INSURERS',
-    headline: 'Without scaling headcount, Cooper scales underwriting.',
-    headlineLead: 'Without scaling headcount,',
-    headlineAccent: 'Cooper scales underwriting.',
+    name: 'MGA & Insurers',
+    label: 'MGA & INSURERS',
+    headline: 'Accuracy is your margin. Cooper protects it.',
+    headlineLead: 'Accuracy is your margin.',
+    headlineAccent: 'Cooper protects it.',
     subtitle:
-      'Cooper enforces your guidelines, prices risks consistently, and keeps every program audit-ready, so you grow your book without growing your team.',
+      'Cooper prices to your rating logic, refers what\'s outside appetite with the reason attached, and keeps every program audit-ready, so a lean team covers more programs.',
     features: [
       {
         title: 'Underwrite by your guidelines, every time',
@@ -200,17 +199,17 @@ export const personas: Persona[] = [
     testimonialAuthor: 'Chief Underwriting Officer',
     testimonialRole: 'Specialty MGA',
     testimonials: [],
-    ctaText: 'See how Cooper scales your underwriting',
+    ctaText: 'See how Cooper scales underwriting',
   },
   {
     slug: 'claims-tpas',
-    name: 'Claims TPAs',
-    label: 'CLAIMS TPAS',
-    headline: 'Without adding adjusters, Cooper scales your claims desk.',
-    headlineLead: 'Without adding adjusters,',
-    headlineAccent: 'Cooper scales your claims desk.',
+    name: 'Claims TPA',
+    label: 'CLAIMS TPA',
+    headline: 'First notice starts the clock. Cooper closes it out.',
+    headlineLead: 'First notice starts the clock.',
+    headlineAccent: 'Cooper closes it out.',
     subtitle:
-      'Cooper takes care of intake, coverage checks, and reporting, so your adjusters focus on the files that need real judgment.',
+      'Cooper handles intake, coverage checks, and reporting, so your adjusters resolve the files that need real judgment faster.',
     features: [
       {
         title: 'Every claim starts clean',
@@ -238,7 +237,7 @@ export const personas: Persona[] = [
     testimonialAuthor: 'VP of Claims Operations',
     testimonialRole: 'National Claims TPA',
     testimonials: [],
-    ctaText: 'See how Cooper streamlines your claims',
+    ctaText: 'See Cooper streamline your claims',
   },
   {
     slug: 'reinsurers',

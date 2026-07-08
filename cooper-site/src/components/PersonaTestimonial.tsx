@@ -7,7 +7,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import type { TestimonialItem } from '../data/personas'
 
-const DURATION = 11000
+const DURATION = 9000
 
 function usePrefersReducedMotion() {
   const [reduce, setReduce] = useState(
@@ -72,7 +72,7 @@ export default function PersonaTestimonial({ testimonials }: { testimonials: Tes
         <div className="grid grid-cols-1 items-start gap-[40px] lg:grid-cols-[260px_1fr] lg:gap-[80px]">
           {/* Fixed label — never changes */}
           <div className="lg:pt-[8px]">
-            <p className="font-grotesk text-[11px] font-medium uppercase tracking-[1.6px] text-dark/40">
+            <p className="font-grotesk text-[16px] font-medium uppercase tracking-[1.6px] text-dark/40">
               What they say about Cooper
             </p>
           </div>
@@ -83,9 +83,9 @@ export default function PersonaTestimonial({ testimonials }: { testimonials: Tes
               &ldquo;{clean}&rdquo;
             </blockquote>
             {(t.author || t.role) && (
-              <p className="mt-[20px] font-sans text-[13px] text-dark/45">
-                {t.author && <span className="font-medium text-dark/65">{t.author}</span>}
-                {t.author && t.role && <span className="mx-[6px] text-dark/30">·</span>}
+              <p className="mt-[20px] font-grotesk font-semibold text-[16px] tracking-[1.45px] uppercase text-accent-orange">
+                {t.author && <span>{t.author}</span>}
+                {t.author && t.role && <span className="mx-[6px] opacity-40">·</span>}
                 {t.role && <span>{t.role}</span>}
               </p>
             )}

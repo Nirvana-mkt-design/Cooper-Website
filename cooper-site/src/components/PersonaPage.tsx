@@ -197,7 +197,9 @@ export default function PersonaPage() {
     )
   }
 
-  const otherPersonas = personas.filter((p) => p.slug !== persona.slug)
+  // Reinsurers is pulled from nav/grid pre-launch (fast-follow rebuild), so it
+  // never appears in the cross-persona navigation even though its data remains.
+  const otherPersonas = personas.filter((p) => p.slug !== persona.slug && p.slug !== 'reinsurers')
   const heroImage = getHeroImage(persona.slug)
   const featureImages = getFeatureImages(persona.slug)
   const stats = getStatsBand(persona.slug)
@@ -331,14 +333,20 @@ export default function PersonaPage() {
         <section className="bg-cream-light">
           <div className="mx-auto max-w-[1440px] px-5 md:px-10 lg:px-[60px] pb-[80px] pt-[64px]">
             <div className="flex flex-col flex-wrap gap-[48px] sm:flex-row sm:justify-end sm:gap-[56px]">
-              {stats.map((s) => (
+              {stats.map((s) => {
+                // Word values (e.g. "Same day") render smaller so they stay on one
+                // line; a fixed-height, bottom-aligned box keeps every label level
+                // regardless of the value's font size.
+                const isText = !/^\d/.test(s.value)
+                return (
                 <div key={s.label} className="max-w-[300px]">
-                  <div className="font-serif text-[44px] leading-[0.95] tracking-[-2px] text-[#0d1016] sm:text-[72px] lg:text-[88px] sm:tracking-[-2.64px]">
+                  <div className={`flex items-end h-[44px] sm:h-[72px] lg:h-[88px] font-serif leading-[0.95] tracking-[-2px] text-[#0d1016] sm:tracking-[-2.64px] ${isText ? 'whitespace-nowrap text-[30px] sm:text-[46px] lg:text-[56px]' : 'text-[44px] sm:text-[72px] lg:text-[88px]'}`}>
                     <CountUp value={s.value} />
                   </div>
                   <p className="mt-[14px] font-sans text-[15px] leading-[1.4] text-[#6b6b6b]">{s.label}</p>
                 </div>
-              ))}
+                )
+              })}
             </div>
           </div>
         </section>

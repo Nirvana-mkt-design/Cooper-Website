@@ -42,20 +42,24 @@ function RevealSection({ children, delay = 0 }: { children: React.ReactNode; del
 const teamPhotos = [
   '/images/careers/IMG_2940.jpg',
   '/images/careers/IMG_5227.jpg',
+  '/images/careers/IMG_8999.jpg',
   '/images/careers/IMG_2941.jpg',
   '/images/careers/IMG_7892.jpg',
   '/images/careers/IMG_2942.jpg',
   '/images/careers/IMG_3044.jpg',
   '/images/careers/IMG_7951.jpg',
+  '/images/careers/IMG_9741.jpg',
   '/images/careers/IMG_2943.jpg',
   '/images/careers/IMG_8809.jpg',
   '/images/careers/IMG_3113.jpg',
   '/images/careers/IMG_2953.jpg',
   '/images/careers/IMG_9381.jpg',
+  '/images/careers/IMG_9001.jpg',
   '/images/careers/IMG_3224.jpg',
   '/images/careers/IMG_2954.jpg',
   '/images/careers/IMG_3225.jpg',
   '/images/careers/IMG_3423.jpg',
+  '/images/careers/IMG_9785.jpg',
   '/images/careers/IMG_3462.jpg',
   '/images/careers/image-1.jpg',
   '/images/careers/WhatsApp Image 2026-06-22 at 15.35.21.jpeg',
@@ -185,7 +189,7 @@ export default function CareersPage() {
                   The work here stays close to the ground. You'll see how customers actually operate, put real things in their hands quickly, and own the outcome from start to finish. A rare problem, hiding in plain sight.
                 </p>
                 <p className="font-sans text-[18px] leading-[1.7] text-dark">
-                  If it's the kind you've been looking for, come find your place here.
+                  If it's the kind you've been looking for, we have a place for you.
                 </p>
               </div>
             </div>

@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef } from 'react'
-import { Routes, Route, useLocation } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import HowCooperHelps from './components/HowCooperHelps'
@@ -17,7 +17,6 @@ import CareersPage from './components/CareersPage'
 import CareerRolePage from './components/CareerRolePage'
 import PrivacyPage from './components/PrivacyPage'
 import TermsPage from './components/TermsPage'
-import SecurityPage from './components/SecurityPage'
 import SubprocessorsPage from './components/SubprocessorsPage'
 
 // Reset scroll to the top on every route change so a new page never opens
@@ -122,10 +121,12 @@ export default function App() {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/careers" element={<CareersPage />} />
         <Route path="/careers/:roleId" element={<CareerRolePage />} />
+        {/* Reinsurers is pulled pre-launch (fast-follow rebuild): unreachable from
+            nav/grid and redirected on direct URL. Keep above the :slug route. */}
+        <Route path="/personas/reinsurers" element={<Navigate to="/" replace />} />
         <Route path="/personas/:slug" element={<PersonaPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/terms" element={<TermsPage />} />
-        <Route path="/security" element={<SecurityPage />} />
         <Route path="/subprocessors" element={<SubprocessorsPage />} />
       </Routes>
     </>

@@ -59,7 +59,7 @@ const struggles = [
   'Re-marketing renewals one carrier at a time',
   'Triaging a flood of retailer submissions',
   'Clearing submissions before underwriting starts',
-  'Keying first notice of loss from calls and email',
+  'Re-entering first notice of loss from calls and email',
   'Reading bordereaux and treaty submissions line by line',
 ]
 const helps = [
