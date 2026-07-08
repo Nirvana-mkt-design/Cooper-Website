@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef } from 'react'
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { useUtmCapture } from './hooks/use-utm-capture'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import HowCooperHelps from './components/HowCooperHelps'
@@ -21,6 +22,11 @@ import SubprocessorsPage from './components/SubprocessorsPage'
 
 // Reset scroll to the top on every route change so a new page never opens
 // at the scroll height of the previous one. Honors #hash anchors when present.
+function UtmCapture() {
+  useUtmCapture()
+  return null
+}
+
 function ScrollToTop() {
   const { pathname, hash } = useLocation()
 
@@ -115,6 +121,7 @@ export default function App() {
   return (
     <>
       <ScrollToTop />
+      <UtmCapture />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/demo" element={<DemoPage />} />
