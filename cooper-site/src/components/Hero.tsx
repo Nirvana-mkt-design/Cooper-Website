@@ -75,8 +75,8 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Built For bar at bottom (mobile sits higher to clear the fixed CTA) */}
-      <div className="absolute bottom-[104px] lg:bottom-[20px] left-0 right-0 z-10 max-w-[1440px] mx-auto px-5 md:px-10 lg:px-[62px]">
+      {/* Built For bar at bottom (mobile sits higher to clear the fixed CTA + the stacked blur bands) */}
+      <div className="absolute bottom-[150px] lg:bottom-[20px] left-0 right-0 z-10 max-w-[1440px] mx-auto px-5 md:px-10 lg:px-[62px]">
         {/* Desktop / tablet-landscape: full row of all personas */}
         <div className="hidden lg:flex items-center gap-[52px]">
           <span className="animate-fade-blur-in font-serif text-[36px] leading-[1.2] text-cream-light shrink-0" style={{ animationDelay: '1.4s' }}>
