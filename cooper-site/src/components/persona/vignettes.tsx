@@ -180,13 +180,11 @@ export const vignettes: Record<string, ReactNode[]> = {
     </VigWindow>,
     <VigWindow title="Renewal · coverage diff">
       <div
-        className="relative mb-[10px] flex items-center justify-center border-b px-[11px] py-[8px] font-sans text-[12.5px] text-dark/70"
+        className="mb-[10px] flex flex-wrap items-center justify-center gap-x-[10px] gap-y-[3px] border-b px-[11px] py-[8px] font-sans text-[12.5px] text-dark/70"
         style={{ borderColor: '#E2D9CF' }}
       >
         <B>Renews in 16 days · 2026-07-16</B>
-        <span className="absolute right-[11px] top-1/2 -translate-y-1/2">
-          <St kind="warn">● upcoming</St>
-        </span>
+        <St kind="warn">● upcoming</St>
       </div>
       <DiffRow header cells={['Term', 'Expiring', 'Renewal']} />
       <DiffRow cells={['Wind/hail deduct.', '2% TIV', '5% TIV']} accentIdx={2} />

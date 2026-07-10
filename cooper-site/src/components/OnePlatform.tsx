@@ -650,9 +650,9 @@ export default function OnePlatform() {
         {/* Mobile accordion */}
         <MobileAccordion />
 
-        {/* Card — desktop only */}
+        {/* Card — desktop only (≥lg, matches the accordion's lg:hidden so they never both show) */}
         <div
-          className="hidden md:block bg-cream-light border-4 border-black/[0.02] overflow-hidden relative md:max-h-[755px]"
+          className="hidden lg:block bg-cream-light border-4 border-black/[0.02] overflow-hidden relative md:max-h-[755px]"
           style={{ boxShadow: '0px 7.5px 69.6px -20px rgba(0,0,0,0.33)' }}
         >
           {/* Tab bar */}
