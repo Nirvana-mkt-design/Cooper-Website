@@ -105,7 +105,7 @@ function FeatureBlock({
 
   const text = (
     <div className={isReversed ? 'lg:pl-[40px]' : 'lg:pr-[40px]'}>
-      <h3 className="font-serif text-[36px] md:text-[34px] lg:text-[38px] leading-[1.1] tracking-[-0.4px] text-[#0a0a0a] mb-[24px]">
+      <h3 className="font-serif text-[36px] lg:text-[38px] leading-[1.1] tracking-[-0.4px] text-[#0a0a0a] mb-[24px]">
         {feature.title}
       </h3>
       <p className="font-sans text-[17.8px] leading-[1.5] text-[#6b6b6b] max-w-[440px]">
@@ -418,11 +418,11 @@ export default function PersonaPage() {
             <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(30,26,21,0.3) 0%, rgba(30,26,21,0.7) 100%)' }} />
           </div>
           <div className="relative z-10 max-w-[1440px] mx-auto px-5 md:px-10 lg:px-[60px] text-center">
-            <h2 className="font-serif text-[36px] md:text-[34px] lg:text-[38px] leading-[1.2] text-cream-light mb-[16px]">
+            <h2 className="font-serif text-[36px] lg:text-[38px] leading-[1.2] text-cream-light mb-[16px]">
               {persona.demoHeadline ?? 'Ready to see Cooper in action?'}
             </h2>
             <p className="font-sans text-[17px] leading-[1.6] text-cream-light/60 max-w-[460px] mx-auto mb-[32px]">
-              {persona.demoSubtitle ?? `No generic demo. We show you how Cooper works for ${persona.name.toLowerCase()}, with your own data.`}
+              {persona.demoSubtitle ?? `No generic demo. We show you how Cooper works for ${persona.name}, with your own data.`}
             </p>
             <Link
               to="/demo"

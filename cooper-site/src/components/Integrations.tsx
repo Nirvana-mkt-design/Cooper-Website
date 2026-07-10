@@ -359,7 +359,7 @@ function MobileChip({ item }: { item: Chip }) {
 function MobileIntegrations() {
   const { ref, scale } = useCanvasScale(MCW)
   return (
-    <div className="mx-auto mt-[40px] w-full max-w-[390px] xl:hidden">
+    <div className="mx-auto mt-[40px] w-full max-w-[390px] md:max-w-[500px] xl:hidden">
       <div ref={ref} className="relative overflow-hidden rounded-[16px] border border-dark/[0.08] bg-cream-light">
         {/* aspect-ratio spacer */}
         <div style={{ paddingBottom: `${(MCH / MCW) * 100}%` }} />

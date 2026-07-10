@@ -558,7 +558,7 @@ function MobileAccordion() {
                       </div>
                     )}
                     {idx === 2 && (
-                      <div style={{ position: 'absolute', top: 80, left: '50%', width: 580, marginLeft: -279, transform: 'scale(0.62)', transformOrigin: 'top center' }}>
+                      <div style={{ position: 'absolute', top: 92, left: '50%', width: 580, marginLeft: -280, transform: 'scale(0.55)', transformOrigin: 'top center' }}>
                         <ProposalPanel />
                       </div>
                     )}

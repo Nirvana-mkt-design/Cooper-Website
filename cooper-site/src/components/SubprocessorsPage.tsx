@@ -119,8 +119,21 @@ export default function SubprocessorsPage() {
             Current Subprocessors
           </h2>
 
-          {/* Table */}
-          <div className="w-full overflow-x-auto">
+          {/* Mobile (<sm): stacked cards so the Processing Activities column is fully readable */}
+          <div className="flex flex-col gap-[12px] sm:hidden">
+            {subprocessors.map((sp) => (
+              <div key={sp.name} className="rounded-[10px] border border-dark/[0.08] bg-dark/[0.02] p-[16px]">
+                <div className="flex items-baseline justify-between gap-[12px]">
+                  <span className="font-sans text-[15px] font-medium text-dark/80">{sp.name}</span>
+                  <span className="font-grotesk text-[10.5px] tracking-[1px] uppercase text-dark/40 shrink-0">{sp.location}</span>
+                </div>
+                <p className="mt-[10px] font-sans text-[13.5px] leading-[1.6] text-dark/55">{sp.activities}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Table (sm+) */}
+          <div className="hidden w-full overflow-x-auto sm:block">
             <table className="w-full min-w-[580px] border-collapse">
               <thead>
                 <tr className="border-b border-dark/[0.10]">

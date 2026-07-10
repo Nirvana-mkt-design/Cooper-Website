@@ -80,7 +80,7 @@ export default function PrivacyPage() {
           </nav>
 
           {/* Article */}
-          <article>
+          <article className="max-w-[720px]">
             <p className={pCls}>
               Cooper AI Tech, Inc., and/or its affiliates and subsidiaries ("we," "our," or "us") provide a software
               platform, including our AI copilot that automates manual processes for insurance brokers and companies

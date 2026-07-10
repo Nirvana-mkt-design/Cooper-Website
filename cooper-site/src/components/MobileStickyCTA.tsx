@@ -28,7 +28,7 @@ export default function MobileStickyCTA() {
 
   return (
     <div
-      className="lg:hidden fixed inset-x-0 bottom-0 z-30 h-[190px] flex items-end pointer-events-none transition-transform duration-300 ease-out"
+      className="lg:hidden [@media(max-height:520px)]:hidden fixed inset-x-0 bottom-0 z-30 h-[190px] flex items-end pointer-events-none transition-transform duration-300 ease-out"
       style={{ transform: hidden ? 'translateY(100%)' : 'translateY(0)' }}
     >
       {/* Frosted glassmorphism fade — same recipe as the hero bottom bar. */}

@@ -78,7 +78,7 @@ export default function TermsPage() {
           </nav>
 
           {/* Article */}
-          <article>
+          <article className="max-w-[720px]">
             {/* Intro */}
             <section id="intro" className="scroll-mt-[100px]">
               <p className={pCls}>

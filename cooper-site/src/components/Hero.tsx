@@ -59,30 +59,34 @@ export default function Hero() {
         }}
       />
 
-      {/* Content */}
-      <div className="relative z-10 max-w-[1440px] mx-auto px-5 md:px-10 lg:px-[62px] flex-1 flex flex-col justify-center pt-[80px] pb-[120px] lg:flex-none lg:block lg:pt-[254px] lg:pb-0">
+      {/* Content — on short/landscape phones (max-height 520) it stays centered but
+          shrinks and reserves room at the bottom for the desktop-style "Built For"
+          row; the sticky CTA is hidden there. Portrait/desktop are unchanged. */}
+      <div className="relative z-10 max-w-[1440px] mx-auto [@media(max-height:520px)]:mx-0 [@media(max-height:520px)]:self-stretch px-5 md:px-10 lg:px-[62px] flex-1 flex flex-col justify-center pt-[80px] pb-[120px] [@media(max-height:520px)]:pt-[60px] [@media(max-height:520px)]:pb-[92px] lg:flex-none lg:block lg:pt-[254px] lg:pb-0">
         <div className="max-w-[794px]">
-          <p className="animate-fade-blur-in font-grotesk font-medium text-[14.5px] tracking-[1.45px] uppercase text-[#fffcf1]/80 mb-[20px]" style={{ animationDelay: '0.2s' }}>
+          <p className="animate-fade-blur-in font-grotesk font-medium text-[14.5px] tracking-[1.45px] uppercase text-[#fffcf1]/80 mb-[20px] [@media(max-height:520px)]:mb-[10px]" style={{ animationDelay: '0.2s' }}>
             Built for Insurance Professionals
           </p>
-          <h1 className="font-serif text-[52px] md:text-[64px] lg:text-[96px] leading-[1.05] text-cream-light mb-[20px]" style={{ textIndent: '-5px' }}>
+          <h1 className="font-serif text-[52px] md:text-[64px] lg:text-[96px] leading-[1.05] text-cream-light mb-[20px] [@media(max-height:520px)]:text-[40px] [@media(max-height:520px)]:mb-[12px]" style={{ textIndent: '-5px' }}>
             <span className="animate-fade-blur-in block" style={{ animationDelay: '0.5s' }}>More business. </span>
             <span className="animate-fade-blur-in block" style={{ animationDelay: '0.8s' }}>Less busywork.</span>
           </h1>
-          <p className="animate-fade-blur-in font-sans font-normal text-[17.8px] leading-[1.5] text-[#FFFCF1] max-w-[536px]" style={{ animationDelay: '1.1s' }}>
+          <p className="animate-fade-blur-in font-sans font-normal text-[17.8px] leading-[1.5] text-[#FFFCF1] max-w-[536px] [@media(max-height:520px)]:text-[15px]" style={{ animationDelay: '1.1s' }}>
             Cooper is your AI coworker for the entire insurance workflow from intake to renewal.
           </p>
         </div>
       </div>
 
-      {/* Built For bar at bottom (mobile sits higher to clear the fixed CTA + the stacked blur bands) */}
-      <div className="absolute bottom-[150px] lg:bottom-[20px] left-0 right-0 z-10 max-w-[1440px] mx-auto px-5 md:px-10 lg:px-[62px]">
-        {/* Desktop / tablet-landscape: full row of all personas */}
-        <div className="hidden lg:flex items-center gap-[52px]">
-          <span className="animate-fade-blur-in font-serif text-[36px] leading-[1.2] text-cream-light shrink-0" style={{ animationDelay: '1.4s' }}>
+      {/* Built For bar. Mobile-portrait sits higher (bottom-150) to clear the fixed CTA;
+          landscape phones sit at the bottom like desktop (the CTA is hidden there) and
+          show the full persona row instead of the carousel. */}
+      <div className="absolute bottom-[150px] lg:bottom-[20px] left-0 right-0 z-10 max-w-[1440px] mx-auto px-5 md:px-10 lg:px-[62px] [@media(max-height:520px)]:bottom-[24px]">
+        {/* Desktop + landscape-phone: full row of all personas */}
+        <div className="hidden lg:flex [@media(max-height:520px)]:flex items-center gap-[52px] [@media(max-height:520px)]:gap-[24px]">
+          <span className="animate-fade-blur-in font-serif text-[36px] leading-[1.2] text-cream-light shrink-0 [@media(max-height:520px)]:text-[22px]" style={{ animationDelay: '1.4s' }}>
             Built<br />For
           </span>
-          <div className="flex flex-wrap items-center gap-[52px] font-serif text-[24px] leading-[1.2] text-cream-light">
+          <div className="flex flex-wrap items-center gap-[52px] font-serif text-[24px] leading-[1.2] text-cream-light [@media(max-height:520px)]:gap-x-[26px] [@media(max-height:520px)]:gap-y-[6px] [@media(max-height:520px)]:text-[19px]">
             {roles.map((role) => (
               <Link
                 key={role.slug}
@@ -103,8 +107,8 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Mobile: "Built For" fixed, personas as an auto-rotating carousel */}
-        <div className="flex lg:hidden items-center gap-4">
+        {/* Mobile-portrait: "Built For" fixed, personas as an auto-rotating carousel (hidden in landscape) */}
+        <div className="flex lg:hidden [@media(max-height:520px)]:hidden items-center gap-4">
           <span className="animate-fade-blur-in font-serif text-[24px] md:text-[34px] leading-[1.15] text-cream-light shrink-0 whitespace-nowrap" style={{ animationDelay: '1.4s' }}>
             Built For
           </span>

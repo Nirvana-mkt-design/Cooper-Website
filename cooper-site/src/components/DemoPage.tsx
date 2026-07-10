@@ -187,8 +187,8 @@ export default function DemoPage() {
 
   return (
     <div className="min-h-screen bg-cream-light flex flex-col lg:flex-row">
-      {/* ── Left side: Form ── */}
-      <div className="w-full lg:flex-1 flex flex-col px-5 md:px-12 lg:px-[80px] py-[48px] max-w-full lg:max-w-[680px]">
+      {/* ── Left side: Form ── (centered on tablet so it isn't jammed left with an empty right third) */}
+      <div className="w-full max-w-full md:max-w-[560px] md:mx-auto lg:max-w-[680px] lg:mx-0 lg:flex-1 flex flex-col px-5 md:px-12 lg:px-[80px] py-[48px]">
         {/* Logo + back */}
         <div className="flex items-center gap-[16px] mb-[60px]">
           <Link to="/" className="flex items-center no-underline">
