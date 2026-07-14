@@ -3,7 +3,6 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { useUtmCapture } from './hooks/use-utm-capture'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
-import MobileStickyCTA from './components/MobileStickyCTA'
 import HowCooperHelps from './components/HowCooperHelps'
 import OnePlatform from './components/OnePlatform'
 import Metrics from './components/Metrics'
@@ -114,7 +113,6 @@ function HomePage() {
         <SecurityCompliance />
       </RevealSection>
       <Footer />
-      <MobileStickyCTA />
     </div>
   )
 }

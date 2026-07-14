@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import { useParams, Link, Navigate } from 'react-router-dom'
 import Navbar from './Navbar'
 import Footer from './Footer'
-import { fetchJob, deptLabel, employmentLabel, locationLabel, type AshbyJobDetail } from '../lib/ashby'
+import { fetchJob, deptLabel, employmentLabel, locationLabel, compensationLabel, type AshbyJobDetail } from '../lib/ashby'
 
 /* ── Scroll reveal ── */
 function RevealSection({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
@@ -119,6 +119,16 @@ export default function CareerRolePage() {
                 </svg>
                 {employmentLabel(job.employmentType)}
               </span>
+              {compensationLabel(job) && (
+                <span className="font-sans text-[14px] text-dark/50 flex items-center gap-[6px]">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="2" y="6" width="20" height="12" rx="2" />
+                    <circle cx="12" cy="12" r="2.5" />
+                    <path d="M6 12h.01M18 12h.01" />
+                  </svg>
+                  {compensationLabel(job)}
+                </span>
+              )}
             </div>
             {/* Mobile — inline Apply button at top */}
             <a
@@ -188,6 +198,15 @@ export default function CareerRolePage() {
                     <div className="font-grotesk font-medium text-[11px] tracking-[1px] uppercase mb-[4px]" style={{ color: '#C5C0AA' }}>Type</div>
                     <div className="font-sans text-[15px] text-white">{employmentLabel(job.employmentType)}</div>
                   </div>
+                  {compensationLabel(job) && (
+                    <>
+                      <div className="border-t border-white/[0.08]" />
+                      <div>
+                        <div className="font-grotesk font-medium text-[11px] tracking-[1px] uppercase mb-[4px]" style={{ color: '#C5C0AA' }}>Compensation</div>
+                        <div className="font-sans text-[15px] text-white">{compensationLabel(job)}</div>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
 

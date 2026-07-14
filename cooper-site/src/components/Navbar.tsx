@@ -264,9 +264,28 @@ export default function Navbar({ variant = 'dark' }: { variant?: 'dark' | 'light
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          <Link to="/demo" className={`hidden sm:inline-flex font-sans text-[16px] rounded-[5px] px-5 py-2.5 transition-colors cursor-pointer no-underline ${isLight ? 'text-cream-light bg-dark hover:bg-dark/90 border border-dark' : 'text-white border border-white/40 bg-white/10 hover:bg-white/20'}`}>
+          {/* Desktop — bordered/solid demo button, sits beside the nav links */}
+          <Link to="/demo" className={`hidden lg:inline-flex font-sans text-[16px] rounded-[5px] px-5 py-2.5 transition-colors cursor-pointer no-underline ${isLight ? 'text-cream-light bg-dark hover:bg-dark/90 border border-dark' : 'text-white border border-white/40 bg-white/10 hover:bg-white/20'}`}>
             Request a Demo
           </Link>
+
+          {/* Mobile / tablet — compact orange pill embedded in the bar, always in
+              view. Replaces the old full-width sticky CTA pinned to the bottom. */}
+          <Link
+            to="/demo"
+            onClick={closeMobile}
+            className="lg:hidden inline-flex items-center gap-1.5 rounded-[8px] bg-accent-orange px-3 py-2 font-sans text-[14px] text-cream-light no-underline whitespace-nowrap hover:opacity-90 transition-opacity"
+          >
+            <img
+              src="/images/cooper-icon.svg"
+              alt=""
+              aria-hidden="true"
+              className="h-[16px] w-auto"
+              style={{ filter: 'brightness(0) invert(1)' }}
+            />
+            Request a Demo
+          </Link>
+
           <button
             type="button"
             aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
