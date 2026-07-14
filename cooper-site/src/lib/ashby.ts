@@ -11,6 +11,13 @@ const API_KEY = import.meta.env.VITE_ASHBY_POSTING_API_KEY
 const BASE = 'https://api.ashbyhq.com/posting-api'
 const HEADERS = { 'ashby-api-key': API_KEY }
 
+export interface AshbyCompensation {
+  // e.g. "$180K – $220K • Offers Equity" — the full Ashby-formatted summary.
+  compensationTierSummary: string | null
+  // e.g. "$180K - $220K" — salary range only, no equity text.
+  scrapeableCompensationSalarySummary?: string | null
+}
+
 export interface AshbyJob {
   id: string
   title: string
@@ -25,6 +32,10 @@ export interface AshbyJob {
   isListed: boolean
   descriptionHtml: string
   descriptionPlain: string
+  // Present only when the job board is fetched with includeCompensation=true AND
+  // the posting has compensation set in Ashby.
+  compensation?: AshbyCompensation | null
+  shouldDisplayCompensationOnJobPostings?: boolean
 }
 
 // Alias kept for compatibility
@@ -51,6 +62,23 @@ export function employmentLabel(type: string): string {
   }
 }
 
+/**
+ * Human-readable pay range for a job, or null when nothing should be shown.
+ *
+ * Requires two things to actually return a value:
+ *  1. The job board is fetched with `?includeCompensation=true` (see fetchJobs).
+ *  2. In Ashby, the posting has compensation entered AND "Show compensation on
+ *     job board" enabled (surfaced here as shouldDisplayCompensationOnJobPostings).
+ */
+export function compensationLabel(
+  job: Pick<AshbyJob, 'compensation' | 'shouldDisplayCompensationOnJobPostings'>,
+): string | null {
+  if (job.shouldDisplayCompensationOnJobPostings === false) return null
+  const c = job.compensation
+  if (!c) return null
+  return c.compensationTierSummary || c.scrapeableCompensationSalarySummary || null
+}
+
 /** Location string: city + remote tag if applicable */
 export function locationLabel(job: Pick<AshbyJob, 'location' | 'isRemote' | 'workplaceType'>): string {
   if (job.workplaceType === 'Remote') return 'Remote'
@@ -59,7 +87,7 @@ export function locationLabel(job: Pick<AshbyJob, 'location' | 'isRemote' | 'wor
 }
 
 export async function fetchJobs(): Promise<AshbyJob[]> {
-  const res = await fetch(`${BASE}/job-board/${ORG}`, { headers: HEADERS })
+  const res = await fetch(`${BASE}/job-board/${ORG}?includeCompensation=true`, { headers: HEADERS })
   if (!res.ok) throw new Error('Failed to fetch jobs from Ashby')
   const data = await res.json()
   return (data.jobs as AshbyJob[]).filter((j) => j.isListed)

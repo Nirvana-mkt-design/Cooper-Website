@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from './Navbar'
 import Footer from './Footer'
-import { fetchJobs, deptLabel, employmentLabel, locationLabel, type AshbyJob } from '../lib/ashby'
+import { fetchJobs, deptLabel, employmentLabel, locationLabel, compensationLabel, type AshbyJob } from '../lib/ashby'
 import { useSeo } from '../lib/useSeo'
 
 // Keep Careers findable for candidates ("Cooper careers"/"Cooper jobs") while
@@ -315,6 +315,9 @@ export default function CareersPage() {
                         <div className="flex items-center flex-wrap gap-x-[16px] gap-y-2 md:gap-[24px]">
                           <span className="font-sans text-[14px] text-dark/40">{locationLabel(job)}</span>
                           <span className="font-sans text-[14px] text-dark/40">{employmentLabel(job.employmentType)}</span>
+                          {compensationLabel(job) && (
+                            <span className="font-sans text-[14px] text-dark/40">{compensationLabel(job)}</span>
+                          )}
                           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-dark/30 group-hover:text-accent-orange group-hover:translate-x-1 transition-all">
                             <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                           </svg>
