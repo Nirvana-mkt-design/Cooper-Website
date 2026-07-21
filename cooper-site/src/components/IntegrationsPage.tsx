@@ -7,22 +7,24 @@
      · Which systems does it connect to?   → Directory + "Fits your stack"
      · How does the data actually move?     → "How it works" (3 steps)
      · Is my data safe?                     → "Secure by default"
-     · What's required / how long?          → "Live in days"
      · What do I get out of it?             → "What changes"
+   Clicking any integration opens a full detail modal (two-column,
+   Intercom-style); the directory also lets prospects request a system
+   we don't list yet.
    Visual language matches the Home integrations section and the site
    design system (serif / grotesk / cream / accent-orange).
 ─────────────────────────────────────────────────────────────── */
 
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Plugs, Waveform, ArrowsClockwise, EnvelopeSimple, Table,
   Browser, Database, FileText, ShieldCheck, LockKey, Detective,
-  Prohibit, ArrowRight,
+  Prohibit, ArrowRight, Plus, X, Check, Lightning,
 } from '@phosphor-icons/react'
+import type { Icon } from '@phosphor-icons/react'
 import Navbar from './Navbar'
 import Footer from './Footer'
-import CarrierWall from './CarrierWall'
 import { useSeo } from '../lib/useSeo'
 import { pageJsonLd } from '../lib/pageSchema'
 
@@ -52,48 +54,280 @@ function Reveal({ children, delay = 0 }: { children: React.ReactNode; delay?: nu
 }
 
 /* ══════════════════════════════════════════════════════════════
-   DATA
+   INTEGRATION DATA
+
+   Each integration references a category template (below) that
+   generates its copy from the system name, so the detail modal stays
+   rich without hand-writing every field 26 times. Marks are a logo
+   image or a coloured monogram tile (for long-tail insurance tools
+   with no clean public brand SVG).
    ══════════════════════════════════════════════════════════════ */
 
-/* Featured "insurance stacks" — the systems teams live in all day. */
-type Featured = { name: string; cat: string; img: string }
-const FEATURED: Featured[] = [
-  { name: 'Applied Epic', cat: 'Agency management', img: '/images/logo-epic.webp' },
-  { name: 'AMS360', cat: 'Agency management', img: '/images/logo-ams360.webp' },
-  { name: 'Salesforce', cat: 'CRM', img: '/images/logo-salesforce.webp' },
-  { name: 'Microsoft Outlook', cat: 'Email', img: '/images/logo-outlook.webp' },
-  { name: 'Microsoft Teams', cat: 'Collaboration', img: '/images/logo-teams.png' },
+/* Shared Cooper capabilities — the "Works with" list in the modal. */
+type CapKey = 'read' | 'sync' | 'automate' | 'secure'
+const CAPS: Record<CapKey, { icon: Icon; label: string; sub: string }> = {
+  read:     { icon: Waveform,        label: 'Reads documents', sub: 'Turns any format into structured, checked data' },
+  sync:     { icon: ArrowsClockwise, label: 'Two-way sync',    sub: 'Writes results back to your system of record' },
+  automate: { icon: Lightning,       label: 'Automations',     sub: 'Runs as a step in your existing workflows' },
+  secure:   { icon: LockKey,         label: 'Secure access',   sub: 'OAuth or keys, with the permissions you grant' },
+}
+
+type Tpl = {
+  cat: string
+  cats: string[]
+  tagline: (n: string) => string
+  overview: (n: string) => string
+  does: (n: string) => string[]
+  caps: CapKey[]
+}
+
+const TPL: Record<string, Tpl> = {
+  ams: {
+    cat: 'Agency management',
+    cats: ['Agency management', 'System of record', 'Two-way sync'],
+    tagline: (n) => `Keep ${n}, your book of record, accurate both ways.`,
+    overview: (n) => `Cooper connects directly to ${n}, the system your agency runs on all day. It reads account, policy, and activity data, and writes structured results back, so your records stay current without anyone re-keying them.`,
+    does: (n) => [
+      `Pulls accounts, policies, and activities straight from ${n}`,
+      'Files documents and logs activity automatically',
+      'Writes updates back so nothing is entered twice',
+    ],
+    caps: ['read', 'sync', 'automate', 'secure'],
+  },
+  crm: {
+    cat: 'CRM',
+    cats: ['CRM', 'Sales', 'Two-way sync'],
+    tagline: (n) => `Keep ${n} current without manual data entry.`,
+    overview: (n) => `Cooper syncs with ${n} so your pipeline reflects the real work. Contacts, companies, and deals stay up to date, and activity is logged automatically from what your team actually does, not from someone remembering to type it in.`,
+    does: () => [
+      'Syncs contacts, companies, and deals',
+      'Logs activity from real work, no manual notes',
+      'Connects records to the documents behind each deal',
+    ],
+    caps: ['sync', 'automate', 'secure'],
+  },
+  email: {
+    cat: 'Email',
+    cats: ['Email', 'Intake', 'Automations'],
+    tagline: () => `Cooper watches your inbox and acts on what lands there.`,
+    overview: (n) => `Cooper monitors shared ${n} inboxes, reads submissions, ACORDs, and attachments as they arrive, routes each one to the right workflow, and files the reply, so nothing sits unread and nothing gets lost in a thread.`,
+    does: () => [
+      'Reads submissions and attachments as they arrive',
+      'Routes each email to the right workflow',
+      'Drafts and files replies inside your process',
+    ],
+    caps: ['read', 'automate', 'secure'],
+  },
+  collab: {
+    cat: 'Collaboration',
+    cats: ['Collaboration', 'Notifications'],
+    tagline: () => `Cooper works where your team already talks.`,
+    overview: (n) => `Cooper plugs into ${n} so updates, handoffs, and account context show up in the channels your team already uses. No new tool to check, and no context lost between systems.`,
+    does: () => [
+      'Shares updates and hands off work in channels',
+      'Surfaces documents and account context on demand',
+      'Keeps everyone on the same version',
+    ],
+    caps: ['automate', 'secure'],
+  },
+  docs: {
+    cat: 'Documents',
+    cats: ['Documents', 'Storage', 'Reads documents'],
+    tagline: () => `Cooper reads and files documents where they already live.`,
+    overview: (n) => `Cooper reads documents stored in ${n}, ACORDs, policies, loss runs, in any format, turns them into structured data, and files results back into the right place automatically, so your team stops copying files between tools.`,
+    does: (n) => [
+      `Reads files directly from ${n}`,
+      'Turns documents into structured, checked data',
+      'Files results back where they belong',
+    ],
+    caps: ['read', 'sync', 'secure'],
+  },
+  sheets: {
+    cat: 'Spreadsheets',
+    cats: ['Spreadsheets', 'Bordereaux', 'Loss runs'],
+    tagline: () => `Bordereaux and loss runs in any layout, parsed and reconciled.`,
+    overview: (n) => `Cooper reads spreadsheets from ${n} in any layout, schedules, bordereaux, and loss runs, then cleans, reconciles, and keeps the data consistent, so you can actually trust the numbers you're comparing.`,
+    does: () => [
+      'Reads schedules, bordereaux, and loss runs',
+      'Reconciles and cleans the data automatically',
+      'Keeps one consistent, comparable view',
+    ],
+    caps: ['read', 'sync', 'secure'],
+  },
+  slides: {
+    cat: 'Presentations',
+    cats: ['Presentations', 'Reporting'],
+    tagline: () => `Cooper reads and drafts decks from your data.`,
+    overview: (n) => `Cooper pulls content from ${n} and drafts formatted slides from the data it already has on the account, so reports, reviews, and renewals come together in minutes instead of an afternoon.`,
+    does: () => [
+      'Pulls content from existing decks',
+      'Drafts formatted slides from your data',
+      'Keeps presentations consistent with the source',
+    ],
+    caps: ['read', 'automate'],
+  },
+  core: {
+    cat: 'Core system',
+    cats: ['Core system', 'Policy', 'Two-way sync'],
+    tagline: (n) => `Cooper reads and updates policy data in ${n}.`,
+    overview: (n) => `Cooper connects to ${n} to read policy, billing, and claim data and sync structured results back into the core system, so everything downstream stays consistent with your source of truth.`,
+    does: () => [
+      'Pulls policy, billing, and claim data',
+      'Syncs structured results back into the core system',
+      'Keeps downstream systems in step',
+    ],
+    caps: ['read', 'sync', 'secure'],
+  },
+  automation: {
+    cat: 'Automation',
+    cats: ['Automation', 'Workflows'],
+    tagline: (n) => `Connect Cooper to thousands of apps through ${n}.`,
+    overview: (n) => `Cooper triggers from, and sends structured output to, anything ${n} reaches, so you can wire it into the tools you already automate without writing or maintaining custom code.`,
+    does: (n) => [
+      'Triggers Cooper from the tools you already automate',
+      `Sends structured output anywhere ${n} reaches`,
+      'No custom code to build or maintain',
+    ],
+    caps: ['automate', 'sync'],
+  },
+  data: {
+    cat: 'Data',
+    cats: ['Data', 'Database', 'Two-way sync'],
+    tagline: (n) => `Cooper reads and writes to your ${n} database.`,
+    overview: (n) => `Cooper queries your ${n} database where it lives and writes structured results back on a schedule, so your warehouse and Cooper stay in sync without an export-import dance.`,
+    does: () => [
+      'Queries your data where it lives',
+      'Writes structured results back on a schedule',
+      'Keeps your database and Cooper in sync',
+    ],
+    caps: ['read', 'sync', 'secure'],
+  },
+  pm: {
+    cat: 'Project management',
+    cats: ['Project management', 'Tasks', 'Automations'],
+    tagline: (n) => `Cooper keeps work moving in ${n}.`,
+    overview: (n) => `Cooper creates and updates tasks in ${n} from real activity and keeps status in sync with your process, so work doesn't fall through the cracks between systems.`,
+    does: () => [
+      'Creates and updates tasks from real activity',
+      'Keeps status in sync with your process',
+      'Nothing falls through the cracks',
+    ],
+    caps: ['automate', 'sync'],
+  },
+  risk: {
+    cat: 'Risk management',
+    cats: ['Risk management', 'Policy', 'Claims'],
+    tagline: (n) => `Cooper connects to ${n} for policy and claims data.`,
+    overview: (n) => `Cooper reads risk, policy, and claims records from ${n} and syncs structured output back automatically, keeping your system of record current as accounts move.`,
+    does: () => [
+      'Reads risk, policy, and claims records',
+      'Syncs structured output back automatically',
+      'Keeps your system of record current',
+    ],
+    caps: ['read', 'sync', 'secure'],
+  },
+  lossrun: {
+    cat: 'Loss runs',
+    cats: ['Loss runs', 'Data extraction'],
+    tagline: (n) => `Cooper reads and normalizes loss runs from ${n}.`,
+    overview: (n) => `Cooper extracts loss data from ${n} in any format and normalizes it into one consistent, comparable view, so you can compare accounts and carriers without reformatting a thing.`,
+    does: () => [
+      'Extracts loss data from any format',
+      'Normalizes it into one comparable view',
+      'Ready to compare across accounts and carriers',
+    ],
+    caps: ['read', 'sync'],
+  },
+  claims: {
+    cat: 'Claims',
+    cats: ['Claims', 'Payments', 'Two-way sync'],
+    tagline: (n) => `Cooper connects to ${n} for claims and payments data.`,
+    overview: (n) => `Cooper reads claim status and documents from ${n} and keeps your system of record in step, so claims data isn't stuck in a silo away from the rest of the account.`,
+    does: () => [
+      'Reads claim status and documents',
+      'Keeps your system of record in step',
+      'No more siloed claims data',
+    ],
+    caps: ['read', 'sync', 'secure'],
+  },
+}
+
+type Base = {
+  name: string
+  tpl: keyof typeof TPL
+  img?: string
+  mono?: string
+  color?: string
+  featured?: boolean
+}
+
+const INTEGRATIONS: Base[] = [
+  /* ── Featured five ── */
+  { name: 'Applied Epic', tpl: 'ams', featured: true, img: '/images/logo-epic.webp' },
+  { name: 'AMS360', tpl: 'ams', featured: true, img: '/images/logo-ams360.webp' },
+  { name: 'Salesforce', tpl: 'crm', featured: true, img: '/images/logo-salesforce.webp' },
+  { name: 'Microsoft Outlook', tpl: 'email', featured: true, img: '/images/logo-outlook.webp' },
+  { name: 'Microsoft Teams', tpl: 'collab', featured: true, img: '/images/logo-teams.png' },
+
+  /* ── The wider directory ── */
+  { name: 'EZLynx', tpl: 'ams', img: '/images/chips/ezlynx.png' },
+  { name: 'HawkSoft', tpl: 'ams', img: '/images/logo-hawksoft.webp' },
+  { name: 'Guidewire', tpl: 'core', img: '/images/logo-guidewire.svg' },
+  { name: 'Gmail', tpl: 'email', img: '/images/logo-gmail.webp' },
+  { name: 'Google Docs', tpl: 'docs', img: '/images/logo-docs.webp' },
+  { name: 'SharePoint', tpl: 'docs', img: '/images/logo-sharepoint.webp' },
+  { name: 'OneDrive', tpl: 'docs', img: '/images/logo-onedrive.png' },
+  { name: 'Dropbox', tpl: 'docs', img: '/images/logo-dropbox.webp' },
+  { name: 'Slack', tpl: 'collab', img: '/images/logo-slack.webp' },
+  { name: 'HubSpot', tpl: 'crm', img: '/images/chips/hubspot.png' },
+  { name: 'Excel', tpl: 'sheets', img: '/images/logo-excel.svg' },
+  { name: 'PowerPoint', tpl: 'slides', img: '/images/logo-powerpoint.svg' },
+  { name: 'Adobe PDF', tpl: 'docs', img: '/images/logo-adobepdf.svg' },
+  { name: 'Google Slides', tpl: 'slides', img: '/images/logo-gslides.svg' },
+  { name: 'Google Sheets', tpl: 'sheets', img: '/images/logo-gsheets.svg' },
+  { name: 'Zapier', tpl: 'automation', img: '/images/logo-zapier.svg' },
+  { name: 'PostgreSQL', tpl: 'data', img: '/images/logo-postgresql.svg' },
+  { name: 'ClickUp', tpl: 'pm', img: '/images/logo-clickup.svg' },
+  // Long-tail insurance tools with no clean public brand SVG — monogram tiles.
+  { name: 'Origami Risk', tpl: 'risk', mono: 'OR', color: '#1FA37C' },
+  { name: 'Loss Run Pro', tpl: 'lossrun', mono: 'LR', color: '#CF6A2E' },
+  { name: 'Snapsheet', tpl: 'claims', mono: 'S', color: '#0FB5A5' },
 ]
 
-/* The wider directory. Marks are either a logo image or a coloured
-   monogram tile (matching Amar's file for systems without a local asset). */
-type Cell =
-  | { name: string; img: string }
-  | { name: string; mono: string; color: string }
-const DIRECTORY: Cell[] = [
-  { name: 'EZLynx', img: '/images/chips/ezlynx.png' },
-  { name: 'HawkSoft', img: '/images/logo-hawksoft.webp' },
-  { name: 'Guidewire', img: '/images/logo-guidewire.svg' },
-  { name: 'Gmail', img: '/images/logo-gmail.webp' },
-  { name: 'Google Docs', img: '/images/logo-docs.webp' },
-  { name: 'SharePoint', img: '/images/logo-sharepoint.webp' },
-  { name: 'OneDrive', img: '/images/logo-onedrive.png' },
-  { name: 'Dropbox', img: '/images/logo-dropbox.webp' },
-  { name: 'Slack', img: '/images/logo-slack.webp' },
-  { name: 'HubSpot', img: '/images/chips/hubspot.png' },
-  { name: 'Excel', img: '/images/logo-excel.svg' },
-  { name: 'PowerPoint', img: '/images/logo-powerpoint.svg' },
-  { name: 'Adobe PDF', img: '/images/logo-adobepdf.svg' },
-  { name: 'Google Slides', img: '/images/logo-gslides.svg' },
-  { name: 'Google Sheets', img: '/images/logo-gsheets.svg' },
-  { name: 'Zapier', img: '/images/logo-zapier.svg' },
-  { name: 'PostgreSQL', img: '/images/logo-postgresql.svg' },
-  { name: 'ClickUp', img: '/images/logo-clickup.svg' },
-  // Long-tail insurance tools with no clean public brand SVG — kept as
-  // coloured monogram tiles (same as Amar's original file).
-  { name: 'Origami Risk', mono: 'OR', color: '#1FA37C' },
-  { name: 'Loss Run Pro', mono: 'LR', color: '#CF6A2E' },
-  { name: 'Snapsheet', mono: 'S', color: '#0FB5A5' },
+/* Fully-expanded integration used by cards + modal. */
+type Integration = Base & {
+  cat: string
+  cats: string[]
+  tagline: string
+  overview: string
+  does: string[]
+  caps: CapKey[]
+}
+function expand(b: Base): Integration {
+  const t = TPL[b.tpl]
+  return {
+    ...b,
+    cat: t.cat,
+    cats: t.cats,
+    tagline: t.tagline(b.name),
+    overview: t.overview(b.name),
+    does: t.does(b.name),
+    caps: t.caps,
+  }
+}
+
+const ALL = INTEGRATIONS.map(expand)
+const FEATURED = ALL.filter((i) => i.featured)
+const DIRECTORY = ALL.filter((i) => !i.featured)
+
+/* Small marks that "stream in" beside the hero count. */
+const STREAM_LOGOS = [
+  '/images/logo-outlook.webp',
+  '/images/logo-salesforce.webp',
+  '/images/logo-slack.webp',
+  '/images/logo-excel.svg',
+  '/images/logo-gsheets.svg',
+  '/images/logo-zapier.svg',
 ]
 
 /* How the data actually moves — the question the logo wall never answers. */
@@ -140,13 +374,6 @@ const BADGES = [
   { label: 'RBAC & audit logs', icon: '/images/icon-audit.webp' },
 ]
 
-/* "What's required / how long?" */
-const SETUP = [
-  { step: '01', title: 'Connect in one session', body: 'Most teams are live in days, not a quarter. No servers to stand up, no data migration.' },
-  { step: '02', title: 'Cooper maps your workflow', body: 'We tune Cooper to how your team actually works, your forms, your carriers, your rules.' },
-  { step: '03', title: 'Keep your process', body: 'No rip and replace. Cooper works alongside the tools you already have, not instead of them.' },
-]
-
 /* "What do I get out of it?" */
 const OUTCOMES = [
   { stat: 'No', unit: 'double entry', body: 'Data flows both ways, so nobody re-keys the same submission into three systems.' },
@@ -158,20 +385,22 @@ const OUTCOMES = [
    SMALL PIECES
    ══════════════════════════════════════════════════════════════ */
 
-function DirectoryMark({ item, size }: { item: Cell; size: 'sm' | 'lg' }) {
-  const box = size === 'lg' ? 'w-[60px] h-[60px] rounded-[15px]' : 'w-[36px] h-[36px] rounded-[9px]'
-  if ('img' in item) {
+function Mark({ item, size }: { item: Base; size: 'sm' | 'lg' | 'xl' }) {
+  const box =
+    size === 'xl' ? 'w-[86px] h-[86px] rounded-[20px]'
+    : size === 'lg' ? 'w-[60px] h-[60px] rounded-[15px]'
+    : 'w-[36px] h-[36px] rounded-[9px]'
+  const pad = size === 'xl' ? 'p-[16px]' : size === 'lg' ? 'p-[11px]' : 'p-[6px]'
+  const mono = size === 'xl' ? 'text-[26px]' : size === 'lg' ? 'text-[18px]' : 'text-[12px]'
+  if (item.img) {
     return (
-      <span className={`grid place-items-center overflow-hidden bg-white border border-dark/[0.06] ${box} ${size === 'lg' ? 'p-[11px]' : 'p-[6px]'}`}>
+      <span className={`grid shrink-0 place-items-center overflow-hidden bg-white border border-dark/[0.06] ${box} ${pad}`}>
         <img src={item.img} alt="" loading="lazy" className="max-w-full max-h-full object-contain" />
       </span>
     )
   }
   return (
-    <span
-      className={`grid place-items-center font-grotesk font-bold text-white ${box} ${size === 'lg' ? 'text-[18px]' : 'text-[12px]'}`}
-      style={{ background: item.color }}
-    >
+    <span className={`grid shrink-0 place-items-center font-grotesk font-bold text-white ${box} ${mono}`} style={{ background: item.color }}>
       {item.mono}
     </span>
   )
@@ -180,7 +409,7 @@ function DirectoryMark({ item, size }: { item: Cell; size: 'sm' | 'lg' }) {
 function SectionHead({ eyebrow, title, sub, dark = false }: { eyebrow: string; title: string; sub?: string; dark?: boolean }) {
   return (
     <div className="max-w-[680px]">
-      <p className={`mb-[16px] font-grotesk text-[13px] font-medium uppercase tracking-[1.6px] ${dark ? 'text-accent-orange' : 'text-accent-orange'}`}>
+      <p className="mb-[16px] font-grotesk text-[13px] font-medium uppercase tracking-[1.6px] text-accent-orange">
         {eyebrow}
       </p>
       <h2 className={`font-serif text-[30px] leading-[1.14] md:text-[38px] lg:text-[42px] ${dark ? 'text-cream-light' : 'text-dark'}`}>
@@ -192,6 +421,328 @@ function SectionHead({ eyebrow, title, sub, dark = false }: { eyebrow: string; t
         </p>
       )}
     </div>
+  )
+}
+
+/* ── Shared modal shell — dark overlay + centered cream panel.
+   Closes on Escape, overlay click, and the X button. ── */
+function ModalShell({ onClose, children, labelledBy, wide = false }: {
+  onClose: () => void; children: React.ReactNode; labelledBy: string; wide?: boolean
+}) {
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) { if (e.key === 'Escape') onClose() }
+    document.addEventListener('keydown', onKey)
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.body.style.overflow = prev
+    }
+  }, [onClose])
+
+  return (
+    <div
+      className="animate-overlay-in fixed inset-0 z-[100] flex items-end justify-center bg-dark/50 p-0 backdrop-blur-[3px] sm:items-center sm:p-6"
+      onClick={onClose}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={labelledBy}
+        onClick={(e) => e.stopPropagation()}
+        className={`animate-modal-in relative flex max-h-[92vh] w-full flex-col overflow-hidden rounded-t-[20px] border border-dark/10 bg-cream-light shadow-[0_40px_120px_-40px_rgba(30,26,21,0.6)] sm:rounded-[20px] ${wide ? 'max-w-[1000px]' : 'max-w-[560px]'}`}
+      >
+        <button
+          onClick={onClose}
+          aria-label="Close"
+          className="absolute right-[16px] top-[16px] z-10 grid h-[34px] w-[34px] place-items-center rounded-full border border-dark/10 bg-cream-light text-dark/50 transition-colors hover:bg-cream hover:text-dark"
+        >
+          <X size={17} weight="bold" />
+        </button>
+        {children}
+      </div>
+    </div>
+  )
+}
+
+/* ── Integration detail modal — two columns, Intercom-style ── */
+function IntegrationModal({ item, onClose }: { item: Integration; onClose: () => void }) {
+  return (
+    <ModalShell onClose={onClose} labelledBy="integ-modal-title" wide>
+      {/* Header band */}
+      <div className="shrink-0 border-b border-dark/[0.08] bg-cream px-[26px] py-[26px] sm:px-[38px] sm:py-[30px]">
+        <div className="flex items-start gap-[20px] pr-[40px]">
+          <Mark item={item} size="xl" />
+          <div className="pt-[2px]">
+            <h3 id="integ-modal-title" className="font-serif text-[27px] leading-[1.08] text-dark sm:text-[30px]">
+              {item.name}
+            </h3>
+            <p className="mt-[7px] font-sans text-[15.5px] leading-[1.4] text-dark/60">{item.tagline}</p>
+            <div className="mt-[13px] flex flex-wrap items-center gap-x-[16px] gap-y-[6px]">
+              <span className="inline-flex items-center gap-[6px] font-grotesk text-[11.5px] font-medium uppercase tracking-[0.9px] text-dark/50">
+                <img src="/images/cooper-icon.svg" alt="" className="h-[14px] w-[14px]" /> Native to Cooper
+              </span>
+              <span className="inline-flex items-center gap-[5px] font-grotesk text-[11.5px] font-medium uppercase tracking-[0.9px] text-accent-orange">
+                <Check size={13} weight="bold" /> Included
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Two-column body */}
+      <div className="grid flex-1 overflow-y-auto md:grid-cols-[1fr_308px]">
+        {/* Main column */}
+        <div className="px-[26px] py-[26px] sm:px-[38px] sm:py-[32px] md:border-r md:border-dark/[0.08]">
+          <p className="font-sans text-[16px] leading-[1.62] text-dark/75">{item.overview}</p>
+
+          <p className="mb-[14px] mt-[28px] font-grotesk text-[12px] font-medium uppercase tracking-[1.4px] text-dark/40">
+            What Cooper does here
+          </p>
+          <ul className="flex flex-col gap-[13px]">
+            {item.does.map((d) => (
+              <li key={d} className="flex items-start gap-[12px]">
+                <span className="mt-[1px] grid h-[22px] w-[22px] shrink-0 place-items-center rounded-full bg-accent-orange/10 text-accent-orange">
+                  <Check size={13} weight="bold" />
+                </span>
+                <span className="font-sans text-[15px] leading-[1.5] text-dark/70">{d}</span>
+              </li>
+            ))}
+          </ul>
+
+          {/* Highlight card */}
+          <div className="mt-[28px] rounded-[14px] border border-dark/[0.08] bg-cream p-[22px]">
+            <div className="mb-[12px] flex items-center gap-[10px]">
+              <span className="grid h-[30px] w-[30px] place-items-center rounded-[8px] bg-accent-orange/12 text-accent-orange">
+                <Plugs size={17} weight="regular" />
+              </span>
+              <span className="font-serif text-[17px] text-dark">Set up once, then it runs</span>
+            </div>
+            <p className="font-sans text-[14px] leading-[1.55] text-dark/55">
+              Most teams connect {item.name} in a single session, no IT project, no data migration. Cooper works
+              alongside it, not instead of it, so your team keeps the process they know.
+            </p>
+          </div>
+        </div>
+
+        {/* Sidebar */}
+        <aside className="bg-cream-light px-[26px] py-[26px] sm:px-[30px] sm:py-[32px]">
+          <Link
+            to="/demo"
+            className="mb-[8px] inline-flex w-full items-center justify-center rounded-[8px] bg-dark px-[22px] py-[13px] font-sans text-[15px] font-medium text-cream-light no-underline transition-all duration-200 hover:scale-[1.02]"
+          >
+            Request a Demo
+          </Link>
+          <p className="mb-[26px] text-center font-sans text-[12.5px] text-dark/45">
+            See it on your own {item.name} data
+          </p>
+
+          <p className="mb-[14px] font-grotesk text-[12px] font-medium uppercase tracking-[1.2px] text-dark/40">
+            Works with
+          </p>
+          <ul className="flex flex-col gap-[16px]">
+            {item.caps.map((k) => {
+              const c = CAPS[k]
+              const CapIcon = c.icon
+              return (
+                <li key={k} className="flex gap-[11px]">
+                  <span className="mt-[1px] grid h-[26px] w-[26px] shrink-0 place-items-center rounded-[7px] bg-dark/[0.05] text-dark/65">
+                    <CapIcon size={15} weight="regular" />
+                  </span>
+                  <div>
+                    <div className="font-sans text-[14px] font-medium text-dark">{c.label}</div>
+                    <div className="font-sans text-[12.5px] leading-[1.4] text-dark/45">{c.sub}</div>
+                  </div>
+                </li>
+              )
+            })}
+          </ul>
+
+          <p className="mb-[12px] mt-[26px] font-grotesk text-[12px] font-medium uppercase tracking-[1.2px] text-dark/40">
+            Categories
+          </p>
+          <div className="flex flex-wrap gap-[7px]">
+            {item.cats.map((c) => (
+              <span key={c} className="rounded-full border border-dark/10 bg-cream-light px-[11px] py-[4px] font-sans text-[12.5px] text-dark/60">
+                {c}
+              </span>
+            ))}
+          </div>
+
+          <div className="mt-[26px] flex flex-col items-start gap-[9px] border-t border-dark/[0.08] pt-[18px]">
+            <button
+              type="button"
+              onClick={() => { onClose(); requestAnimationFrame(() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })) }}
+              className="font-sans text-[13.5px] text-dark/55 no-underline transition-colors hover:text-accent-orange"
+            >
+              See how the data moves
+            </button>
+            <a href="mailto:support@askcooper.ai?subject=Integration%20question" className="font-sans text-[13.5px] text-dark/55 no-underline transition-colors hover:text-accent-orange">
+              Questions about {item.name}?
+            </a>
+          </div>
+        </aside>
+      </div>
+    </ModalShell>
+  )
+}
+
+/* ── "Tell us what to connect" request modal ──
+   Captures the system name + a work email and posts to the same lead
+   endpoint the demo form uses (system carried in the message field).
+   On failure it falls back to a prefilled mailto so a lead is never lost. */
+const PERSONAL_EMAIL_DOMAINS = new Set([
+  'gmail.com', 'googlemail.com', 'yahoo.com', 'yahoo.co.uk', 'yahoo.co.in',
+  'hotmail.com', 'hotmail.co.uk', 'outlook.com', 'live.com', 'msn.com',
+  'icloud.com', 'me.com', 'mac.com', 'aol.com', 'protonmail.com',
+  'proton.me', 'pm.me', 'zoho.com', 'yandex.com', 'yandex.ru',
+  'mail.com', 'gmx.com', 'gmx.net', 'inbox.com',
+])
+function isWorkEmail(email: string): boolean {
+  const domain = email.split('@')[1]?.toLowerCase()
+  if (!domain) return false
+  return !PERSONAL_EMAIL_DOMAINS.has(domain)
+}
+
+type ReqState = 'idle' | 'submitting' | 'success' | 'error'
+
+function ConnectRequestModal({ onClose }: { onClose: () => void }) {
+  const [system, setSystem] = useState('')
+  const [email, setEmail] = useState('')
+  const [note, setNote] = useState('')
+  const [systemError, setSystemError] = useState('')
+  const [emailError, setEmailError] = useState('')
+  const [state, setState] = useState<ReqState>('idle')
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    let valid = true
+    if (!system.trim()) { setSystemError('Please name the system.'); valid = false }
+    if (!isWorkEmail(email)) { setEmailError('Please use a work email address.'); valid = false }
+    if (!valid) return
+    setSystemError(''); setEmailError('')
+    setState('submitting')
+
+    const messageParts = [`Integration request: ${system.trim()}`]
+    if (note.trim()) messageParts.push(note.trim())
+    const payload = {
+      first_name: 'Integration',
+      last_name: 'Request',
+      email,
+      phone: '',
+      message: messageParts.join('\n\n'),
+      event_source_url: window.location.href,
+    }
+    try {
+      const res = await fetch('https://api.askcooper.ai/api/v1/demo-requests/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      setState('success')
+    } catch {
+      setState('error')
+    }
+  }
+
+  return (
+    <ModalShell onClose={onClose} labelledBy="connect-modal-title">
+      <div className="overflow-y-auto p-[28px] sm:p-[34px]">
+        {state === 'success' ? (
+          <div className="py-[10px] text-center">
+            <span className="mx-auto mb-[18px] grid h-[52px] w-[52px] place-items-center rounded-full bg-accent-orange/12 text-accent-orange">
+              <Check size={26} weight="bold" />
+            </span>
+            <h3 id="connect-modal-title" className="font-serif text-[24px] leading-[1.15] text-dark">
+              Thanks, we're on it
+            </h3>
+            <p className="mx-auto mt-[12px] max-w-[360px] font-sans text-[15px] leading-[1.55] text-dark/55">
+              We'll look at connecting <span className="font-medium text-dark">{system.trim()}</span> and follow up at your email.
+            </p>
+            <button
+              onClick={onClose}
+              className="mt-[24px] inline-flex items-center rounded-[6px] bg-dark px-[24px] py-[12px] font-sans text-[15px] font-medium text-cream-light transition-all duration-200 hover:scale-[1.03]"
+            >
+              Done
+            </button>
+          </div>
+        ) : (
+          <>
+            <div className="pr-[40px]">
+              <p className="mb-[12px] font-grotesk text-[12px] font-medium uppercase tracking-[1.4px] text-accent-orange">
+                Request an integration
+              </p>
+              <h3 id="connect-modal-title" className="font-serif text-[26px] leading-[1.1] text-dark">
+                Tell us what to connect
+              </h3>
+              <p className="mt-[12px] font-sans text-[15px] leading-[1.55] text-dark/55">
+                Name the system your team lives in and we'll wire Cooper to it. We'll follow up at your email.
+              </p>
+            </div>
+
+            <form onSubmit={handleSubmit} className="mt-[24px] flex flex-col gap-[16px]" noValidate>
+              <label className="flex flex-col gap-[7px]">
+                <span className="font-grotesk text-[12px] font-medium uppercase tracking-[1px] text-dark/45">System</span>
+                <input
+                  type="text"
+                  value={system}
+                  onChange={(e) => { setSystem(e.target.value); if (systemError) setSystemError('') }}
+                  placeholder="e.g. Vertafore, ImageRight, NetSuite"
+                  className="rounded-[8px] border border-dark/15 bg-cream-light px-[14px] py-[11px] font-sans text-[15px] text-dark outline-none transition-colors placeholder:text-dark/30 focus:border-accent-orange"
+                />
+                {systemError && <span className="font-sans text-[12.5px] text-accent-red">{systemError}</span>}
+              </label>
+
+              <label className="flex flex-col gap-[7px]">
+                <span className="font-grotesk text-[12px] font-medium uppercase tracking-[1px] text-dark/45">Work email</span>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => { setEmail(e.target.value); if (emailError) setEmailError('') }}
+                  placeholder="you@company.com"
+                  className="rounded-[8px] border border-dark/15 bg-cream-light px-[14px] py-[11px] font-sans text-[15px] text-dark outline-none transition-colors placeholder:text-dark/30 focus:border-accent-orange"
+                />
+                {emailError && <span className="font-sans text-[12.5px] text-accent-red">{emailError}</span>}
+              </label>
+
+              <label className="flex flex-col gap-[7px]">
+                <span className="font-grotesk text-[12px] font-medium uppercase tracking-[1px] text-dark/45">
+                  Anything else <span className="normal-case tracking-normal text-dark/30">(optional)</span>
+                </span>
+                <textarea
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                  rows={2}
+                  placeholder="How your team uses it, what you'd want Cooper to do…"
+                  className="resize-none rounded-[8px] border border-dark/15 bg-cream-light px-[14px] py-[11px] font-sans text-[15px] text-dark outline-none transition-colors placeholder:text-dark/30 focus:border-accent-orange"
+                />
+              </label>
+
+              {state === 'error' && (
+                <p className="font-sans text-[13.5px] leading-[1.5] text-accent-red">
+                  Something went wrong. Please email us at{' '}
+                  <a
+                    href={`mailto:support@askcooper.ai?subject=${encodeURIComponent('Integration request')}&body=${encodeURIComponent(`System: ${system}\n\n${note}`)}`}
+                    className="font-semibold underline"
+                  >
+                    support@askcooper.ai
+                  </a>.
+                </p>
+              )}
+
+              <button
+                type="submit"
+                disabled={state === 'submitting'}
+                className="mt-[4px] inline-flex items-center justify-center rounded-[6px] bg-dark px-[24px] py-[13px] font-sans text-[15px] font-medium text-cream-light transition-all duration-200 hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {state === 'submitting' ? 'Sending…' : 'Send request'}
+              </button>
+            </form>
+          </>
+        )}
+      </div>
+    </ModalShell>
   )
 }
 
@@ -211,6 +762,9 @@ export default function IntegrationsPage() {
       description: 'How Cooper connects to the tools insurance teams already use.',
     }),
   })
+
+  const [active, setActive] = useState<Integration | null>(null)
+  const [connectOpen, setConnectOpen] = useState(false)
 
   return (
     <div className="min-h-screen bg-cream-light">
@@ -268,9 +822,29 @@ export default function IntegrationsPage() {
           {/* Bottom — count + CTAs (left), lede (right) */}
           <div className="mt-[64px] flex flex-col gap-[32px] lg:flex-row lg:items-end lg:justify-between">
             <div className="animate-fade-blur-in" style={{ animationDelay: '0.2s' }}>
-              <div className="mb-[24px] inline-flex items-center gap-[9px] font-grotesk text-[14px] font-medium text-cream-light">
-                <span className="rounded-full bg-accent-orange px-[11px] py-[3px] text-[13px] text-cream-light">20+</span>
-                integrations and counting
+              {/* Live count + logos streaming in ("and counting") */}
+              <div className="mb-[24px] flex items-center gap-[14px]">
+                <div className="inline-flex items-center gap-[9px] font-grotesk text-[14px] font-medium text-cream-light">
+                  <span className="rounded-full bg-accent-orange px-[11px] py-[3px] text-[13px] text-cream-light">20+</span>
+                  integrations and counting
+                </div>
+                <div className="hidden items-center sm:flex" aria-hidden>
+                  {STREAM_LOGOS.map((src, i) => (
+                    <span
+                      key={src}
+                      className="-ml-[9px] grid h-[30px] w-[30px] place-items-center rounded-full border border-cream-light/25 bg-cream-light shadow-[0_4px_14px_-6px_rgba(0,0,0,0.5)] first:ml-0"
+                      style={{ animation: `stream-in 6s ${i * 0.55}s ease-in-out infinite`, zIndex: i }}
+                    >
+                      <img src={src} alt="" className="h-[16px] w-[16px] object-contain" />
+                    </span>
+                  ))}
+                  <span
+                    className="-ml-[9px] grid h-[30px] w-[30px] place-items-center rounded-full bg-accent-orange text-cream-light"
+                    style={{ animation: 'stream-pulse 2.4s ease-in-out infinite', zIndex: STREAM_LOGOS.length }}
+                  >
+                    <Plus size={14} weight="bold" />
+                  </span>
+                </div>
               </div>
               <div className="flex flex-wrap items-center gap-[14px]">
                 <Link
@@ -338,7 +912,7 @@ export default function IntegrationsPage() {
             <SectionHead
               eyebrow="The directory"
               title="Built for insurance stacks"
-              sub="The systems agencies, brokers, MGAs, and carriers run on, ready out of the box."
+              sub="The systems agencies, brokers, MGAs, and carriers run on, ready out of the box. Tap any one to see what Cooper does with it."
             />
           </Reveal>
 
@@ -346,16 +920,18 @@ export default function IntegrationsPage() {
           <Reveal delay={80}>
             <div className="mt-[36px] grid grid-cols-2 gap-[14px] sm:grid-cols-3 lg:grid-cols-5">
               {FEATURED.map((f) => (
-                <div
+                <button
                   key={f.name}
-                  className="rounded-[16px] border border-dark/[0.09] bg-cream-light p-[24px_16px] text-center transition-transform duration-150 hover:-translate-y-[3px] hover:shadow-[0_18px_40px_-24px_rgba(30,26,21,0.5)]"
+                  type="button"
+                  onClick={() => setActive(f)}
+                  className="rounded-[16px] border border-dark/[0.09] bg-cream-light p-[24px_16px] text-center transition-transform duration-150 hover:-translate-y-[3px] hover:border-accent-orange hover:shadow-[0_18px_40px_-24px_rgba(30,26,21,0.5)]"
                 >
                   <span className="mx-auto mb-[15px] grid h-[60px] w-[60px] place-items-center overflow-hidden rounded-[15px] border border-dark/[0.06] bg-white p-[11px]">
                     <img src={f.img} alt="" loading="lazy" className="max-h-full max-w-full object-contain" />
                   </span>
                   <div className="font-sans text-[15px] font-semibold text-dark">{f.name}</div>
                   <div className="mt-[3px] font-sans text-[12.5px] text-dark/50">{f.cat}</div>
-                </div>
+                </button>
               ))}
             </div>
           </Reveal>
@@ -367,23 +943,31 @@ export default function IntegrationsPage() {
             </p>
             <div className="grid grid-cols-2 gap-[10px] sm:grid-cols-3 lg:grid-cols-4">
               {DIRECTORY.map((c) => (
-                <div
+                <button
                   key={c.name}
-                  className="group flex items-center gap-[12px] rounded-[12px] border border-dark/[0.09] bg-cream-light px-[14px] py-[12px] transition-colors hover:border-accent-orange"
+                  type="button"
+                  onClick={() => setActive(c)}
+                  className="group flex items-center gap-[12px] rounded-[12px] border border-dark/[0.09] bg-cream-light px-[14px] py-[12px] text-left transition-colors hover:border-accent-orange"
                 >
-                  <DirectoryMark item={c} size="sm" />
+                  <Mark item={c} size="sm" />
                   <span className="font-sans text-[14px] font-medium text-dark">{c.name}</span>
-                </div>
+                  <ArrowRight
+                    size={14}
+                    weight="bold"
+                    className="ml-auto text-dark/0 transition-colors group-hover:text-accent-orange"
+                  />
+                </button>
               ))}
             </div>
             <p className="mt-[26px] font-sans text-[15px] text-dark/55">
               Don't see your system?{' '}
-              <a
-                href="mailto:support@askcooper.ai?subject=Integration%20request"
+              <button
+                type="button"
+                onClick={() => setConnectOpen(true)}
                 className="inline-flex items-center gap-1 font-semibold text-accent-orange no-underline hover:underline"
               >
                 Tell us what to connect <ArrowRight size={15} weight="bold" />
-              </a>
+              </button>
             </p>
           </Reveal>
         </div>
@@ -475,30 +1059,6 @@ export default function IntegrationsPage() {
         </div>
       </section>
 
-      {/* ══════════════ SETUP / TIME TO VALUE ══════════════ */}
-      <section className="px-5 md:px-10 lg:px-[62px] py-[64px] lg:py-[88px]">
-        <div className="mx-auto max-w-[1080px]">
-          <Reveal>
-            <SectionHead
-              eyebrow="Live in days"
-              title="What's required, and how long it takes"
-              sub="No IT project. No new system for your team to learn. Cooper connects to what you already have."
-            />
-          </Reveal>
-          <Reveal delay={80}>
-            <div className="mt-[44px] grid gap-[16px] md:grid-cols-3">
-              {SETUP.map((s) => (
-                <div key={s.step} className="rounded-[16px] border border-dark/[0.09] bg-white/40 p-[28px]">
-                  <div className="mb-[16px] font-serif text-[34px] leading-none text-accent-orange">{s.step}</div>
-                  <h3 className="mb-[8px] font-serif text-[20px] text-dark">{s.title}</h3>
-                  <p className="font-sans text-[15px] leading-[1.55] text-dark/55">{s.body}</p>
-                </div>
-              ))}
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
       {/* ══════════════ OUTCOMES ══════════════ */}
       <section className="bg-cream px-5 md:px-10 lg:px-[62px] py-[64px] lg:py-[88px]">
         <div className="mx-auto max-w-[1080px]">
@@ -521,13 +1081,6 @@ export default function IntegrationsPage() {
               ))}
             </div>
           </Reveal>
-        </div>
-      </section>
-
-      {/* ══════════════ CUSTOMER WALL (visual consistency w/ Home) ══════════════ */}
-      <section className="px-5 md:px-10 lg:px-[62px] py-[40px] lg:py-[56px]">
-        <div className="mx-auto max-w-[1440px]">
-          <CarrierWall />
         </div>
       </section>
 
@@ -556,6 +1109,10 @@ export default function IntegrationsPage() {
       </section>
 
       <Footer />
+
+      {/* ══════════════ MODALS ══════════════ */}
+      {active && <IntegrationModal item={active} onClose={() => setActive(null)} />}
+      {connectOpen && <ConnectRequestModal onClose={() => setConnectOpen(false)} />}
     </div>
   )
 }
