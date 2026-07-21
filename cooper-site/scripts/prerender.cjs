@@ -37,6 +37,7 @@ const routes = [
     ogImage: `${ORIGIN}/images/og/${slug}.png`,
   })),
   { path: '/about', title: 'About Cooper — AI for Insurance Professionals', description: "Cooper's mission, team, and why we're building AI for insurance professionals.", ogImage: DEFAULT_OG },
+  { path: '/integrations', title: 'Integrations — Cooper', description: 'Cooper connects to the systems insurance teams already use: email, Excel, carrier portals, AMS/CRM, ACORD forms, and loss runs. See what connects, how the data moves, and how it stays secure.', ogImage: DEFAULT_OG },
   { path: '/demo', title: 'Request a Demo — Cooper', description: 'See Cooper in action with your own data. Book a personalized demo for your insurance team.', ogImage: DEFAULT_OG },
   { path: '/careers', title: 'Careers — Cooper', description: 'Join the team building AI for insurance professionals. See open roles at Cooper.', ogImage: DEFAULT_OG },
   { path: '/privacy', title: 'Privacy Policy — Cooper', description: 'How Cooper collects, uses, shares, and protects your personal information.', ogImage: DEFAULT_OG },

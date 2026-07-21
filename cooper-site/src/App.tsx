@@ -8,6 +8,7 @@ import OnePlatform from './components/OnePlatform'
 import Metrics from './components/Metrics'
 import BuiltForEveryRole from './components/BuiltForEveryRole'
 import Integrations from './components/Integrations'
+import IntegrationsPage from './components/IntegrationsPage'
 import SecurityCompliance from './components/SecurityCompliance'
 import FinalCTA from './components/FinalCTA'
 import Footer from './components/Footer'
@@ -126,6 +127,7 @@ export default function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/demo" element={<DemoPage />} />
         <Route path="/about" element={<AboutPage />} />
+        <Route path="/integrations" element={<IntegrationsPage />} />
         <Route path="/careers" element={<CareersPage />} />
         <Route path="/careers/:roleId" element={<CareerRolePage />} />
         {/* Reinsurers is pulled pre-launch (fast-follow rebuild): unreachable from

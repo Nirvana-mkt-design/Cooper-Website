@@ -111,6 +111,7 @@ const panels: Record<string, NavPanel> = {
 const navLinks = [
   { label: 'Product', hasDropdown: true },
   // { label: 'Customers', hasDropdown: false },
+  { label: 'Integrations', hasDropdown: false, href: '/integrations' },
   { label: 'About', hasDropdown: false, href: '/about' },
   /* Blog hidden for now — will be used later */
   // { label: 'Blog', hasDropdown: false },
