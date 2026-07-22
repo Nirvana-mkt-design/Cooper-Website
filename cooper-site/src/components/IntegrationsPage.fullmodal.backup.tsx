@@ -20,8 +20,9 @@ import { Link } from 'react-router-dom'
 import {
   Plugs, Waveform, ArrowsClockwise, EnvelopeSimple, Table,
   Browser, Database, FileText, ShieldCheck, LockKey, Detective,
-  Prohibit, ArrowRight, Plus, X, Check,
+  Prohibit, ArrowRight, Plus, X, Check, Lightning,
 } from '@phosphor-icons/react'
+import type { Icon } from '@phosphor-icons/react'
 import Navbar from './Navbar'
 import Footer from './Footer'
 import { useSeo } from '../lib/useSeo'
@@ -62,9 +63,14 @@ function Reveal({ children, delay = 0 }: { children: React.ReactNode; delay?: nu
    with no clean public brand SVG).
    ══════════════════════════════════════════════════════════════ */
 
-/* Cooper capability keys, kept on each integration for the fuller modal
-   (see IntegrationsPage.fullmodal.backup.tsx). */
+/* Shared Cooper capabilities — the "Works with" list in the modal. */
 type CapKey = 'read' | 'sync' | 'automate' | 'secure'
+const CAPS: Record<CapKey, { icon: Icon; label: string; sub: string }> = {
+  read:     { icon: Waveform,        label: 'Reads documents', sub: 'Turns any format into structured, checked data' },
+  sync:     { icon: ArrowsClockwise, label: 'Two-way sync',    sub: 'Writes results back to your system of record' },
+  automate: { icon: Lightning,       label: 'Automations',     sub: 'Runs as a step in your existing workflows' },
+  secure:   { icon: LockKey,         label: 'Secure access',   sub: 'OAuth or keys, with the permissions you grant' },
+}
 
 type Tpl = {
   cat: string
@@ -253,22 +259,15 @@ type Base = {
   mono?: string
   color?: string
   featured?: boolean
-  /* Amar's launch copy — the brief summary shown in the featured modal. */
-  summary?: string
 }
 
 const INTEGRATIONS: Base[] = [
-  /* ── Featured five (copy provided by Amar for launch) ── */
-  { name: 'Applied Epic', tpl: 'ams', featured: true, img: '/images/logo-epic.webp',
-    summary: 'Cooper looks up accounts, reads policy history, logs activities under your codes, and pulls renewal dates.' },
-  { name: 'AMS360', tpl: 'ams', featured: true, img: '/images/logo-ams360.webp',
-    summary: 'Cooper reads client records, policy terms, coverage history, prior premiums and expiration dates, and writes back directly.' },
-  { name: 'Salesforce', tpl: 'crm', featured: true, img: '/images/logo-salesforce.webp',
-    summary: 'Cooper reads pipeline status and account ownership, tracks renewal dates, and syncs custom fields back to Salesforce.' },
-  { name: 'Microsoft Outlook', tpl: 'email', featured: true, img: '/images/logo-outlook.webp',
-    summary: 'Cooper captures the intake, extracts attachments, surfaces tasks, and replies with the completed package.' },
-  { name: 'Microsoft Teams', tpl: 'collab', featured: true, img: '/images/logo-teams.png',
-    summary: 'Cooper posts run status, requests approvals, confirms completion, and initiates workflows in Teams.' },
+  /* ── Featured five ── */
+  { name: 'Applied Epic', tpl: 'ams', featured: true, img: '/images/logo-epic.webp' },
+  { name: 'AMS360', tpl: 'ams', featured: true, img: '/images/logo-ams360.webp' },
+  { name: 'Salesforce', tpl: 'crm', featured: true, img: '/images/logo-salesforce.webp' },
+  { name: 'Microsoft Outlook', tpl: 'email', featured: true, img: '/images/logo-outlook.webp' },
+  { name: 'Microsoft Teams', tpl: 'collab', featured: true, img: '/images/logo-teams.png' },
 
   /* ── The wider directory ── */
   { name: 'EZLynx', tpl: 'ams', img: '/images/chips/ezlynx.png' },
@@ -357,12 +356,12 @@ const STEPS = [
 /* "Does it fit my stack?" — the six surfaces named in the brief, with
    what Cooper actually does on each. */
 const SURFACES = [
-  { icon: EnvelopeSimple, title: 'Email', body: 'Watches shared inboxes, reads submissions and attachments, and routes them to the right workflow.' },
-  { icon: Table, title: 'Excel & sheets', body: 'Bordereaux, schedules, and loss runs in any layout, parsed, reconciled, and kept clean.' },
-  { icon: Browser, title: 'Carrier portals', body: 'Navigates carrier and MGA portals to pull quotes, documents, and status, no copy-paste.' },
-  { icon: Database, title: 'AMS / CRM', body: 'Two-way sync with your system of record, so records stay current without double entry.' },
-  { icon: FileText, title: 'ACORD forms', body: 'Reads and generates ACORD forms, prefilled from the data Cooper already has on the account.' },
-  { icon: FileText, title: 'Loss runs', body: 'Extracts and normalizes loss runs from any carrier format into one consistent, comparable view.' },
+  { icon: EnvelopeSimple, title: 'Email', body: 'Watches shared inboxes, reads submissions and attachments, and routes them to the right workflow.', tags: ['Outlook', 'Gmail'] },
+  { icon: Table, title: 'Excel & sheets', body: 'Bordereaux, schedules, and loss runs in any layout, parsed, reconciled, and kept clean.', tags: ['Excel', 'Google Sheets'] },
+  { icon: Browser, title: 'Carrier portals', body: 'Navigates carrier and MGA portals to pull quotes, documents, and status, no copy-paste.', tags: ['Portals', 'Downloads'] },
+  { icon: Database, title: 'AMS / CRM', body: 'Two-way sync with your system of record, so records stay current without double entry.', tags: ['Applied Epic', 'AMS360', 'Salesforce'] },
+  { icon: FileText, title: 'ACORD forms', body: 'Reads and generates ACORD forms, prefilled from the data Cooper already has on the account.', tags: ['ACORD 125', '140', '25'] },
+  { icon: FileText, title: 'Loss runs', body: 'Extracts and normalizes loss runs from any carrier format into one consistent, comparable view.', tags: ['Any carrier', 'Any format'] },
 ]
 
 /* Security guarantees. Badges mirror the Home Security & Compliance strip. */
@@ -569,47 +568,123 @@ function ModalShell({ onClose, children, labelledBy, wide = false }: {
   )
 }
 
-/* ── Integration detail modal — compact card with Amar's launch copy.
-   (A fuller two-column version is kept in IntegrationsPage.fullmodal.backup.tsx.) ── */
+/* ── Integration detail modal — two columns, Intercom-style ── */
 function IntegrationModal({ item, onClose }: { item: Integration; onClose: () => void }) {
   return (
-    <ModalShell onClose={onClose} labelledBy="integ-modal-title">
-      <div className="p-[28px] sm:p-[34px]">
-        {/* Header */}
-        <div className="flex items-start gap-[16px] pr-[40px]">
-          <Mark item={item} size="lg" />
-          <div className="pt-[3px]">
-            <h3 id="integ-modal-title" className="font-serif text-[24px] leading-[1.1] text-dark">
+    <ModalShell onClose={onClose} labelledBy="integ-modal-title" wide>
+      {/* Header band */}
+      <div className="shrink-0 border-b border-dark/[0.08] bg-cream px-[26px] py-[26px] sm:px-[38px] sm:py-[30px]">
+        <div className="flex items-start gap-[20px] pr-[40px]">
+          <Mark item={item} size="xl" />
+          <div className="pt-[2px]">
+            <h3 id="integ-modal-title" className="font-serif text-[27px] leading-[1.08] text-dark sm:text-[30px]">
               {item.name}
             </h3>
-            <div className="mt-[8px] flex flex-wrap items-center gap-[10px]">
-              <span className="rounded-full border border-dark/10 px-[10px] py-[3px] font-grotesk text-[11px] font-medium uppercase tracking-[0.8px] text-dark/50">
-                {item.cat}
+            <p className="mt-[7px] font-sans text-[15.5px] leading-[1.4] text-dark/60">{item.tagline}</p>
+            <div className="mt-[13px] flex flex-wrap items-center gap-x-[16px] gap-y-[6px]">
+              <span className="inline-flex items-center gap-[6px] font-grotesk text-[11.5px] font-medium uppercase tracking-[0.9px] text-dark/50">
+                <img src="/images/cooper-icon.svg" alt="" className="h-[14px] w-[14px]" /> Native to Cooper
               </span>
-              <span className="inline-flex items-center gap-[5px] font-grotesk text-[11.5px] font-medium uppercase tracking-[0.8px] text-accent-orange">
-                <Check size={13} weight="bold" /> Works with Cooper
+              <span className="inline-flex items-center gap-[5px] font-grotesk text-[11.5px] font-medium uppercase tracking-[0.9px] text-accent-orange">
+                <Check size={13} weight="bold" /> Included
               </span>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Amar's summary */}
-        <p className="mt-[22px] font-sans text-[16px] leading-[1.6] text-dark/70">
-          {item.summary ?? item.overview}
-        </p>
+      {/* Two-column body */}
+      <div className="grid flex-1 overflow-y-auto md:grid-cols-[1fr_308px]">
+        {/* Main column */}
+        <div className="px-[26px] py-[26px] sm:px-[38px] sm:py-[32px] md:border-r md:border-dark/[0.08]">
+          <p className="font-sans text-[16px] leading-[1.62] text-dark/75">{item.overview}</p>
 
-        {/* CTA */}
-        <div className="mt-[28px] flex flex-col gap-[12px] border-t border-dark/[0.08] pt-[22px] sm:flex-row sm:items-center sm:justify-between">
-          <p className="font-sans text-[14px] leading-[1.5] text-dark/50">
-            See Cooper connect to {item.name} with your own data.
+          <p className="mb-[14px] mt-[28px] font-grotesk text-[12px] font-medium uppercase tracking-[1.4px] text-dark/40">
+            What Cooper does here
           </p>
+          <ul className="flex flex-col gap-[13px]">
+            {item.does.map((d) => (
+              <li key={d} className="flex items-start gap-[12px]">
+                <span className="mt-[1px] grid h-[22px] w-[22px] shrink-0 place-items-center rounded-full bg-accent-orange/10 text-accent-orange">
+                  <Check size={13} weight="bold" />
+                </span>
+                <span className="font-sans text-[15px] leading-[1.5] text-dark/70">{d}</span>
+              </li>
+            ))}
+          </ul>
+
+          {/* Highlight card */}
+          <div className="mt-[28px] rounded-[14px] border border-dark/[0.08] bg-cream p-[22px]">
+            <div className="mb-[12px] flex items-center gap-[10px]">
+              <span className="grid h-[30px] w-[30px] place-items-center rounded-[8px] bg-accent-orange/12 text-accent-orange">
+                <Plugs size={17} weight="regular" />
+              </span>
+              <span className="font-serif text-[17px] text-dark">Set up once, then it runs</span>
+            </div>
+            <p className="font-sans text-[14px] leading-[1.55] text-dark/55">
+              Most teams connect {item.name} in a single session, no IT project, no data migration. Cooper works
+              alongside it, not instead of it, so your team keeps the process they know.
+            </p>
+          </div>
+        </div>
+
+        {/* Sidebar */}
+        <aside className="bg-cream-light px-[26px] py-[26px] sm:px-[30px] sm:py-[32px]">
           <Link
             to="/demo"
-            className="inline-flex shrink-0 items-center justify-center rounded-[6px] bg-dark px-[22px] py-[12px] font-sans text-[15px] font-medium text-cream-light no-underline transition-all duration-200 hover:scale-[1.03]"
+            className="mb-[8px] inline-flex w-full items-center justify-center rounded-[8px] bg-dark px-[22px] py-[13px] font-sans text-[15px] font-medium text-cream-light no-underline transition-all duration-200 hover:scale-[1.02]"
           >
-            Book a demo
+            Request a Demo
           </Link>
-        </div>
+          <p className="mb-[26px] text-center font-sans text-[12.5px] text-dark/45">
+            See it on your own {item.name} data
+          </p>
+
+          <p className="mb-[14px] font-grotesk text-[12px] font-medium uppercase tracking-[1.2px] text-dark/40">
+            Works with
+          </p>
+          <ul className="flex flex-col gap-[16px]">
+            {item.caps.map((k) => {
+              const c = CAPS[k]
+              const CapIcon = c.icon
+              return (
+                <li key={k} className="flex gap-[11px]">
+                  <span className="mt-[1px] grid h-[26px] w-[26px] shrink-0 place-items-center rounded-[7px] bg-dark/[0.05] text-dark/65">
+                    <CapIcon size={15} weight="regular" />
+                  </span>
+                  <div>
+                    <div className="font-sans text-[14px] font-medium text-dark">{c.label}</div>
+                    <div className="font-sans text-[12.5px] leading-[1.4] text-dark/45">{c.sub}</div>
+                  </div>
+                </li>
+              )
+            })}
+          </ul>
+
+          <p className="mb-[12px] mt-[26px] font-grotesk text-[12px] font-medium uppercase tracking-[1.2px] text-dark/40">
+            Categories
+          </p>
+          <div className="flex flex-wrap gap-[7px]">
+            {item.cats.map((c) => (
+              <span key={c} className="rounded-full border border-dark/10 bg-cream-light px-[11px] py-[4px] font-sans text-[12.5px] text-dark/60">
+                {c}
+              </span>
+            ))}
+          </div>
+
+          <div className="mt-[26px] flex flex-col items-start gap-[9px] border-t border-dark/[0.08] pt-[18px]">
+            <button
+              type="button"
+              onClick={() => { onClose(); requestAnimationFrame(() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })) }}
+              className="font-sans text-[13.5px] text-dark/55 no-underline transition-colors hover:text-accent-orange"
+            >
+              See how the data moves
+            </button>
+            <a href="mailto:support@askcooper.ai?subject=Integration%20question" className="font-sans text-[13.5px] text-dark/55 no-underline transition-colors hover:text-accent-orange">
+              Questions about {item.name}?
+            </a>
+          </div>
+        </aside>
       </div>
     </ModalShell>
   )
@@ -959,15 +1034,21 @@ export default function IntegrationsPage() {
               And many more
             </p>
             <div className="grid grid-cols-2 gap-[10px] sm:grid-cols-3 lg:grid-cols-4">
-              {/* Non-clickable — hover effect only (per Amar's launch note). */}
               {DIRECTORY.map((c) => (
-                <div
+                <button
                   key={c.name}
-                  className="flex items-center gap-[12px] rounded-[12px] border border-dark/[0.09] bg-cream-light px-[14px] py-[12px] transition-colors hover:border-accent-orange"
+                  type="button"
+                  onClick={() => setActive(c)}
+                  className="group flex items-center gap-[12px] rounded-[12px] border border-dark/[0.09] bg-cream-light px-[14px] py-[12px] text-left transition-colors hover:border-accent-orange"
                 >
                   <Mark item={c} size="sm" />
                   <span className="font-sans text-[14px] font-medium text-dark">{c.name}</span>
-                </div>
+                  <ArrowRight
+                    size={14}
+                    weight="bold"
+                    className="ml-auto text-dark/0 transition-colors group-hover:text-accent-orange"
+                  />
+                </button>
               ))}
             </div>
             <p className="mt-[26px] font-sans text-[15px] text-dark/55">
@@ -1004,7 +1085,14 @@ export default function IntegrationsPage() {
                       <Icon size={22} weight="regular" />
                     </span>
                     <h3 className="mb-[8px] font-serif text-[20px] text-dark">{s.title}</h3>
-                    <p className="font-sans text-[14.5px] leading-[1.55] text-dark/55">{s.body}</p>
+                    <p className="mb-[16px] font-sans text-[14.5px] leading-[1.55] text-dark/55">{s.body}</p>
+                    <div className="flex flex-wrap gap-[6px]">
+                      {s.tags.map((t) => (
+                        <span key={t} className="rounded-full border border-dark/10 px-[10px] py-[3px] font-grotesk text-[11px] font-medium uppercase tracking-[0.6px] text-dark/50">
+                          {t}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 )
               })}
@@ -1088,55 +1176,29 @@ export default function IntegrationsPage() {
         </div>
       </section>
 
-      {/* ══════════════ FINAL CTA — contained rounded card
-          (same treatment as the About / Careers banner) ══════════════ */}
-      <Reveal>
-        <section className="bg-cream-light">
-          <div className="mx-auto max-w-[1440px] px-5 md:px-12 lg:px-[85px] py-[48px]">
-            <div className="relative h-auto overflow-hidden rounded-[30px] lg:h-[420px]">
-              {/* Background — orange grain + Cooper logo watermark */}
-              <img
-                src="/images/about/careers-cta-bg.png"
-                alt=""
-                className="absolute inset-0 h-full w-full object-cover"
-              />
-
-              {/* Content — 2 col */}
-              <div className="relative z-10 flex h-full flex-col items-start gap-8 px-5 py-12 md:px-10 lg:flex-row lg:items-center lg:gap-0 lg:px-[72px] lg:py-0">
-                {/* Left — eyebrow + heading + button */}
-                <div className="flex-1">
-                  <span className="mb-[16px] block animate-fade-blur-in font-grotesk text-[11px] font-medium uppercase tracking-[1.4px] text-cream-light">
-                    Get started
-                  </span>
-                  <h2
-                    className="mb-[36px] animate-fade-blur-in font-serif text-[36px] leading-[1.15] text-white md:text-[34px] lg:text-[42px]"
-                    style={{ animationDelay: '0.1s' }}
-                  >
-                    See Cooper connect to your stack
-                  </h2>
-                  <Link
-                    to="/demo"
-                    className="inline-block w-fit animate-fade-blur-in rounded-[6px] bg-white px-[28px] py-[12px] font-sans text-[15px] font-medium text-dark no-underline transition-all duration-200 hover:scale-[1.03] hover:bg-cream"
-                    style={{ animationDelay: '0.25s' }}
-                  >
-                    Request a Demo
-                  </Link>
-                </div>
-
-                {/* Right — body text */}
-                <div className="flex w-full flex-1 lg:justify-end">
-                  <p
-                    className="max-w-full animate-fade-blur-in font-sans text-[15px] leading-[24.75px] text-white/80 lg:max-w-[380px]"
-                    style={{ animationDelay: '0.2s' }}
-                  >
-                    We'll map Cooper to the exact systems your team uses, with your own data, in a live walkthrough.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      </Reveal>
+      {/* ══════════════ FINAL CTA ══════════════ */}
+      <section className="relative overflow-hidden bg-dark px-5 md:px-10 lg:px-[62px] py-[72px] lg:py-[96px]">
+        <div className="mx-auto flex max-w-[720px] flex-col items-center text-center">
+          <img
+            src="/images/cooper-icon.svg"
+            alt=""
+            className="mb-[24px] h-[46px] w-[46px]"
+            style={{ filter: 'brightness(0) invert(1)' }}
+          />
+          <h2 className="font-serif text-[32px] leading-[1.18] text-cream-light md:text-[38px]">
+            See Cooper connect to your stack
+          </h2>
+          <p className="mt-[18px] max-w-[480px] font-sans text-[16.5px] leading-[1.55] text-cream-light/60">
+            We'll map Cooper to the exact systems your team uses, with your own data, in a live walkthrough.
+          </p>
+          <Link
+            to="/demo"
+            className="mt-[30px] inline-flex items-center rounded-[6px] bg-white px-[28px] py-[13px] font-sans text-[16px] font-medium text-dark no-underline transition-all duration-200 hover:scale-[1.03] hover:bg-cream"
+          >
+            Request a Demo
+          </Link>
+        </div>
+      </section>
 
       <Footer />
 
