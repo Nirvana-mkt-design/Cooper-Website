@@ -274,8 +274,7 @@ const INTEGRATIONS: Base[] = [
   { name: 'EZLynx', tpl: 'ams', img: '/images/chips/ezlynx.png' },
   { name: 'HawkSoft', tpl: 'ams', img: '/images/logo-hawksoft.webp' },
   { name: 'Guidewire', tpl: 'core', img: '/images/logo-guidewire.svg' },
-  // ⚠️ Placeholder mark: Origami Risk still uses a monogram tile — real logo TBD.
-  { name: 'Origami Risk', tpl: 'risk', mono: 'OR', color: '#1FA37C' },
+  { name: 'Origami Risk', tpl: 'risk', img: '/images/logo-origami.webp' },
   { name: 'HubSpot', tpl: 'crm', img: '/images/chips/hubspot.png' },
   { name: 'SharePoint', tpl: 'docs', img: '/images/logo-sharepoint.webp' },
   { name: 'Microsoft Teams', tpl: 'collab', img: '/images/logo-teams.png' },
@@ -290,9 +289,8 @@ const INTEGRATIONS: Base[] = [
   { name: 'PostgreSQL', tpl: 'data', img: '/images/logo-postgresql.svg' },
   { name: 'ClickUp', tpl: 'pm', img: '/images/logo-clickup.svg' },
   { name: 'Gmail', tpl: 'email', img: '/images/logo-gmail.webp' },
-  // ⚠️ Placeholder mark: Loss Run Pro still uses a monogram tile — real logo TBD.
-  { name: 'Loss Run Pro', tpl: 'lossrun', mono: 'LR', color: '#CF6A2E' },
-  { name: 'Snapsheet', tpl: 'claims', mono: 'S', color: '#0FB5A5' },
+  { name: 'Loss Run Pro', tpl: 'lossrun', img: '/images/logo-lossrunpro.webp' },
+  { name: 'Snapsheet', tpl: 'claims', img: '/images/logo-snapsheet.webp' },
 ]
 
 /* Fully-expanded integration used by cards + modal. */
