@@ -8,6 +8,8 @@
 ─────────────────────────────────────────────────────────────── */
 
 import { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { ArrowRight } from '@phosphor-icons/react'
 import CarrierWall from './CarrierWall'
 
 /* Scale the fixed-size diagram canvas down to fit its container
@@ -462,6 +464,12 @@ export default function Integrations() {
             <p className="font-sans text-[16.5px] leading-[1.55] text-dark/55">
               Cooper connects to your existing systems. No rip and replace. Your data stays where it lives.
             </p>
+            <Link
+              to="/integrations"
+              className="mt-[12px] inline-flex items-center gap-1 font-sans text-[15px] font-semibold text-accent-orange no-underline hover:underline"
+            >
+              Read more <ArrowRight size={15} weight="bold" />
+            </Link>
           </div>
         </div>
 

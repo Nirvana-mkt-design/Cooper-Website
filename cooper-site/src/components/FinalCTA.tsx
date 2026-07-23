@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 
 const rotatingWords = [
   'ACORDs',
@@ -70,9 +71,12 @@ export default function FinalCTA() {
         </p>
 
         {/* Button */}
-        <button className="font-sans font-medium text-[16px] text-dark bg-white rounded-[5px] px-[28px] py-[12px] hover:bg-cream hover:scale-[1.03] transition-all duration-200 cursor-pointer">
+        <Link
+          to="/demo"
+          className="inline-block font-sans font-medium text-[16px] text-dark bg-white rounded-[5px] px-[28px] py-[12px] no-underline hover:bg-cream hover:scale-[1.03] transition-all duration-200 cursor-pointer"
+        >
           Request a Demo
-        </button>
+        </Link>
       </div>
     </section>
   )
