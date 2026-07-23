@@ -72,7 +72,7 @@
     "integration": {
       "task_gid": "1215944614298893",
       "label": "Integration / Product",
-      "vercel_path": null
+      "vercel_path": "/integrations"
     },
     "demo": {
       "task_gid": "1215944614298872",
@@ -88,6 +88,7 @@
     "src/components/BuiltForEveryRole.tsx": ["home"],
     "src/components/Metrics.tsx": ["home"],
     "src/components/Integrations.tsx": ["home", "integration"],
+    "src/components/IntegrationsPage.tsx": ["integration"],
     "src/components/Testimonial.tsx": ["home"],
     "src/components/FinalCTA.tsx": ["home"],
     "src/components/TeamSection.tsx": ["home"],
