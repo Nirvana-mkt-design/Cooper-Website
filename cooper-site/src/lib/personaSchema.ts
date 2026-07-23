@@ -16,7 +16,7 @@ import { SITE_ORIGIN, absoluteUrl } from './site'
  * here by @id, so Google merges everything into one graph for the site.
  */
 export function personaJsonLd(persona: Persona) {
-  const pageUrl = absoluteUrl(`/personas/${persona.slug}`)
+  const pageUrl = absoluteUrl(`/product/${persona.slug}`)
 
   return {
     '@context': 'https://schema.org',

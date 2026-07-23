@@ -30,16 +30,17 @@ export default function PersonaTestimonial({ testimonials }: { testimonials: Tes
   const [paused, setPaused] = useState(false)
   const rafRef = useRef<number>(0)
   const startRef = useRef(0)
+  // Mirrors `progress` so the effect can resume mid-bar without depending on
+  // the state value.
+  const progressRef = useRef(0)
 
-  if (!testimonials.length) return null
   const multiple = testimonials.length > 1
-  const t = testimonials[active]
-  const clean = t.quote.replace(/^[“"]|[”"]$/g, '').trim()
 
   const goNext = useCallback(() => {
     setActive((prev) => (prev + 1) % testimonials.length)
     setAnimKey((k) => k + 1)
     setProgress(0)
+    progressRef.current = 0
   }, [testimonials.length])
 
   const goTo = (idx: number) => {
@@ -47,24 +48,30 @@ export default function PersonaTestimonial({ testimonials }: { testimonials: Tes
     setActive(idx)
     setAnimKey((k) => k + 1)
     setProgress(0)
+    progressRef.current = 0
     setPaused(true)
     window.setTimeout(() => setPaused(false), DURATION)
   }
 
   useEffect(() => {
     if (!multiple || paused || reduce) return
-    startRef.current = performance.now() - (progress / 100) * DURATION
+    startRef.current = performance.now() - (progressRef.current / 100) * DURATION
     const tick = () => {
       const elapsed = performance.now() - startRef.current
       const pct = Math.min((elapsed / DURATION) * 100, 100)
+      progressRef.current = pct
       setProgress(pct)
       if (pct >= 100) goNext()
       else rafRef.current = requestAnimationFrame(tick)
     }
     rafRef.current = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(rafRef.current)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paused, active, goNext, multiple, reduce])
+
+  // After all hooks so the hook order is stable when the list is empty.
+  if (!testimonials.length) return null
+  const t = testimonials[active]
+  const clean = t.quote.replace(/^[“"]|[”"]$/g, '').trim()
 
   return (
     <section className="bg-cream-light py-[120px]">

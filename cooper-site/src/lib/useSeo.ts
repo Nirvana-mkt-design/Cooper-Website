@@ -6,11 +6,11 @@ export interface SeoOptions {
   title: string
   /** Meta description for the SERP snippet. */
   description?: string
-  /** Root-relative path for the canonical URL, e.g. "/personas/retail-agencies". */
+  /** Root-relative path for the canonical URL, e.g. "/product/retail-agencies". */
   canonicalPath?: string
   /**
    * Open Graph / Twitter preview image. Accepts a root-relative path
-   * (e.g. "/images/og/retail.png") or an absolute URL. When omitted, the page
+   * (e.g. "/images/og/retail.jpg") or an absolute URL. When omitted, the page
    * inherits the site-wide og:image from index.html.
    */
   image?: string

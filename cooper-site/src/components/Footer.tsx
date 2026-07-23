@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom'
 
 const useCasesCol1 = [
-  { label: 'Retail Agencies', to: '/personas/retail-agencies' },
-  { label: 'Wholesale Brokers', to: '/personas/wholesale-brokers' },
+  { label: 'Retail Agencies', to: '/product/retail-agencies' },
+  { label: 'Wholesale Brokers', to: '/product/wholesale-brokers' },
 ]
 
 const useCasesCol2 = [
-  { label: 'MGA & Insurers', to: '/personas/mgas-insurers' },
-  { label: 'Claims TPA', to: '/personas/claims-tpas' },
+  { label: 'MGA & Insurers', to: '/product/mgas-insurers' },
+  { label: 'Claims TPA', to: '/product/claims-tpas' },
 ]
 
 const companyLinks = [
@@ -25,29 +25,29 @@ export default function Footer() {
           <div>
             {/* Logo — full Cooper logo, large */}
             <div className="mb-[28px]">
-              <img src="/images/cooper-logo-full.svg" alt="Cooper" className="h-[44px] lg:h-[56px] w-auto" />
+              <img src="/images/cooper-logo-full.svg" alt="Cooper" width={154} height={36} className="h-[44px] lg:h-[56px] w-auto" />
             </div>
-            <p className="font-sans text-[15px] leading-[1.6] text-dark/50 max-w-[280px]">
+            <p className="font-sans text-[15px] leading-[1.6] text-dark/60 max-w-[280px]">
               Your AI coworker for insurance, from intake to renewal.
             </p>
           </div>
 
           {/* Use Cases — two sub-columns */}
           <div>
-            <h5 className="font-grotesk font-medium text-[12px] tracking-[1.2px] uppercase text-dark mb-[20px]">
+            <h3 className="font-grotesk font-medium text-[12px] tracking-[1.2px] uppercase text-dark mb-[20px]">
               Use Cases
-            </h5>
+            </h3>
             <div className="flex flex-col gap-[14px] lg:flex-row lg:gap-[24px]">
-              <div className="flex flex-col gap-[14px]">
+              <div className="flex flex-col gap-[2px]">
                 {useCasesCol1.map((link) => (
-                  <Link key={link.to} to={link.to} className="font-sans text-[15px] text-dark/50 hover:text-dark transition-colors no-underline">
+                  <Link key={link.to} to={link.to} className="inline-flex items-center min-h-[40px] font-sans text-[15px] text-dark/60 hover:text-dark transition-colors no-underline">
                     {link.label}
                   </Link>
                 ))}
               </div>
-              <div className="flex flex-col gap-[14px]">
+              <div className="flex flex-col gap-[2px]">
                 {useCasesCol2.map((link) => (
-                  <Link key={link.to} to={link.to} className="font-sans text-[15px] text-dark/50 hover:text-dark transition-colors no-underline">
+                  <Link key={link.to} to={link.to} className="inline-flex items-center min-h-[40px] font-sans text-[15px] text-dark/60 hover:text-dark transition-colors no-underline">
                     {link.label}
                   </Link>
                 ))}
@@ -57,12 +57,12 @@ export default function Footer() {
 
           {/* Company */}
           <div>
-            <h5 className="font-grotesk font-medium text-[12px] tracking-[1.2px] uppercase text-dark mb-[20px]">
+            <h3 className="font-grotesk font-medium text-[12px] tracking-[1.2px] uppercase text-dark mb-[20px]">
               Company
-            </h5>
+            </h3>
             <div className="flex flex-col gap-[14px]">
               {companyLinks.map((link) => (
-                <Link key={link.to} to={link.to} className="font-sans text-[15px] text-dark/50 hover:text-dark transition-colors no-underline">
+                <Link key={link.to} to={link.to} className="inline-flex items-center min-h-[40px] font-sans text-[15px] text-dark/60 hover:text-dark transition-colors no-underline">
                   {link.label}
                 </Link>
               ))}
@@ -71,16 +71,16 @@ export default function Footer() {
         </div>
 
         <div className="flex flex-col-reverse gap-4 sm:flex-row sm:gap-0 sm:justify-between items-center">
-          <span className="font-sans text-[13px] text-dark/30">© 2026 Cooper. All rights reserved.</span>
-          <div className="flex gap-[20px] items-center">
+          <span className="font-sans text-[13px] text-dark/60">© 2026 Cooper. All rights reserved.</span>
+          <div className="flex gap-[12px] items-center -mr-[8px]">
             <button
               onClick={() => window.Cookiebot?.renew()}
-              className="font-sans text-[13px] text-dark/30 hover:text-dark/50 transition-colors cursor-pointer bg-transparent border-none p-0"
+              className="inline-flex items-center justify-center min-h-[40px] px-[8px] font-sans text-[13px] text-dark/60 hover:text-dark transition-colors cursor-pointer bg-transparent border-none py-0"
             >
               Manage Cookies
             </button>
-            <Link to="/privacy" className="font-sans text-[13px] text-dark/30 hover:text-dark/50 transition-colors no-underline">Privacy</Link>
-            <Link to="/terms" className="font-sans text-[13px] text-dark/30 hover:text-dark/50 transition-colors no-underline">Terms</Link>
+            <Link to="/privacy" className="inline-flex items-center justify-center min-h-[40px] px-[8px] font-sans text-[13px] text-dark/60 hover:text-dark transition-colors no-underline">Privacy</Link>
+            <Link to="/terms" className="inline-flex items-center justify-center min-h-[40px] px-[8px] font-sans text-[13px] text-dark/60 hover:text-dark transition-colors no-underline">Terms</Link>
           </div>
         </div>
       </div>

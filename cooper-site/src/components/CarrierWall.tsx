@@ -59,7 +59,9 @@ export default function CarrierWall() {
   const [grid, setGrid] = useState<Carrier[]>(buildInitialGrid)
   const [fadingCell, setFadingCell] = useState<number | null>(null)
   const gridRef = useRef(grid)
-  gridRef.current = grid
+  useEffect(() => {
+    gridRef.current = grid
+  }, [grid])
 
   const swapRandomCell = useCallback(() => {
     const currentNames = new Set(gridRef.current.map((c) => c.name))
@@ -115,7 +117,10 @@ export default function CarrierWall() {
               <img
                 src={carrier.src}
                 alt={carrier.name}
+                width={140}
+                height={50}
                 loading="lazy"
+                decoding="async"
                 className="max-h-[50px] w-auto max-w-[78%] object-contain opacity-[0.5] grayscale"
               />
             </div>

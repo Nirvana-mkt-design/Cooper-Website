@@ -25,8 +25,12 @@ export default function FinalCTA() {
     <section className="relative min-h-[500px] lg:h-[631px] overflow-hidden">
       {/* Background image */}
       <img
-        src="/images/final-cta-bg.png"
+        src="/images/final-cta-bg.webp"
         alt=""
+        width={1513}
+        height={631}
+        loading="lazy"
+        decoding="async"
         className="absolute inset-0 w-full h-full object-cover"
       />
 

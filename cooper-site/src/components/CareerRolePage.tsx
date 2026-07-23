@@ -105,14 +105,14 @@ export default function CareerRolePage() {
               <span className={`font-grotesk text-[11px] font-medium tracking-[0.5px] uppercase px-[10px] py-[4px] rounded-full ${deptColor(job.department)}`}>
                 {deptLabel(job.department)}
               </span>
-              <span className="font-sans text-[14px] text-dark/50 flex items-center gap-[6px]">
+              <span className="font-sans text-[14px] text-dark/60 flex items-center gap-[6px]">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                   <circle cx="12" cy="10" r="3" />
                 </svg>
                 {locationLabel(job)}
               </span>
-              <span className="font-sans text-[14px] text-dark/50 flex items-center gap-[6px]">
+              <span className="font-sans text-[14px] text-dark/60 flex items-center gap-[6px]">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="12" cy="12" r="10" />
                   <polyline points="12 6 12 12 16 14" />
@@ -120,7 +120,7 @@ export default function CareerRolePage() {
                 {employmentLabel(job.employmentType)}
               </span>
               {compensationLabel(job) && (
-                <span className="font-sans text-[14px] text-dark/50 flex items-center gap-[6px]">
+                <span className="font-sans text-[14px] text-dark/60 flex items-center gap-[6px]">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                     <rect x="2" y="6" width="20" height="12" rx="2" />
                     <circle cx="12" cy="12" r="2.5" />

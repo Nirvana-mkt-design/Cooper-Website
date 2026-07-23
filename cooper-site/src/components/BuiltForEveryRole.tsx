@@ -29,14 +29,14 @@ const roles = [
 
 function RoleCard({ tag, slug, title, desc }: { tag: string; slug: string; title: string; desc: string }) {
   return (
-    <Link to={`/personas/${slug}`} className="px-6 md:px-10 lg:px-[52px] py-[32px] md:py-[40px] lg:py-[44px] flex flex-col gap-[31px] cursor-pointer group relative transition-colors duration-300 hover:bg-dark/[0.02] no-underline">
+    <Link to={`/product/${slug}`} className="px-6 md:px-10 lg:px-[52px] py-[32px] md:py-[40px] lg:py-[44px] flex flex-col gap-[31px] cursor-pointer group relative transition-colors duration-300 hover:bg-dark/[0.02] no-underline">
       {/* Hover accent bar */}
       <div className="absolute top-0 left-0 right-0 h-[3px] bg-accent-orange opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
       <p className="font-grotesk font-medium text-[14px] tracking-[1.4px] uppercase text-accent-orange leading-[1.5]">
         {tag}
       </p>
       <h3 className="font-serif text-[20px] lg:text-[24px] leading-[1.2] text-dark whitespace-pre-line group-hover:translate-x-[4px] transition-transform duration-300">{title}</h3>
-      <p className="font-sans text-[16px] leading-[1.5] text-dark/50 group-hover:text-dark/70 transition-colors duration-300">{desc}</p>
+      <p className="font-sans text-[16px] leading-[1.5] text-dark/60 group-hover:text-dark/70 transition-colors duration-300">{desc}</p>
       <span
         className="font-sans text-[16px] text-[#46433d] w-fit group-hover:text-accent-orange transition-colors duration-300"
         style={{
