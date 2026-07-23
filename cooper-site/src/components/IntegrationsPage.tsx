@@ -18,7 +18,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
-  Plugs, Waveform, ArrowsClockwise, EnvelopeSimple, Table,
+  Plugs, ArrowsClockwise, EnvelopeSimple, Table,
   Browser, Database, FileText, ShieldCheck, LockKey, Detective,
   Prohibit, ArrowRight, Plus, X, Check,
 } from '@phosphor-icons/react'
@@ -267,30 +267,30 @@ const INTEGRATIONS: Base[] = [
     summary: 'Cooper reads pipeline status and account ownership, tracks renewal dates, and syncs custom fields back to Salesforce.' },
   { name: 'Microsoft Outlook', tpl: 'email', featured: true, img: '/images/logo-outlook.webp',
     summary: 'Cooper captures the intake, extracts attachments, surfaces tasks, and replies with the completed package.' },
-  { name: 'Microsoft Teams', tpl: 'collab', featured: true, img: '/images/logo-teams.png',
-    summary: 'Cooper posts run status, requests approvals, confirms completion, and initiates workflows in Teams.' },
+  { name: 'OneDrive', tpl: 'docs', featured: true, img: '/images/logo-onedrive.png',
+    summary: 'Cooper reads the correct files, makes decisions, and writes forms back directly to OneDrive.' },
 
   /* ── The wider directory ── */
   { name: 'EZLynx', tpl: 'ams', img: '/images/chips/ezlynx.png' },
   { name: 'HawkSoft', tpl: 'ams', img: '/images/logo-hawksoft.webp' },
   { name: 'Guidewire', tpl: 'core', img: '/images/logo-guidewire.svg' },
-  { name: 'Gmail', tpl: 'email', img: '/images/logo-gmail.webp' },
-  { name: 'Google Docs', tpl: 'docs', img: '/images/logo-docs.webp' },
+  // ⚠️ Placeholder mark: Origami Risk still uses a monogram tile — real logo TBD.
+  { name: 'Origami Risk', tpl: 'risk', mono: 'OR', color: '#1FA37C' },
+  { name: 'HubSpot', tpl: 'crm', img: '/images/chips/hubspot.png' },
   { name: 'SharePoint', tpl: 'docs', img: '/images/logo-sharepoint.webp' },
-  { name: 'OneDrive', tpl: 'docs', img: '/images/logo-onedrive.png' },
+  { name: 'Microsoft Teams', tpl: 'collab', img: '/images/logo-teams.png' },
   { name: 'Dropbox', tpl: 'docs', img: '/images/logo-dropbox.webp' },
   { name: 'Slack', tpl: 'collab', img: '/images/logo-slack.webp' },
-  { name: 'HubSpot', tpl: 'crm', img: '/images/chips/hubspot.png' },
+  { name: 'Google Docs', tpl: 'docs', img: '/images/logo-docs.webp' },
   { name: 'Excel', tpl: 'sheets', img: '/images/logo-excel.svg' },
   { name: 'PowerPoint', tpl: 'slides', img: '/images/logo-powerpoint.svg' },
   { name: 'Adobe PDF', tpl: 'docs', img: '/images/logo-adobepdf.svg' },
-  { name: 'Google Slides', tpl: 'slides', img: '/images/logo-gslides.svg' },
   { name: 'Google Sheets', tpl: 'sheets', img: '/images/logo-gsheets.svg' },
   { name: 'Zapier', tpl: 'automation', img: '/images/logo-zapier.svg' },
   { name: 'PostgreSQL', tpl: 'data', img: '/images/logo-postgresql.svg' },
   { name: 'ClickUp', tpl: 'pm', img: '/images/logo-clickup.svg' },
-  // Long-tail insurance tools with no clean public brand SVG — monogram tiles.
-  { name: 'Origami Risk', tpl: 'risk', mono: 'OR', color: '#1FA37C' },
+  { name: 'Gmail', tpl: 'email', img: '/images/logo-gmail.webp' },
+  // ⚠️ Placeholder mark: Loss Run Pro still uses a monogram tile — real logo TBD.
   { name: 'Loss Run Pro', tpl: 'lossrun', mono: 'LR', color: '#CF6A2E' },
   { name: 'Snapsheet', tpl: 'claims', mono: 'S', color: '#0FB5A5' },
 ]
@@ -340,27 +340,27 @@ const STEPS = [
   {
     icon: Plugs,
     title: 'Connect',
-    body: 'Link Cooper to the systems you already run on, your inbox, AMS, shared drives, and carrier portals. Secure OAuth or keys, so your team never learns a new login.',
+    body: 'One click to connect Cooper to your inbox, AMS, CRM, and data stores.',
   },
   {
-    icon: Waveform,
+    icon: FileText,
     title: 'Read & structure',
-    body: 'Cooper reads documents where they live, ACORDs, loss runs, policies, spreadsheets, in any format, and turns them into structured, checked data.',
+    body: 'Cooper reads documents where they live, ACORDs, loss runs, policies, spreadsheets, in any format, and turns them into structured, actionable data.',
   },
   {
     icon: ArrowsClockwise,
     title: 'Sync back',
-    body: 'Results flow back into your system of record. Cooper updates your AMS or CRM and files documents automatically, so nothing gets re-keyed by hand.',
+    body: 'Results flow back directly into your system of record. Cooper updates your AMS or CRM and files documents automatically. Nothing gets re-entered by hand.',
   },
 ]
 
 /* "Does it fit my stack?" — the six surfaces named in the brief, with
    what Cooper actually does on each. */
 const SURFACES = [
-  { icon: EnvelopeSimple, title: 'Email', body: 'Watches shared inboxes, reads submissions and attachments, and routes them to the right workflow.' },
+  { icon: EnvelopeSimple, title: 'Email', body: 'Reads shared inboxes, grabs submissions and attachments, and routes them to the correct recipient.' },
   { icon: Table, title: 'Excel & sheets', body: 'Bordereaux, schedules, and loss runs in any layout, parsed, reconciled, and kept clean.' },
   { icon: Browser, title: 'Carrier portals', body: 'Navigates carrier and MGA portals to pull quotes, documents, and status, no copy-paste.' },
-  { icon: Database, title: 'AMS / CRM', body: 'Two-way sync with your system of record, so records stay current without double entry.' },
+  { icon: Database, title: 'AMS / CRM', body: 'Two-way sync with your system of record, so records stay current without manual re-entry.' },
   { icon: FileText, title: 'ACORD forms', body: 'Reads and generates ACORD forms, prefilled from the data Cooper already has on the account.' },
   { icon: FileText, title: 'Loss runs', body: 'Extracts and normalizes loss runs from any carrier format into one consistent, comparable view.' },
 ]
@@ -377,13 +377,6 @@ const BADGES = [
   { label: 'No model training', icon: '/images/icon-no-training.webp' },
   { label: 'HIPAA Compliant', icon: '/images/icon-hipaa.webp' },
   { label: 'RBAC & audit logs', icon: '/images/icon-audit.webp' },
-]
-
-/* "What do I get out of it?" */
-const OUTCOMES = [
-  { stat: 'No', unit: 'double entry', body: 'Data flows both ways, so nobody re-keys the same submission into three systems.' },
-  { stat: 'Fewer', unit: 'errors', body: 'Every document is read and checked automatically, catching what tired eyes miss.' },
-  { stat: 'Hours', unit: 'back each week', body: 'The manual pulling, filing, and formatting disappears, so your team works the accounts.' },
 ]
 
 /* ══════════════════════════════════════════════════════════════
@@ -411,7 +404,7 @@ function Mark({ item, size }: { item: Base; size: 'sm' | 'lg' | 'xl' }) {
   )
 }
 
-/* ── Count-up number ("+20") — eases from 0 to the target on mount ── */
+/* ── Count-up number ("20+") — eases from 0 to the target on mount ── */
 function CountUp({ to, duration = 1400 }: { to: number; duration?: number }) {
   const [n, setN] = useState(0)
   useEffect(() => {
@@ -432,7 +425,7 @@ function CountUp({ to, duration = 1400 }: { to: number; duration?: number }) {
     const t = window.setTimeout(() => { raf = requestAnimationFrame(tick) }, 1150)
     return () => { clearTimeout(t); cancelAnimationFrame(raf) }
   }, [to, duration])
-  return <span className="tabular-nums">+{n}</span>
+  return <span className="tabular-nums">{n}+</span>
 }
 
 /* ── Hero "and counting" queue ──
@@ -843,7 +836,7 @@ export default function IntegrationsPage() {
               className="animate-fade-blur-in font-serif text-[44px] leading-[1.05] tracking-[-1.44px] text-cream-light md:text-[60px] md:leading-[1.04] lg:text-[64px] lg:leading-[68px]"
               style={{ animationDelay: '0.1s' }}
             >
-              Works with the tools you already use
+              Cooper works with the tools you already use
             </h1>
           </div>
 
@@ -870,12 +863,6 @@ export default function IntegrationsPage() {
                 >
                   Request a Demo
                 </Link>
-                <a
-                  href="#how-it-works"
-                  className="inline-flex items-center rounded-[6px] border border-cream-light/30 px-[22px] py-[12px] font-sans text-[15px] text-cream-light no-underline transition-colors hover:bg-cream-light/10"
-                >
-                  See how it works
-                </a>
               </div>
             </div>
             <p
@@ -894,8 +881,8 @@ export default function IntegrationsPage() {
           <Reveal>
             <SectionHead
               eyebrow="How it works"
-              title="Connected in three steps, then it just runs"
-              sub="Cooper isn't a folder of one-off exports. It reads and writes across your systems continuously, so the data moves itself."
+              title="Click once to connect your apps, Cooper does the rest"
+              sub="Cooper understands where your data lives, pulls the right context for each task, and writes back continuously."
             />
           </Reveal>
           <Reveal delay={80}>
@@ -929,7 +916,7 @@ export default function IntegrationsPage() {
             <SectionHead
               eyebrow="The directory"
               title="Built for insurance stacks"
-              sub="The systems agencies, brokers, MGAs, and carriers run on, ready out of the box. Tap any one to see what Cooper does with it."
+              sub="The systems agencies, brokers, MGAs, and carriers run on, ready out of the box."
             />
           </Reveal>
 
@@ -991,7 +978,7 @@ export default function IntegrationsPage() {
             <SectionHead
               eyebrow="Fits your stack"
               title="Cooper meets the work where it already happens"
-              sub="It doesn't ask your team to change how they work. It plugs into the surfaces they touch every day."
+              sub="Cooper doesn't ask your team to change how they work. It enables each person to do more without the busywork."
             />
           </Reveal>
           <Reveal delay={80}>
@@ -1020,7 +1007,7 @@ export default function IntegrationsPage() {
             <SectionHead
               dark
               eyebrow="Secure by default"
-              title="Is my data safe? Yes, and here's how"
+              title="Cooper takes data safety seriously"
               sub="Cooper works inside your systems with the access you grant. Your data never leaves your control, and it is never used to train models."
             />
           </Reveal>
@@ -1056,31 +1043,6 @@ export default function IntegrationsPage() {
                   <span className="text-center font-grotesk text-[12px] font-medium uppercase tracking-[1.2px] text-cream-light/80">
                     {b.label}
                   </span>
-                </div>
-              ))}
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ══════════════ OUTCOMES ══════════════ */}
-      <section className="bg-cream px-5 md:px-10 lg:px-[62px] py-[64px] lg:py-[88px]">
-        <div className="mx-auto max-w-[1080px]">
-          <Reveal>
-            <SectionHead
-              eyebrow="What changes"
-              title="Fewer re-keys, fewer errors, hours back"
-              sub="When your systems talk to each other, the busywork between them disappears."
-            />
-          </Reveal>
-          <Reveal delay={80}>
-            <div className="mt-[44px] grid gap-[16px] md:grid-cols-3">
-              {OUTCOMES.map((o) => (
-                <div key={o.unit} className="rounded-[16px] border border-dark/[0.08] bg-cream-light p-[30px]">
-                  <div className="font-serif text-[36px] leading-[1.05] text-dark">
-                    {o.stat} <span className="text-[20px] text-dark/45">{o.unit}</span>
-                  </div>
-                  <p className="mt-[14px] font-sans text-[15px] leading-[1.55] text-dark/55">{o.body}</p>
                 </div>
               ))}
             </div>
@@ -1129,7 +1091,7 @@ export default function IntegrationsPage() {
                     className="max-w-full animate-fade-blur-in font-sans text-[15px] leading-[24.75px] text-white/80 lg:max-w-[380px]"
                     style={{ animationDelay: '0.2s' }}
                   >
-                    We'll map Cooper to the exact systems your team uses, with your own data, in a live walkthrough.
+                    We'll connect Cooper to your team's exact systems in a live walkthrough.
                   </p>
                 </div>
               </div>
