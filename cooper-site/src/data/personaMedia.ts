@@ -2,7 +2,7 @@
    Only Retail has real Figma assets/stats so far — other personas fall back
    to the Retail set as placeholders until their own assets land. */
 
-export type Stat = { value: string; label: string }
+export type Stat = { value: string; label: string; unit?: string; prefix?: string }
 
 const RETAIL = 'retail-agencies'
 
@@ -49,24 +49,20 @@ export const featureImages: Record<string, string[]> = {
 
 export const statsBands: Record<string, Stat[]> = {
   'retail-agencies': [
-    { value: '3×', label: 'more submissions per producer' },
-    { value: '97%', label: 'carrier tasks completed autonomously' },
-    { value: '4×', label: 'faster to first quote' },
+    { value: '3×', label: 'more premiums per producer' },
+    { value: '97%', label: 'fewer manual errors' },
   ],
   'wholesale-brokers': [
-    { value: '3×', label: 'more markets reached per risk' },
-    { value: '91%', label: 'of risks matched to a writing market' },
-    { value: '2 hrs', label: 'to proposal back to the retailer' },
+    { value: '3×', label: 'faster risk placement' },
+    { prefix: '<', value: '15', unit: 'mins', label: 'submission processing time' },
   ],
   'mgas-insurers': [
-    { value: '99.2%', label: 'guideline adherence on bound policies' },
     { value: '2×', label: 'premium per underwriter' },
-    { value: '83%', label: 'of pre-audit leakage caught before it binds' },
+    { value: '99%', label: 'data processing accuracy' },
   ],
   'claims-tpas': [
+    { value: '3×', label: 'throughput per adjuster' },
     { value: '38%', label: 'faster cycle time' },
-    { value: '4 days', label: 'to first payout' },
-    { value: '0', label: 'claims left unassigned' },
   ],
   reinsurers: [
     { value: '85%', label: 'less bordereaux normalization time' },

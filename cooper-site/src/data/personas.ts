@@ -147,9 +147,9 @@ export const personas: Persona[] = [
           'Cooper learns from your carriers\' guidelines and your own quoting history, then points each risk at the markets most likely to write it competitively instantly with the reasoning shown.',
       },
       {
-        title: 'Turn quotes into proposals that win',
+        title: 'Return quotes that win',
         description:
-          'Cooper normalizes every carrier\'s quote into one clean comparison, drafts the proposal in your style, and gets it back to the retailer while the deal is still warm.',
+          'Cooper normalizes every carrier\'s quote into one clean comparison, drafts in your style, and gets them back to the retailer while the deal is still warm.',
       },
       {
         title: 'Placement and compliance, together',

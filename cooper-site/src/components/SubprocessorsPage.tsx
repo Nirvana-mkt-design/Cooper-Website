@@ -38,9 +38,24 @@ const subprocessors = [
     activities: 'Cloud browser automation for agent features',
   },
   {
-    name: 'Mem0',
+    name: 'Turbopuffer',
     location: 'United States',
-    activities: 'Long-term memory storage for agent features',
+    activities: 'Vector database for embeddings and semantic search over customer content',
+  },
+  {
+    name: 'Baseten',
+    location: 'United States',
+    activities: 'Hosted speech-to-text inference for voice transcription',
+  },
+  {
+    name: 'Brave Search',
+    location: 'United States',
+    activities: 'Web search API used by the agent web-search tool',
+  },
+  {
+    name: 'DBOS',
+    location: 'United States',
+    activities: 'Durable workflow orchestration and observability (workflow state, step inputs and outputs) for agent background jobs',
   },
   {
     name: 'Resend',
@@ -90,7 +105,7 @@ export default function SubprocessorsPage() {
             className="flex flex-wrap gap-x-[24px] gap-y-[6px] font-sans text-[14px] text-dark/40 animate-fade-blur-in"
             style={{ animationDelay: '0.1s' }}
           >
-            <span>Effective: December 2025</span>
+            <span>Effective: July 2026</span>
           </div>
         </div>
       </section>
@@ -102,7 +117,7 @@ export default function SubprocessorsPage() {
             Cooper AI Tech, Inc. ("<strong className="font-medium text-dark/80">Cooper AI</strong>") uses the
             following subprocessors to process Customer Personal Data in connection with the Services. This list is
             maintained pursuant to the{' '}
-            <a href="mailto:support@askcooper.ai" className={linkCls}>
+            <a href="/data-processing-addendum" className={linkCls}>
               Data Processing Addendum
             </a>
             .
@@ -170,7 +185,7 @@ export default function SubprocessorsPage() {
           </div>
 
           <p className="font-sans text-[13px] text-dark/35 mt-[32px]">
-            This list is updated periodically. Last revised: December 2025.
+            This list is updated periodically. Last revised: July 2026.
           </p>
         </div>
       </div>

@@ -25,6 +25,10 @@ export default function SecurityCompliance() {
                 <img
                   src={badge.icon}
                   alt=""
+                  width={56}
+                  height={56}
+                  loading="lazy"
+                  decoding="async"
                   className="w-[56px] h-[56px] object-contain mb-[16px] opacity-90"
                 />
                 <span className="font-grotesk font-medium text-[12px] tracking-[1.2px] uppercase text-cream-light/80 text-center">

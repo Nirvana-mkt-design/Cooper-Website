@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, type ComponentType } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import CooperLogo from './CooperLogo'
 import {
   Storefront, Handshake, Buildings, ClipboardText,
@@ -37,10 +37,10 @@ const productPanel: NavPanel = {
     {
       label: 'By role',
       items: [
-        { title: 'Retail Agencies', desc: 'Get the first quote back and win the account.', href: '/personas/retail-agencies', icon: Storefront },
-        { title: 'Wholesale Brokers', desc: 'Point every risk at the market that will write it.', href: '/personas/wholesale-brokers', icon: Handshake },
-        { title: 'MGA & Insurers', desc: 'Underwrite by your guidelines, at scale.', href: '/personas/mgas-insurers', icon: Buildings },
-        { title: 'Claims TPA', desc: 'Faster cycle times, from first notice to close.', href: '/personas/claims-tpas', icon: ClipboardText },
+        { title: 'Retail Agencies', desc: 'Get the first quote back and win the account.', href: '/product/retail-agencies', icon: Storefront },
+        { title: 'Wholesale Brokers', desc: 'Point every risk at the market that will write it.', href: '/product/wholesale-brokers', icon: Handshake },
+        { title: 'MGA & Insurers', desc: 'Underwrite by your guidelines, at scale.', href: '/product/mgas-insurers', icon: Buildings },
+        { title: 'Claims TPA', desc: 'Faster cycle times, from first notice to close.', href: '/product/claims-tpas', icon: ClipboardText },
       ],
     },
   ],
@@ -124,6 +124,7 @@ export default function Navbar({ variant = 'dark' }: { variant?: 'dark' | 'light
   const [openPanel, setOpenPanel] = useState<string | null>(null)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [mobileSub, setMobileSub] = useState<string | null>(null)
+  const { pathname } = useLocation()
   const closeTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
@@ -150,6 +151,16 @@ export default function Navbar({ variant = 'dark' }: { variant?: 'dark' | 'light
   }, [mobileOpen])
 
   const closeMobile = () => { setMobileOpen(false); setMobileSub(null) }
+
+  // On any other page the logo links home (ScrollToTop lands you at the top).
+  // On the home page that navigation is a no-op, so scroll back up instead.
+  const onHome = pathname === '/'
+  const handleLogoClick = (e: React.MouseEvent) => {
+    closeMobile()
+    if (!onHome) return
+    e.preventDefault()
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
 
   const handleEnter = (label: string) => {
     if (closeTimeout.current) clearTimeout(closeTimeout.current)
@@ -214,7 +225,12 @@ export default function Navbar({ variant = 'dark' }: { variant?: 'dark' | 'light
 
       {/* ── Nav bar content ── */}
       <div className="relative z-10 max-w-[1440px] mx-auto flex items-center justify-between h-[72px] px-5 md:px-10 lg:px-[62px]">
-        <Link to="/" className="no-underline" onClick={closeMobile}>
+        <Link
+          to="/"
+          aria-label={onHome ? 'Back to top' : 'Cooper home'}
+          className="inline-flex items-center min-h-[40px] no-underline"
+          onClick={handleLogoClick}
+        >
           <CooperLogo dark={isLight || mobileOpen} className={`origin-left transition-transform duration-300 ${scrolled || isLight || mobileOpen ? 'scale-100' : 'scale-[1.3] sm:scale-[1.5] lg:scale-[1.8]'}`} />
         </Link>
 
@@ -275,12 +291,14 @@ export default function Navbar({ variant = 'dark' }: { variant?: 'dark' | 'light
           <Link
             to="/demo"
             onClick={closeMobile}
-            className="lg:hidden inline-flex items-center gap-1.5 rounded-[8px] bg-accent-orange px-3 py-2 font-sans text-[14px] text-cream-light no-underline whitespace-nowrap hover:opacity-90 transition-opacity"
+            className="lg:hidden inline-flex items-center gap-1.5 min-h-[40px] rounded-[8px] bg-accent-orange-deep px-3 py-2 font-sans text-[14px] text-cream-light no-underline whitespace-nowrap hover:opacity-90 transition-opacity"
           >
             <img
               src="/images/cooper-icon.svg"
               alt=""
               aria-hidden="true"
+              width={16}
+              height={16}
               className="h-[16px] w-auto"
               style={{ filter: 'brightness(0) invert(1)' }}
             />

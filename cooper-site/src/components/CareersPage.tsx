@@ -145,7 +145,7 @@ export default function CareersPage() {
             Careers at Cooper
           </span>
           <h1 className="font-serif text-[40px] leading-[44px] md:text-[64px] md:leading-[68px] lg:text-[64px] lg:leading-[68px] tracking-[-1.44px] text-white max-w-[700px] mb-[32px] animate-fade-blur-in" style={{ animationDelay: '0.1s' }}>
-            We're building the insurance coworker, one that does the real work.
+            We're building the insurance coworker, one that eliminates busywork.
           </h1>
           <p className="font-sans text-[18px] leading-[1.6] text-white/80 max-w-full lg:max-w-[540px] mb-[40px] animate-fade-blur-in" style={{ animationDelay: '0.2s' }}>
             We're a small team teaching Cooper the judgment of a top insurance professional. If that's your kind of problem, we'd love to meet you.
@@ -170,7 +170,7 @@ export default function CareersPage() {
               {/* Left — heading */}
               <div className="lg:sticky lg:top-[120px]">
                 <h2 className="font-serif text-[30px] leading-[36px] md:text-[40px] md:leading-[46px] lg:text-[48px] lg:leading-[52px] tracking-[-0.5px] text-dark animate-fade-blur-in">
-                  We're building the coworker insurance never had.
+                  Cooper is the coworker insurance never had.
                 </h2>
               </div>
 
@@ -275,7 +275,7 @@ export default function CareersPage() {
                   <path d="M20 30v2h8v-2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 <p className="font-serif text-[22px] text-dark mb-[12px]">No open roles right now.</p>
-                <p className="font-sans text-[15px] leading-[1.6] text-dark/50 max-w-[380px]">
+                <p className="font-sans text-[15px] leading-[1.6] text-dark/60 max-w-[380px]">
                   We're a small team and hire carefully. Follow us on{' '}
                   <a
                     href="https://www.linkedin.com/company/cooperai"
@@ -318,7 +318,7 @@ export default function CareersPage() {
                           {compensationLabel(job) && (
                             <span className="font-sans text-[14px] text-dark/40">{compensationLabel(job)}</span>
                           )}
-                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-dark/30 group-hover:text-accent-orange group-hover:translate-x-1 transition-all">
+                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-dark/60 group-hover:text-accent-orange group-hover:translate-x-1 transition-all">
                             <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                           </svg>
                         </div>
