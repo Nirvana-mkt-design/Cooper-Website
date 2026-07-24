@@ -3,6 +3,7 @@
   "outputDirectory": "cooper-site/dist",
   "installCommand": "cd cooper-site && npm install",
   "framework": "vite",
+  "cleanUrls": true,
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ]
