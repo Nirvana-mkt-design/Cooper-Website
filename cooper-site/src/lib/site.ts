@@ -2,12 +2,12 @@
 // (canonical links, Open Graph URLs, JSON-LD @id / url fields).
 //
 // Defaults to the production domain. A build can override it (e.g. staging)
-// via VITE_SITE_ORIGIN. Keep the static references in sync when changing the
-// default:
-//   - index.html
-//   - public/robots.txt
-//   - public/sitemap.xml
-//   - scripts/prerender.cjs (reads SITE_ORIGIN from the environment)
+// via VITE_SITE_ORIGIN.
+//
+// robots.txt and sitemap.xml are generated from this value at build time by
+// scripts/prerender.cjs (it reads SITE_ORIGIN from the environment), so they
+// can't drift. index.html is the one remaining place that hardcodes the origin
+// (canonical, og:url, og:image) — keep it in sync when changing the default.
 export const SITE_ORIGIN =
   import.meta.env.VITE_SITE_ORIGIN ?? 'https://cooper-site-blush.vercel.app'
 
