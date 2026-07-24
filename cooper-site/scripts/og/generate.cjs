@@ -3,7 +3,9 @@
  * Local dev tool (needs macOS Chrome) — not run on Vercel. Re-run after
  * changing copy or hero art:  node scripts/og/generate.cjs
  *
- * Output: public/images/og/{slug}.png  (+ public/images/og-default.png for Home)
+ * Output: public/images/og/{slug}.jpg  (+ public/images/og-default.jpg for Home)
+ * JPEG (via sips) — the PNG screenshots were ~1 MB each, slow to unfurl in
+ * link previews.
  */
 const fs = require('fs')
 const path = require('path')
@@ -17,10 +19,10 @@ const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 
 const logo = fs.readFileSync(path.join(IMG, 'cooper-logo-full.svg'), 'utf8')
 
-// slug: null => Home (writes og-default.png). bg is relative to public/images.
+// slug: null => Home (writes og-default.jpg). bg is relative to public/images.
 const CARDS = [
   {
-    out: path.join(IMG, 'og-default.png'),
+    out: path.join(IMG, 'og-default.jpg'),
     bg: 'home-hero-frame.jpg',
     label: 'Built for insurance professionals',
     l1: 'More business.',
@@ -29,7 +31,7 @@ const CARDS = [
     sub: 'AI built for the insurance industry, bringing your workflows together and automating what slows you down.',
   },
   {
-    out: path.join(OUT_DIR, 'retail-agencies.png'),
+    out: path.join(OUT_DIR, 'retail-agencies.jpg'),
     bg: 'persona/persona-retail-hero.jpg',
     label: 'For retail agencies',
     l1: 'Producers sell.',
@@ -38,7 +40,7 @@ const CARDS = [
     sub: 'The data entry, submissions, renewals and certificates — automated. So producers sell and account managers stay ahead.',
   },
   {
-    out: path.join(OUT_DIR, 'wholesale-brokers.png'),
+    out: path.join(OUT_DIR, 'wholesale-brokers.jpg'),
     bg: 'persona/persona-wholesale-hero.webp',
     label: 'For wholesale brokers',
     l1: 'Quote first.',
@@ -47,7 +49,7 @@ const CARDS = [
     sub: 'Cooper triages submissions, matches risks to markets and sends proposals while the deal is still warm.',
   },
   {
-    out: path.join(OUT_DIR, 'mgas-insurers.png'),
+    out: path.join(OUT_DIR, 'mgas-insurers.jpg'),
     bg: 'persona/persona-mgas-hero.webp',
     label: 'For MGAs & insurers',
     l1: 'Scale underwriting.',
@@ -56,7 +58,7 @@ const CARDS = [
     sub: 'Enforce your guidelines, price consistently and stay audit-ready — without adding underwriters.',
   },
   {
-    out: path.join(OUT_DIR, 'claims-tpas.png'),
+    out: path.join(OUT_DIR, 'claims-tpas.jpg'),
     bg: 'persona/persona-claims-hero.webp',
     label: 'For claims TPAs',
     l1: 'More claims.',
@@ -65,7 +67,7 @@ const CARDS = [
     sub: 'Intake, coverage checks and reporting, handled — so adjusters focus on the files that need real judgment.',
   },
   {
-    out: path.join(OUT_DIR, 'reinsurers.png'),
+    out: path.join(OUT_DIR, 'reinsurers.jpg'),
     bg: 'persona/persona-reinsurers-hero.webp',
     label: 'For reinsurers',
     l1: 'Renewal season.',
@@ -125,14 +127,18 @@ function template({ bg, label, l1, l2, size, sub }) {
 
 fs.mkdirSync(OUT_DIR, { recursive: true })
 const tmp = path.join(require('os').tmpdir(), 'og-card.html')
+const tmpShot = path.join(require('os').tmpdir(), 'og-card.png')
 
 for (const card of CARDS) {
   fs.writeFileSync(tmp, template(card))
+  // Chrome --screenshot only writes PNG; convert with sips (this is a
+  // macOS-only tool already, see CHROME above).
   execSync(
     `"${CHROME}" --headless --disable-gpu --hide-scrollbars --allow-file-access-from-files ` +
       `--window-size=1200,630 --force-device-scale-factor=1 --virtual-time-budget=5000 ` +
-      `--screenshot="${card.out}" "file://${tmp}"`,
+      `--screenshot="${tmpShot}" "file://${tmp}"`,
     { stdio: 'ignore' }
   )
+  execSync(`sips -s format jpeg -s formatOptions 85 "${tmpShot}" --out "${card.out}"`, { stdio: 'ignore' })
   console.log('rendered', path.relative(ROOT, card.out))
 }

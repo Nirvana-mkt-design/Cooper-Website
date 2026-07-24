@@ -48,8 +48,8 @@ export default function TermsPage() {
             className="flex flex-wrap gap-x-[24px] gap-y-[6px] font-sans text-[14px] text-dark/40 animate-fade-blur-in"
             style={{ animationDelay: '0.1s' }}
           >
-            <span>Effective: January 8, 2026</span>
-            <span>Last Updated: January 8, 2026</span>
+            <span>Effective: July 2026</span>
+            <span>Last Updated: July 2026</span>
           </div>
         </div>
       </section>
@@ -60,7 +60,7 @@ export default function TermsPage() {
 
           {/* Sidebar TOC */}
           <nav className="hidden lg:block sticky top-[100px] max-h-[calc(100vh-120px)] overflow-y-auto">
-            <p className="font-grotesk font-medium text-[10px] tracking-[1.4px] uppercase text-dark/30 mb-[10px] px-[12px]">
+            <p className="font-grotesk font-medium text-[10px] tracking-[1.4px] uppercase text-dark/60 mb-[10px] px-[12px]">
               Contents
             </p>
             <ul className="flex flex-col">
@@ -84,8 +84,8 @@ export default function TermsPage() {
               <p className={pCls}>
                 Your access to and use of our website at askcooper.ai and any of its subdomains, and any other
                 websites owned and hosted by Cooper AI Tech, Inc. (together, our "Site") is governed by these terms
-                and conditions ("Terms") and our Privacy Policy, which is incorporated by reference into these Terms.
-                Please read them carefully.
+                and conditions ("Terms"), our <a href="/cookie-policy" className={linkCls}>Cookie Policy</a>, and our
+                Privacy Policy, each of which is incorporated by reference into these Terms. Please read them carefully.
               </p>
               <div className={capsBoxCls}>
                 BY ACCESSING, BROWSING, OR OTHERWISE USING THE SITE, YOU AFFIRM THAT: (I) YOU HAVE READ, UNDERSTAND

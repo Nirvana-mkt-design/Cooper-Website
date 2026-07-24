@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
+import StableWidth from './StableWidth'
 
 // `unit` renders small and inline after the big number (e.g. "25" + "hrs/wk"),
 // so a word-length unit stays on the same line instead of wrapping.
-const metrics: { end: number; decimals: number; suffix: string; unit?: string; label: string }[] = [
-  { end: 18, decimals: 0, suffix: '', unit: 'hrs/wk', label: 'back to the team to sell' },
-  { end: 93, decimals: 0, suffix: '%', label: 'fewer re-entry errors' },
+const metrics: { end: number; decimals: number; prefix?: string; suffix: string; unit?: string; label: string }[] = [
+  { end: 65, decimals: 0, prefix: '$', suffix: 'M+', label: 'in premiums processed' },
   { end: 4, decimals: 0, suffix: '×', label: 'faster to first quote' },
+  { end: 99.2, decimals: 1, suffix: '%', label: 'form fill accuracy' },
 ]
 
 function useCountUp(end: number, duration: number, start: boolean, decimals = 0) {
@@ -54,14 +55,26 @@ function AnimatedMetric({ metric, delay }: { metric: typeof metrics[0]; delay: n
   const count = useCountUp(metric.end, 1800, visible, metric.decimals)
   const display = visible ? count.toFixed(metric.decimals) : (0).toFixed(metric.decimals)
 
+  // Each column is a `flex-1` item sized by its own content, so a number growing
+  // from "0" to "65" would resize its column and shove the whole row around
+  // mid-count. StableWidth reserves the final width up front.
+  const value = (text: string) => (
+    <>
+      {metric.prefix}{text}{metric.suffix}
+      {metric.unit && (
+        <span className="ml-[6px] align-baseline text-[24px] lg:text-[32px] font-medium">{metric.unit}</span>
+      )}
+    </>
+  )
+
   return (
     <div ref={ref} className="flex flex-col gap-[16px] items-start text-left md:items-center md:text-center flex-1">
-      <span className={`whitespace-nowrap font-serif text-[72px] md:text-[64px] lg:text-[96px] leading-[1] text-cream-light transition-opacity duration-500 ${visible ? 'opacity-100' : 'opacity-0'}`}>
-        {display}{metric.suffix}
-        {metric.unit && (
-          <span className="ml-[6px] align-baseline text-[24px] lg:text-[32px] font-medium">{metric.unit}</span>
-        )}
-      </span>
+      <StableWidth
+        final={value(metric.end.toFixed(metric.decimals))}
+        className={`whitespace-nowrap font-serif text-[72px] md:text-[64px] lg:text-[96px] leading-[1] text-cream-light transition-opacity duration-500 ${visible ? 'opacity-100' : 'opacity-0'}`}
+      >
+        {value(display)}
+      </StableWidth>
       <span className={`font-grotesk font-medium text-[14.5px] tracking-[1.45px] uppercase text-cream-light leading-[1.5] transition-opacity duration-500 ${visible ? 'opacity-100' : 'opacity-0'}`} style={{ transitionDelay: '0.3s' }}>
         {metric.label}
       </span>
@@ -80,6 +93,10 @@ export default function Metrics() {
         <img
           src="/images/metrics-bg.webp"
           alt=""
+          width={1440}
+          height={516}
+          loading="lazy"
+          decoding="async"
           className="absolute inset-0 w-full h-full object-cover object-bottom"
         />
         {/* Warm gradient overlays — hard-light */}

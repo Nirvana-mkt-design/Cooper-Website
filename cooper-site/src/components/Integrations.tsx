@@ -106,16 +106,21 @@ function ChipIcon({ item }: { item: Chip }) {
     // Isolate the leftmost mark from a wide wordmark strip (Figma crop).
     return (
       <span className="relative block h-[23px] w-[33px] shrink-0 overflow-hidden">
-        <img src={item.src} alt="" className="absolute left-0 top-0 h-full w-[693%] max-w-none" />
+        <img src={item.src} alt="" width={229} height={23} loading="lazy" className="absolute left-0 top-0 h-full w-[693%] max-w-none" />
       </span>
     )
   }
+  const h = item.h ?? 24
+  const w = item.maxW ?? 36
   return (
     <img
       src={item.src}
       alt=""
+      width={w}
+      height={h}
+      loading="lazy"
       className="w-auto shrink-0 object-contain"
-      style={{ height: item.h ?? 24, maxWidth: item.maxW ?? 36 }}
+      style={{ height: h, maxWidth: w }}
     />
   )
 }
@@ -208,16 +213,21 @@ function MobileChipIcon({ item }: { item: Chip }) {
   if (item.crop) {
     return (
       <span className="relative block shrink-0 overflow-hidden" style={{ height: 18, width: 26 }}>
-        <img src={item.src} alt="" className="absolute left-0 top-0 h-full w-[693%] max-w-none" />
+        <img src={item.src} alt="" width={180} height={18} loading="lazy" className="absolute left-0 top-0 h-full w-[693%] max-w-none" />
       </span>
     )
   }
+  const h = (item.h ?? 24) * M
+  const w = (item.maxW ?? 36) * M
   return (
     <img
       src={item.src}
       alt=""
+      width={w}
+      height={h}
+      loading="lazy"
       className="w-auto shrink-0 object-contain"
-      style={{ height: (item.h ?? 24) * M, maxWidth: (item.maxW ?? 36) * M }}
+      style={{ height: h, maxWidth: w }}
     />
   )
 }
@@ -317,9 +327,14 @@ function MobileConnector({
       style={{ left, top, width, height, transform }}
     >
       <defs>
+        {/* Cream fade over the line ends. Peak opacity is held below 1 and the
+            ramp reaches transparent well before the rect end so the dashed trace
+            stays partly visible right up to each connection point — the fully
+            opaque version dissolved the lines too early and read as confusing on
+            mobile. Still soft enough to hide that the Figma geometry stops short. */}
         <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="115.249" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#FFFCF1" />
-          <stop offset="1" stopColor="#FFFCF1" stopOpacity="0" />
+          <stop stopColor="#FFFCF1" stopOpacity="0.6" />
+          <stop offset="0.82" stopColor="#FFFCF1" stopOpacity="0" />
         </linearGradient>
       </defs>
 
@@ -371,9 +386,11 @@ function MobileIntegrations() {
         >
           {/* faint grid background */}
           <img
-            src="/images/integ/grid-bg.png"
+            src="/images/integ/grid-bg.webp"
             alt=""
             aria-hidden
+            width={1200}
+            height={796}
             className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-[0.35]"
           />
 

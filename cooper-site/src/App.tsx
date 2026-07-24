@@ -1,5 +1,5 @@
-import { useEffect, useLayoutEffect, useRef } from 'react'
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { lazy, Suspense, useEffect, useLayoutEffect, useRef } from 'react'
+import { Routes, Route, Navigate, useLocation, useParams } from 'react-router-dom'
 import { useUtmCapture } from './hooks/use-utm-capture'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
@@ -8,24 +8,41 @@ import OnePlatform from './components/OnePlatform'
 import Metrics from './components/Metrics'
 import BuiltForEveryRole from './components/BuiltForEveryRole'
 import Integrations from './components/Integrations'
-import IntegrationsPage from './components/IntegrationsPage'
 import SecurityCompliance from './components/SecurityCompliance'
 import FinalCTA from './components/FinalCTA'
 import Footer from './components/Footer'
-import DemoPage from './components/DemoPage'
-import PersonaPage from './components/PersonaPage'
-import AboutPage from './components/AboutPage'
-import CareersPage from './components/CareersPage'
-import CareerRolePage from './components/CareerRolePage'
-import PrivacyPage from './components/PrivacyPage'
-import TermsPage from './components/TermsPage'
-import SubprocessorsPage from './components/SubprocessorsPage'
+
+// Every non-home page is lazy so the home bundle doesn't carry react-markdown,
+// libphonenumber, and the long-tail pages. Prerendering still emits full HTML
+// for these routes (entry-server renders through Suspense), and React Router
+// wraps navigations in startTransition, so lazy loads never flash a fallback.
+const DemoPage = lazy(() => import('./components/DemoPage'))
+const PersonaPage = lazy(() => import('./components/PersonaPage'))
+const AboutPage = lazy(() => import('./components/AboutPage'))
+const IntegrationsPage = lazy(() => import('./components/IntegrationsPage'))
+const CareersPage = lazy(() => import('./components/CareersPage'))
+const CareerRolePage = lazy(() => import('./components/CareerRolePage'))
+const PrivacyPage = lazy(() => import('./components/PrivacyPage'))
+const TermsPage = lazy(() => import('./components/TermsPage'))
+const CookiePolicyPage = lazy(() => import('./components/CookiePolicyPage'))
+const SubprocessorsPage = lazy(() => import('./components/SubprocessorsPage'))
+const MasterServicesAgreementPage = lazy(() => import('./components/MasterServicesAgreementPage'))
+const MasterServicesAgreementHipaaPage = lazy(() => import('./components/MasterServicesAgreementHipaaPage'))
+const DataProcessingAddendumPage = lazy(() => import('./components/DataProcessingAddendumPage'))
+const NotFoundPage = lazy(() => import('./components/NotFoundPage'))
 
 // Reset scroll to the top on every route change so a new page never opens
 // at the scroll height of the previous one. Honors #hash anchors when present.
 function UtmCapture() {
   useUtmCapture()
   return null
+}
+
+// Redirect legacy /personas/:slug URLs to the new /product/:slug paths, so any
+// previously shared or indexed links keep working after the rename.
+function PersonaRedirect() {
+  const { slug } = useParams()
+  return <Navigate to={`/product/${slug}`} replace />
 }
 
 function ScrollToTop() {
@@ -123,21 +140,34 @@ export default function App() {
     <>
       <ScrollToTop />
       <UtmCapture />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/demo" element={<DemoPage />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/integrations" element={<IntegrationsPage />} />
-        <Route path="/careers" element={<CareersPage />} />
-        <Route path="/careers/:roleId" element={<CareerRolePage />} />
-        {/* Reinsurers is pulled pre-launch (fast-follow rebuild): unreachable from
-            nav/grid and redirected on direct URL. Keep above the :slug route. */}
-        <Route path="/personas/reinsurers" element={<Navigate to="/" replace />} />
-        <Route path="/personas/:slug" element={<PersonaPage />} />
-        <Route path="/privacy" element={<PrivacyPage />} />
-        <Route path="/terms" element={<TermsPage />} />
-        <Route path="/subprocessors" element={<SubprocessorsPage />} />
-      </Routes>
+      <Suspense fallback={null}>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/demo" element={<DemoPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/integrations" element={<IntegrationsPage />} />
+          <Route path="/careers" element={<CareersPage />} />
+          <Route path="/careers/:roleId" element={<CareerRolePage />} />
+          {/* Product / use-case pages (formerly /personas/*). Reinsurers is pulled
+              pre-launch (fast-follow rebuild): redirected on direct URL. Keep the
+              specific route above the :slug route. */}
+          <Route path="/product/reinsurers" element={<Navigate to="/" replace />} />
+          <Route path="/product/:slug" element={<PersonaPage />} />
+          {/* Preserve previously shared /personas/* URLs by redirecting to /product/*. */}
+          <Route path="/personas/reinsurers" element={<Navigate to="/" replace />} />
+          <Route path="/personas/:slug" element={<PersonaRedirect />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/cookie-policy" element={<CookiePolicyPage />} />
+          <Route path="/subprocessors" element={<SubprocessorsPage />} />
+          <Route path="/master-services-agreement" element={<MasterServicesAgreementPage />} />
+          <Route path="/master-services-agreement-hipaa" element={<MasterServicesAgreementHipaaPage />} />
+          <Route path="/data-processing-addendum" element={<DataProcessingAddendumPage />} />
+          {/* Catch-all: any unknown URL renders a lightweight on-brand 404 instead
+              of a blank white page. Keep last so real routes win. */}
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </Suspense>
     </>
   )
 }

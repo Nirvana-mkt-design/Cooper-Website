@@ -62,7 +62,7 @@ export default function PrivacyPage() {
 
           {/* Sidebar TOC */}
           <nav className="hidden lg:block sticky top-[100px] max-h-[calc(100vh-120px)] overflow-y-auto">
-            <p className="font-grotesk font-medium text-[10px] tracking-[1.4px] uppercase text-dark/30 mb-[10px] px-[12px]">
+            <p className="font-grotesk font-medium text-[10px] tracking-[1.4px] uppercase text-dark/60 mb-[10px] px-[12px]">
               Contents
             </p>
             <ul className="flex flex-col">
@@ -279,8 +279,8 @@ export default function PrivacyPage() {
                 or have access to these third-party cookies or tracking technologies.
               </p>
               <p className={pCls}>
-                For more information about our use of cookies and similar technologies, please refer to our Cookie
-                Policy.
+                For more information about our use of cookies and similar technologies, please refer to our{' '}
+                <a href="/cookie-policy" className={linkCls}>Cookie Policy</a>.
               </p>
               <p className={pCls}>
                 We do not knowingly use cookies, pixels, SDKs, or similar technologies to collect PHI, and we do not

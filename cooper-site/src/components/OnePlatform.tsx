@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 const tabs = [
   {
     id: 'submission',
-    label: 'Build the submission',
+    label: 'Build the submissions',
     category: 'Submissions',
     title: 'Forward your docs, Cooper gives you a finished package.',
     subtitle: '',
@@ -77,11 +77,13 @@ function FileTag({ type }: { type: 'PDF' | 'EML' | 'XLS' }) {
   )
 }
 
+// Callers key this on `active` so a fresh instance (count = 0) mounts on each
+// activation — no reset-state-in-effect needed.
 function TypedText({ text, active, msPerChar = 48 }: { text: string; active: boolean; msPerChar?: number }) {
   const [count, setCount] = useState(0)
   const done = count >= text.length
   useEffect(() => {
-    if (!active) { setCount(0); return }
+    if (!active) return
     let i = 0
     const t = setInterval(() => {
       i++
@@ -215,7 +217,7 @@ function SubmissionPanel() {
               >
                 <p className="font-sans text-[9.5px] md:text-[10.5px] text-[#A5A09A] truncate">{r.label}</p>
                 <p className="font-sans text-[12px] md:text-[13px] font-semibold text-[#2B2520] min-h-[20px] truncate">
-                  <TypedText text={r.value} active={phase >= 7 + i} />
+                  <TypedText key={String(phase >= 7 + i)} text={r.value} active={phase >= 7 + i} />
                 </p>
               </div>
             ))}
@@ -474,10 +476,15 @@ function ProposalPanel() {
 const DURATION = 15000 // ms per tab
 
 const bgImages = [
-  '/images/platform-bg-submissions.jpg',
-  '/images/platform-bg-portals.jpg',
-  '/images/platform-bg-proposals.jpg',
+  '/images/platform-bg-submissions.webp',
+  '/images/platform-bg-portals.webp',
+  '/images/platform-bg-proposals.webp',
 ]
+
+// Each platform background ships a 2000w original plus -800/-1200 variants so
+// phones (including DPR 2–3) pick a small file instead of the 170 KB original.
+const bgSrcSet = (src: string) =>
+  `${src.replace('.webp', '-800.webp')} 800w, ${src.replace('.webp', '-1200.webp')} 1200w, ${src} 2000w`
 
 function MobileAccordion() {
   const [openIdx, setOpenIdx] = useState(0)
@@ -504,7 +511,7 @@ function MobileAccordion() {
                       : { filter: 'brightness(0) opacity(0.25)' }
                     }
                   />
-                  <p className={`font-grotesk font-medium text-[11px] tracking-[1.2px] uppercase ${isOpen ? 'text-accent-orange' : 'text-dark/30'}`}>
+                  <p className={`font-grotesk font-medium text-[11px] tracking-[1.2px] uppercase ${isOpen ? 'text-accent-orange' : 'text-dark/60'}`}>
                     {tab.category}
                   </p>
                 </div>
@@ -539,7 +546,7 @@ function MobileAccordion() {
 
               {/* Background image strip with UI panels */}
               <div className="relative h-[340px] overflow-hidden">
-                <img src={bgImages[idx]} alt="" className="absolute inset-0 w-full h-full object-cover" />
+                <img src={bgImages[idx]} alt="" width={2000} height={1116} srcSet={bgSrcSet(bgImages[idx])} sizes="100vw" loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover" />
                 <div className="absolute inset-0 mix-blend-hard-light" style={{ backgroundImage: 'linear-gradient(-89.4deg, rgba(186,67,9,0.36) 35%, rgba(186,67,9,0) 70%)' }} />
                 <div className="absolute inset-0 mix-blend-hard-light" style={{ backgroundImage: 'linear-gradient(241.6deg, rgba(186,186,9,0) 43%, rgba(186,89,9,0.43) 57%)' }} />
                 <div className="absolute inset-0 mix-blend-soft-light" style={{ background: 'radial-gradient(ellipse at 90% -15%, rgba(55,27,19,0) 46%, rgba(55,27,19,0.56) 100%)' }} />
@@ -578,7 +585,11 @@ export default function OnePlatform() {
   const [progress, setProgress] = useState(0)
   const [inView, setInView] = useState(false)
   const sectionRef = useRef<HTMLElement>(null)
-  const startRef = useRef(Date.now())
+  // startRef/progressRef are written by the rAF effect below (never during
+  // render); progressRef mirrors `progress` so the effect can resume mid-bar
+  // without depending on the state value.
+  const startRef = useRef(0)
+  const progressRef = useRef(0)
   const rafRef = useRef<number>(0)
   const [animKey, setAnimKey] = useState(0)
   const active = tabs[activeIdx]
@@ -587,7 +598,7 @@ export default function OnePlatform() {
     setActiveIdx((prev) => (prev + 1) % tabs.length)
     setAnimKey((k) => k + 1)
     setProgress(0)
-    startRef.current = Date.now()
+    progressRef.current = 0
   }, [])
 
   // Only start the auto-advance + progress bar once the section scrolls into view
@@ -608,15 +619,18 @@ export default function OnePlatform() {
     return () => observer.disconnect()
   }, [])
 
-  // Animation frame loop for smooth progress bar
+  // Animation frame loop for smooth progress bar. Keyed on animKey (bumped by
+  // every transition, including same-tab clicks) so each one restarts the
+  // clock from progressRef.
   useEffect(() => {
     if (!inView) return
 
-    startRef.current = Date.now() - (progress / 100) * DURATION
+    startRef.current = Date.now() - (progressRef.current / 100) * DURATION
 
     const tick = () => {
       const elapsed = Date.now() - startRef.current
       const pct = Math.min((elapsed / DURATION) * 100, 100)
+      progressRef.current = pct
       setProgress(pct)
       if (pct >= 100) {
         goNext()
@@ -626,14 +640,14 @@ export default function OnePlatform() {
     }
     rafRef.current = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(rafRef.current)
-  }, [inView, activeIdx, goNext])
+  }, [inView, animKey, goNext])
 
   // Manual click: restart this tab's progress from 0 and keep the carousel running
   const handleTabClick = (idx: number) => {
     setActiveIdx(idx)
     setAnimKey((k) => k + 1)
     setProgress(0)
-    startRef.current = Date.now()
+    progressRef.current = 0
   }
 
   return (
@@ -689,7 +703,7 @@ export default function OnePlatform() {
                 <path fillRule="evenodd" clipRule="evenodd" d="M60.0615 0C72.8642 0.000149885 83.2434 10.3788 83.2435 23.1815L83.2416 23.4811C83.1479 30.88 79.5864 37.442 74.1093 41.621C79.6604 45.8563 83.2435 52.5399 83.2435 60.061L83.2416 60.3607C83.0811 73.0254 72.7642 83.2428 60.0615 83.243L59.7619 83.2411C52.3632 83.1473 45.8009 79.5862 41.622 74.1093C37.3866 79.6603 30.7026 83.2429 23.1815 83.243L22.8818 83.2411C10.2172 83.0805 7.73898e-05 72.7637 0 60.061C4.11592e-05 52.5405 3.58211 45.8573 9.13223 41.622C3.58171 37.3866 7.63667e-06 30.7023 0 23.1815C7.00685e-05 10.3787 10.3787 7.00776e-05 23.1815 0C30.7026 4.03379e-05 37.3861 3.58279 41.6215 9.13367C45.8568 3.58276 52.5404 4.1168e-05 60.0615 0ZM18.6642 46.9719C13.2366 48.8446 9.33768 53.9971 9.33763 60.061C9.3377 67.7067 15.5358 73.9052 23.1815 73.9054C29.5238 73.9053 34.8689 69.6397 36.5073 63.8212C36.5133 63.8224 36.5195 63.8234 36.5255 63.8246C27.8285 62.0864 20.8884 55.4832 18.6642 46.9719ZM63.598 46.6742C61.5421 54.9938 54.9941 61.5414 46.6747 63.598C48.2377 69.5303 53.6383 73.9053 60.0615 73.9054C67.7072 73.9052 73.9058 67.7067 73.9059 60.061C73.9058 53.6377 69.5306 48.2371 63.598 46.6742ZM41.0933 27.2504C33.4476 27.2505 27.2496 33.4486 27.2495 41.0943C27.2495 48.7401 33.4476 54.9386 41.0933 54.9386C48.7392 54.9386 54.9377 48.7401 54.9377 41.0943C54.9376 33.4485 48.7391 27.2505 41.0933 27.2504ZM64.2686 41.6225C64.2725 41.4469 64.2758 41.2708 64.2758 41.0943L64.2734 41.394C64.2724 41.4702 64.2703 41.5464 64.2686 41.6225ZM60.0615 9.33762C53.9972 9.33768 48.8444 13.2371 46.9719 18.6651C46.9635 18.6629 46.9549 18.6606 46.9464 18.6584C55.4854 20.8798 62.1083 27.847 63.8332 36.5751C63.8288 36.5524 63.8253 36.5295 63.8207 36.5068C69.6397 34.8687 73.9058 29.5241 73.9059 23.1815C73.9058 15.5358 67.7072 9.33777 60.0615 9.33762ZM36.1884 18.4338C34.2509 13.1266 29.1592 9.33768 23.1815 9.33762C15.5357 9.33769 9.3377 15.5357 9.33763 23.1815C9.33764 29.1593 13.1266 34.2509 18.4338 36.1883C20.3441 27.3232 27.323 20.3437 36.1884 18.4338Z" fill="#d95611"/>
               </svg>
               {/* Category label */}
-              <p className="font-grotesk font-medium text-[13px] tracking-[1.45px] uppercase text-dark/50 mb-[16px] md:mb-[20px] shrink-0 animate-fade-in" style={{ animationDelay: '0.08s' }}>
+              <p className="font-grotesk font-medium text-[13px] tracking-[1.45px] uppercase text-dark/60 mb-[16px] md:mb-[20px] shrink-0 animate-fade-in" style={{ animationDelay: '0.08s' }}>
                 {active.category}
               </p>
               <h3 className="font-serif text-[26px] md:text-[38px] leading-[1.15] text-dark mb-[20px] md:mb-[28px] max-w-[445px] animate-fade-in" style={{ animationDelay: '0.15s' }}>
@@ -711,18 +725,14 @@ export default function OnePlatform() {
             {/* Right — layered background + UI overlay */}
             <div className={`relative min-h-[440px] md:h-auto border-t md:border-t-0 md:border-l border-black/[0.12] overflow-hidden flex items-center justify-center ${activeIdx !== 2 ? 'md:overflow-hidden' : 'md:overflow-visible'}`}>
               {/* Background images — one per tab, crossfaded with opacity */}
-              <img src="/images/platform-bg-submissions.jpg" alt=""
-                className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
-                style={{ opacity: activeIdx === 0 ? 1 : 0 }}
-              />
-              <img src="/images/platform-bg-portals.jpg" alt=""
-                className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
-                style={{ opacity: activeIdx === 1 ? 1 : 0 }}
-              />
-              <img src="/images/platform-bg-proposals.jpg" alt=""
-                className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
-                style={{ opacity: activeIdx === 2 ? 1 : 0 }}
-              />
+              {bgImages.map((src, i) => (
+                <img key={src} src={src} alt="" width={2000} height={1116}
+                  srcSet={bgSrcSet(src)}
+                  sizes="(min-width: 768px) 50vw, 100vw" loading="lazy" decoding="async"
+                  className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
+                  style={{ opacity: activeIdx === i ? 1 : 0 }}
+                />
+              ))}
               <div className="absolute inset-0 mix-blend-hard-light" style={{ backgroundImage: 'linear-gradient(-89.4deg, rgba(186,67,9,0.36) 35%, rgba(186,67,9,0) 70%)' }} />
               <div className="absolute inset-0 mix-blend-hard-light" style={{ backgroundImage: 'linear-gradient(241.6deg, rgba(186,186,9,0) 43%, rgba(186,89,9,0.43) 57%)' }} />
               <div className="absolute inset-0 mix-blend-soft-light" style={{ background: 'radial-gradient(ellipse at 90% -15%, rgba(55,27,19,0) 46%, rgba(55,27,19,0.56) 100%)' }} />

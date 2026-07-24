@@ -39,7 +39,11 @@ export default function Testimonial() {
   const [animKey, setAnimKey] = useState(0)
   const [progress, setProgress] = useState(0)
   const [paused, setPaused] = useState(false)
-  const startRef = useRef(Date.now())
+  // startRef/progressRef are written by the rAF effect below (never during
+  // render); progressRef mirrors `progress` so the effect can resume mid-bar
+  // without depending on the state value.
+  const startRef = useRef(0)
+  const progressRef = useRef(0)
   const rafRef = useRef<number>(0)
   const t = testimonials[active]
 
@@ -47,7 +51,7 @@ export default function Testimonial() {
     setActive((prev) => (prev + 1) % testimonials.length)
     setAnimKey((k) => k + 1)
     setProgress(0)
-    startRef.current = Date.now()
+    progressRef.current = 0
   }, [])
 
   const goTo = (idx: number) => {
@@ -55,18 +59,19 @@ export default function Testimonial() {
     setActive(idx)
     setAnimKey((k) => k + 1)
     setProgress(0)
-    startRef.current = Date.now()
+    progressRef.current = 0
     setPaused(true)
     setTimeout(() => setPaused(false), 10000)
   }
 
   useEffect(() => {
     if (paused) return
-    startRef.current = Date.now() - (progress / 100) * DURATION
+    startRef.current = Date.now() - (progressRef.current / 100) * DURATION
 
     const tick = () => {
       const elapsed = Date.now() - startRef.current
       const pct = Math.min((elapsed / DURATION) * 100, 100)
+      progressRef.current = pct
       setProgress(pct)
       if (pct >= 100) {
         goNext()

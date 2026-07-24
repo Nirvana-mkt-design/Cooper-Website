@@ -140,13 +140,13 @@ export default function HowCooperHelps() {
       <div className="relative lg:absolute lg:inset-0 z-30 flex items-center px-5 md:px-10 lg:px-[62px] pt-[64px] md:pt-[80px] lg:pt-0">
         <div className="max-w-[1440px] mx-auto w-full">
           <div className="max-w-[640px]">
-            <p className="font-grotesk font-medium text-[15px] tracking-[1.45px] uppercase text-dark/50 mb-[24px]">
+            <p className="font-grotesk font-medium text-[15px] tracking-[1.45px] uppercase text-dark/60 mb-[24px]">
               How Cooper helps
             </p>
             <h2 className="font-serif text-[36px] lg:text-[38px] leading-[1.15] text-dark mb-[24px]">
               Your AI coworker for the<br className="hidden lg:inline" /> entire insurance workflow
             </h2>
-            <p className="font-sans text-[18px] leading-[1.5] text-dark/50" style={{ maxWidth: 620 }}>
+            <p className="font-sans text-[18px] leading-[1.5] text-dark/60" style={{ maxWidth: 620 }}>
               From the moment a submission lands in your inbox to the final bound policy, Cooper handles the manual work across every step. Your team focuses on decisions, relationships, and growing the book.
             </p>
           </div>
