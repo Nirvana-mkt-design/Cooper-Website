@@ -52,7 +52,9 @@ Then add them to `.github/asana-config.json` under `user_mappings` with `registe
 
 - **Do NOT auto-commit or auto-push.** Only commit and push when the user explicitly asks.
 - **Publish = merge to `main`.** The `stratuu/cooper-site` project auto-deploys to https://cooper-site-blush.vercel.app via Git integration. No manual `vercel --prod` needed.
-- If a manual deploy is ever required, run from the **repo root** (project rootDirectory is `cooper-site`) with the correct team: `vercel --prod --scope stratuu`. Do NOT deploy to the personal `hygordezign-3139` duplicate. (The root `vercel.json` is a leftover and unused by the real project.)
+- If a manual deploy is ever required, run from the **repo root** with the correct team: `vercel --prod --scope stratuu`. Do NOT deploy to the personal `hygordezign-3139` duplicate.
+- **Routing config lives in the root `vercel.json`.** It carries `buildCommand`, `outputDirectory: cooper-site/dist`, `cleanUrls`, and the SPA fallback, so the project root directory is the repo root (not `cooper-site`). A second `cooper-site/vercel.json` used to exist; the deploy never read it and it had drifted to routes that no longer exist, so it was deleted. Keep routing in the root file only.
+- `robots.txt` and `sitemap.xml` are **generated at build time** by `cooper-site/scripts/prerender.cjs` from `SITE_ORIGIN`. Do not add static copies back to `public/`.
 
 ## Asana Integration
 

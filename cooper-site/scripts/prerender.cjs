@@ -137,7 +137,14 @@ async function main() {
   ].join('\n')
   fs.writeFileSync(path.join(DIST, 'sitemap.xml'), sitemap)
 
-  console.log(`prerendered ${routes.length + 1} routes + sitemap.xml`)
+  // robots.txt is generated for the same reason the sitemap is: as a static
+  // file in public/ it pointed at a different domain than the sitemap it
+  // advertises, so crawlers were sent to a Sitemap: URL this deploy never
+  // serves. Deriving it from ORIGIN keeps the two in lockstep per environment.
+  const robots = [`User-agent: *`, `Allow: /`, ``, `Sitemap: ${ORIGIN}/sitemap.xml`, ``].join('\n')
+  fs.writeFileSync(path.join(DIST, 'robots.txt'), robots)
+
+  console.log(`prerendered ${routes.length + 1} routes + sitemap.xml + robots.txt`)
 }
 
 main().catch((err) => {

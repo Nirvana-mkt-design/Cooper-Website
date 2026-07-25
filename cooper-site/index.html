@@ -3,6 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/images/cooper-logo.svg" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!--
@@ -31,7 +33,7 @@
       content="Cooper is your AI coworker for the entire insurance workflow from intake to renewal."
     />
     <meta property="og:url" content="https://cooper-site-blush.vercel.app/" />
-    <meta property="og:image" content="https://cooper-site-blush.vercel.app/images/og-default.png" />
+    <meta property="og:image" content="https://cooper-site-blush.vercel.app/images/og-default.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
 
@@ -42,7 +44,7 @@
       name="twitter:description"
       content="Cooper is your AI coworker for the entire insurance workflow from intake to renewal."
     />
-    <meta name="twitter:image" content="https://cooper-site-blush.vercel.app/images/og-default.png" />
+    <meta name="twitter:image" content="https://cooper-site-blush.vercel.app/images/og-default.jpg" />
 
     <!--
       JSON-LD structured data. Powers the Google knowledge panel (Organization)
@@ -126,9 +128,12 @@
       }
     </script>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=BIZ+UDPMincho&family=Space+Grotesk:wght@500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <!--
+      Fonts are self-hosted from /public/fonts and declared in src/index.css.
+      No Google Fonts link here on purpose: loading them again would fetch the
+      same three families a second time and add a render-blocking request to a
+      third-party origin.
+    -->
 
     <!-- Cookiebot -->
     <script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="9ee90567-df2f-4c70-a946-cda2f21be9b4" data-blockingmode="auto" type="text/javascript"></script>

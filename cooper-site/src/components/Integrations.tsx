@@ -1,5 +1,5 @@
 /* ──────────────────────────────────────────────────────────────
-   Integrations — "Works with the tools you already use".
+   Integrations — "Cooper works with the tools you already use".
    Four category clusters (Records, Carriers, Documents, Communications)
    arranged around a central orange Cooper orb, linked by dashed
    orthogonal connectors over a faint grid. Followed by the
@@ -457,7 +457,7 @@ export default function Integrations() {
               Integrations
             </p>
             <h2 className="font-serif text-[32px] leading-[1.12] text-dark md:text-[44px] lg:text-[48px]">
-              Works with the tools you already use
+              Cooper works with the tools you already use
             </h2>
           </div>
           <div className="lg:max-w-[360px] lg:pb-[6px]">
