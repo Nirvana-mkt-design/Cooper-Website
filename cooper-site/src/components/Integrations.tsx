@@ -381,21 +381,33 @@ function MobileIntegrations() {
         {/* aspect-ratio spacer */}
         <div style={{ paddingBottom: `${(MCH / MCW) * 100}%` }} />
 
+        {/* Grid background — same repeating Figma tile as desktop, but laid on
+            the unscaled wrapper so the cells stay square and crisp. The old
+            mobile treatment stretched a 1200x796 raster over a 390x1515 canvas,
+            which blew the cells up into huge lopsided rectangles. */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.035]"
+          style={{
+            backgroundImage: 'url(/images/integ/grid.png)',
+            backgroundRepeat: 'repeat',
+            backgroundSize: '40px 40px',
+            backgroundPosition: 'center',
+          }}
+        />
+        {/* radial vignette — fades the grid to cream at the edges */}
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            backgroundImage:
+              'radial-gradient(circle at 50% 40%, rgba(255,252,241,0) 0%, rgba(255,252,241,0.9) 85%)',
+          }}
+        />
+
         {/* scaled canvas */}
         <div
           className="absolute left-0 top-0"
           style={{ width: MCW, height: MCH, transformOrigin: 'top left', transform: `scale(${scale})` }}
         >
-          {/* faint grid background */}
-          <img
-            src="/images/integ/grid-bg.webp"
-            alt=""
-            aria-hidden
-            width={1200}
-            height={796}
-            className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-[0.35]"
-          />
-
           {/* grey dashed connectors */}
           <MobileConnector cfg={CONN.top} gradId="mc-top-fade" left={97.5} top={71.5} width={261.9} height={617.8} transform="rotate(180deg) scaleX(-1)" />
           <MobileConnector cfg={CONN.bottom} gradId="mc-bot-fade" left={97.5} top={774.8} width={281.7} height={513.9} />
