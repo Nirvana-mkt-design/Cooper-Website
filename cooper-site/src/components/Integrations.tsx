@@ -30,9 +30,17 @@ function useFitScale(natural: number) {
 }
 
 /* ── Chip icons — brand marks for the chips ──
-   Carriers use small brand marks (not wordmarks). Chubb is cropped
-   from the wordmark strip to isolate the mark, matching Figma. */
-type Chip = { src?: string; label: string; crop?: boolean; h?: number; maxW?: number; text?: boolean }
+   Carriers use small brand marks, not wordmarks. Every mark is drawn into
+   the same fixed slot (see ICON_W / ICON_H) rather than being sized
+   per-logo, so the pills keep an even height and the labels all start at
+   the same offset. Brands with no usable small mark (Chubb) render as
+   text-only pills instead of a cropped fragment of their wordmark. */
+type Chip = { src?: string; label: string; text?: boolean }
+
+/* Icon slot. Wide marks are contained inside it, so they read a little
+   smaller than square ones instead of pushing the pill around. */
+const ICON_W = 28
+const ICON_H = 24
 
 const logo = {
   epic: '/images/logo-epic.webp',
@@ -47,7 +55,6 @@ const logo = {
   salesforce: '/images/chips/salesforce.png',
   travelers: '/images/chips/travelers.png',
   libertymutual: '/images/chips/liberty-mutual.png',
-  chubb: '/images/chips/chubb.png',
   zurich: '/images/chips/zurich.png',
   hanover: '/images/chips/hanover.svg',
   outlook: '/images/logo-outlook.webp',
@@ -66,18 +73,20 @@ const GROUPS: Record<'ams' | 'carriers' | 'documents' | 'communication', Group> 
       { src: logo.guidewire, label: 'Guidewire' },
       { src: logo.ams360, label: 'AMS360' },
       { src: logo.hawksoft, label: 'HawkSoft' },
-      { src: logo.ezlynx, label: 'EzLynx', h: 21, maxW: 42 },
+      { src: logo.ezlynx, label: 'EzLynx' },
     ],
   },
   carriers: {
     label: 'Carriers',
     more: '+ hundreds more',
     chips: [
-      { src: logo.travelers, label: 'Travelers', h: 22 },
-      { src: logo.libertymutual, label: 'Liberty Mutual', h: 28 },
-      { src: logo.chubb, label: 'Chubb', crop: true },
-      { src: logo.zurich, label: 'Zurich', h: 24, maxW: 28 },
-      { src: logo.hanover, label: 'The Hanover', h: 24, maxW: 26 },
+      { src: logo.travelers, label: 'Travelers' },
+      { src: logo.libertymutual, label: 'Liberty Mutual' },
+      // Chubb's identity is a wordmark with no standalone mark, and the old
+      // crop isolated the "C", which read as a stray bracket.
+      { label: 'Chubb', text: true },
+      { src: logo.zurich, label: 'Zurich' },
+      { src: logo.hanover, label: 'The Hanover' },
     ],
   },
   documents: {
@@ -85,10 +94,10 @@ const GROUPS: Record<'ams' | 'carriers' | 'documents' | 'communication', Group> 
     more: 'And more...',
     chips: [
       { src: logo.sharepoint, label: 'SharePoint' },
-      { src: logo.onedrive, label: 'OneDrive', h: 22 },
+      { src: logo.onedrive, label: 'OneDrive' },
       { src: logo.dropbox, label: 'Dropbox' },
-      { src: logo.hubspot, label: 'HubSpot', h: 22 },
-      { src: logo.salesforce, label: 'Salesforce', h: 20, maxW: 42 },
+      { src: logo.hubspot, label: 'HubSpot' },
+      { src: logo.salesforce, label: 'Salesforce' },
     ],
   },
   communication: {
@@ -104,26 +113,13 @@ const GROUPS: Record<'ams' | 'carriers' | 'documents' | 'communication', Group> 
 
 /* ── Reusable pieces ── */
 function ChipIcon({ item }: { item: Chip }) {
-  if (item.crop) {
-    // Isolate the leftmost mark from a wide wordmark strip (Figma crop).
-    return (
-      <span className="relative block h-[23px] w-[33px] shrink-0 overflow-hidden">
-        <img src={item.src} alt="" width={229} height={23} loading="lazy" className="absolute left-0 top-0 h-full w-[693%] max-w-none" />
-      </span>
-    )
-  }
-  const h = item.h ?? 24
-  const w = item.maxW ?? 36
   return (
-    <img
-      src={item.src}
-      alt=""
-      width={w}
-      height={h}
-      loading="lazy"
-      className="w-auto shrink-0 object-contain"
-      style={{ height: h, maxWidth: w }}
-    />
+    <span
+      className="flex shrink-0 items-center justify-center"
+      style={{ width: ICON_W, height: ICON_H }}
+    >
+      <img src={item.src} alt="" loading="lazy" className="max-h-full max-w-full object-contain" />
+    </span>
   )
 }
 
@@ -212,25 +208,13 @@ const MCW = 390
 const MCH = 1515
 
 function MobileChipIcon({ item }: { item: Chip }) {
-  if (item.crop) {
-    return (
-      <span className="relative block shrink-0 overflow-hidden" style={{ height: 18, width: 26 }}>
-        <img src={item.src} alt="" width={180} height={18} loading="lazy" className="absolute left-0 top-0 h-full w-[693%] max-w-none" />
-      </span>
-    )
-  }
-  const h = (item.h ?? 24) * M
-  const w = (item.maxW ?? 36) * M
   return (
-    <img
-      src={item.src}
-      alt=""
-      width={w}
-      height={h}
-      loading="lazy"
-      className="w-auto shrink-0 object-contain"
-      style={{ height: h, maxWidth: w }}
-    />
+    <span
+      className="flex shrink-0 items-center justify-center"
+      style={{ width: ICON_W * M, height: ICON_H * M }}
+    >
+      <img src={item.src} alt="" loading="lazy" className="max-h-full max-w-full object-contain" />
+    </span>
   )
 }
 
@@ -241,8 +225,8 @@ function MobileChipTag({ item }: { item: Chip }) {
       style={{
         // Match the height of the logo chips so text-only pills ("+ hundreds
         // more" / "And more...") don't render shorter than their neighbours:
-        // default icon height (24 * M) + vertical padding + border.
-        minHeight: 24 * M + 2 * 7.8 + 2 * 0.784,
+        // icon slot height + vertical padding + border.
+        minHeight: ICON_H * M + 2 * 7.8 + 2 * 0.784,
         border: '0.784px solid transparent',
         background:
           'linear-gradient(#fffcf1, #fffcf1) padding-box, linear-gradient(154deg, rgba(30,26,21,0.29) 6%, rgba(30,26,21,0) 100%) border-box',
@@ -256,6 +240,13 @@ function MobileChipTag({ item }: { item: Chip }) {
     </div>
   )
 }
+
+/* All four mobile groups share one two-column grid. The columns are sized to
+   their widest pill, so column two starts at the same x on every row. Records
+   and Carriers used to wrap naturally instead, which let each row pack on its
+   own and left the second column ragged, plus orphan rows in Carriers. */
+const MOBILE_GRID =
+  'absolute grid grid-cols-[max-content_max-content] justify-items-start gap-x-[3.9px] gap-y-[7.8px]'
 
 /* "And more..." / "+ hundreds more" marker, rendered as a text-only pill to
    match the chips around it. */
@@ -288,20 +279,21 @@ function MobileLabel({ children }: { children: string }) {
    empty space, so Carriers and Documents read as connected to nothing.
 
    Each group gets an anchor dot just past its label, a horizontal lead out
-   to a shared right-hand rail (x = 352, clear of the widest pill at 323.7),
-   and the rail elbows back into the orb. Records owns the top rail and
-   Communications the bottom one; Carriers and Documents merge into them.
+   to a shared right-hand rail (x = 366, clear of the widest pill, Liberty
+   Mutual, which reaches 355.3), and the rail elbows back into the orb.
+   Records owns the top rail and Communications the bottom one; Carriers and
+   Documents merge into them.
 
    `line` is what gets stroked (the merging branches stop at the junction so
    the rail isn't drawn twice, which would double up the dashes). `flow` is
    the full route a group's pulse travels to reach the orb. */
-const M_RAIL_TOP = 'V 534 Q 352 560 326 560 H 220.5 Q 194.5 560 194.5 586 V 668'
-const M_RAIL_BOTTOM = 'V 890 Q 352 864 326 864 H 220.5 Q 194.5 864 194.5 838 V 764'
+const M_RAIL_TOP = 'V 534 Q 366 560 340 560 H 220.5 Q 194.5 560 194.5 586 V 668'
+const M_RAIL_BOTTOM = 'V 890 Q 366 864 340 864 H 220.5 Q 194.5 864 194.5 838 V 764'
 
-const M_RECORDS = 'M 165 111 H 326 Q 352 111 352 137'
-const M_CARRIERS = 'M 170 325 H 326 Q 352 325 352 351'
-const M_DOCUMENTS = 'M 207 1006 H 326 Q 352 1006 352 980'
-const M_COMMS = 'M 272 1251 H 326 Q 352 1251 352 1225'
+const M_RECORDS = 'M 165 111 H 340 Q 366 111 366 137'
+const M_CARRIERS = 'M 170 325 H 340 Q 366 325 366 351'
+const M_DOCUMENTS = 'M 207 1006 H 340 Q 366 1006 366 980'
+const M_COMMS = 'M 272 1251 H 340 Q 366 1251 366 1225'
 
 type MConn = { line: string; flow: string; dot: [number, number]; dur: number; begin: number }
 
@@ -409,26 +401,25 @@ function MobileIntegrations() {
           <div className="absolute" style={{ left: 40.6, top: 1240 }}><MobileLabel>{GROUPS.communication.label}</MobileLabel></div>
 
           {/* AMS — natural-wrap grid (even spacing, pills sit adjacent) */}
-          <div className="absolute flex flex-wrap items-center gap-x-[8px] gap-y-[7.8px]" style={{ left: 32.7, top: 163.5, width: 300.5 }}>
+          <div className={MOBILE_GRID} style={{ left: 32.7, top: 163.5 }}>
             {GROUPS.ams.chips.map((c, i) => <MobileChip key={i} item={c} />)}
             <MobileMore>{GROUPS.ams.more}</MobileMore>
           </div>
 
-          {/* Carriers — natural-wrap grid (all pills visible, no fade-off edge).
-              Nudged up as a block so the wrapped rows clear the flow line. */}
-          <div className="absolute flex flex-wrap items-center gap-x-[11px] gap-y-[10.2px]" style={{ left: 32.7, top: 364.4, width: 300.5 }}>
+          {/* Carriers */}
+          <div className={MOBILE_GRID} style={{ left: 32.7, top: 364.4 }}>
             {GROUPS.carriers.chips.map((c, i) => <MobileChip key={i} item={c} />)}
             <MobileMore>{GROUPS.carriers.more}</MobileMore>
           </div>
 
-          {/* Documents — bottom-left 2-col grid */}
-          <div className="absolute grid grid-cols-2 justify-items-start gap-x-[3.9px] gap-y-[7.8px]" style={{ left: 40.6, top: 1063.8, width: 281 }}>
+          {/* Documents */}
+          <div className={MOBILE_GRID} style={{ left: 40.6, top: 1063.8 }}>
             {GROUPS.documents.chips.map((c, i) => <MobileChip key={i} item={c} />)}
             <MobileMore>{GROUPS.documents.more}</MobileMore>
           </div>
 
-          {/* Communication — bottom-right 2-col grid */}
-          <div className="absolute grid grid-cols-2 justify-items-start gap-x-[3.9px] gap-y-[7.8px]" style={{ left: 40.6, top: 1303.5, width: 249.3 }}>
+          {/* Communication */}
+          <div className={MOBILE_GRID} style={{ left: 40.6, top: 1303.5 }}>
             {GROUPS.communication.chips.map((c, i) => <MobileChip key={i} item={c} />)}
             <MobileMore>{GROUPS.communication.more}</MobileMore>
           </div>
