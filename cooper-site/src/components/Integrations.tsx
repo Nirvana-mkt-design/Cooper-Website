@@ -282,69 +282,50 @@ function MobileLabel({ children }: { children: string }) {
   )
 }
 
-/* Mobile connector geometry (Figma) — reused, but restyled as the grey
-   dashed trace. Two sub-paths per connector + cream fade masks. */
-type ConnCfg = {
-  viewBox: string
-  v203: string
-  v204: string
-  rects: { x?: number; y?: number; w: number; h: number; transform?: string }[]
-}
+/* ── Mobile connectors ──
+   Authored directly in the 390×1515 canvas instead of reusing the Figma
+   export. The exported geometry left two of the four branches ending in
+   empty space, so Carriers and Documents read as connected to nothing.
 
-const CONN: Record<'top' | 'bottom', ConnCfg> = {
-  top: {
-    viewBox: '0 0 262.936 617.842',
-    v203: 'M93.5009 0.000177191V96.8205C93.5009 113.389 80.0695 126.82 63.5009 126.82H4.41357',
-    v204: 'M93.2847 0V96.8203C93.2847 113.389 106.716 126.82 123.285 126.82H231.936C248.505 126.82 261.936 140.252 261.936 156.82V550.639C261.936 567.207 248.505 580.639 231.936 580.639H93.2847',
-    rects: [
-      { w: 74.4062, h: 115.249, transform: 'matrix(0 1 1 0 0 90.176)' },
-      { w: 74.4062, h: 115.249, transform: 'matrix(0 1 1 0 83.2466 543.436)' },
-      { x: 61.4902, y: 0, w: 74.4062, h: 115.249 },
-    ],
-  },
-  bottom: {
-    viewBox: '0 0 281.702 513.949',
-    v203: 'M93.5009 1.71456e-06V96.8203C93.5009 113.389 80.0695 126.82 63.5009 126.82H4.41357',
-    v204: 'M93.2847 0.000556946V152.838C93.2847 169.407 106.716 182.838 123.285 182.838H217.894C234.462 182.838 247.894 196.27 247.894 212.838V450.436C247.894 467.004 234.462 480.436 217.894 480.436H177.082',
-    rects: [
-      { w: 74.4062, h: 115.249, transform: 'matrix(0 1 1 0 0 90.1758)' },
-      { w: 74.4062, h: 115.249, transform: 'matrix(0 1 1 0 166.452 439.543)' },
-      { x: 61.4902, y: 0, w: 74.4062, h: 115.249 },
-    ],
-  },
-}
+   Each group gets an anchor dot just past its label, a horizontal lead out
+   to a shared right-hand rail (x = 352, clear of the widest pill at 323.7),
+   and the rail elbows back into the orb. Records owns the top rail and
+   Communications the bottom one; Carriers and Documents merge into them.
 
-function MobileConnector({
-  cfg, gradId, left, top, width, height, transform,
-}: {
-  cfg: ConnCfg; gradId: string
-  left: number; top: number; width: number; height: number; transform?: string
-}) {
+   `line` is what gets stroked (the merging branches stop at the junction so
+   the rail isn't drawn twice, which would double up the dashes). `flow` is
+   the full route a group's pulse travels to reach the orb. */
+const M_RAIL_TOP = 'V 534 Q 352 560 326 560 H 220.5 Q 194.5 560 194.5 586 V 668'
+const M_RAIL_BOTTOM = 'V 890 Q 352 864 326 864 H 220.5 Q 194.5 864 194.5 838 V 764'
+
+const M_RECORDS = 'M 165 111 H 326 Q 352 111 352 137'
+const M_CARRIERS = 'M 170 325 H 326 Q 352 325 352 351'
+const M_DOCUMENTS = 'M 207 1006 H 326 Q 352 1006 352 980'
+const M_COMMS = 'M 272 1251 H 326 Q 352 1251 352 1225'
+
+type MConn = { line: string; flow: string; dot: [number, number]; dur: number; begin: number }
+
+const M_CONNS: MConn[] = [
+  { line: `${M_RECORDS} ${M_RAIL_TOP}`, flow: `${M_RECORDS} ${M_RAIL_TOP}`, dot: [165, 111], dur: 3.6, begin: -0.4 },
+  { line: M_CARRIERS, flow: `${M_CARRIERS} ${M_RAIL_TOP}`, dot: [170, 325], dur: 2.7, begin: -1.6 },
+  { line: `${M_COMMS} ${M_RAIL_BOTTOM}`, flow: `${M_COMMS} ${M_RAIL_BOTTOM}`, dot: [272, 1251], dur: 2.9, begin: -0.9 },
+  { line: M_DOCUMENTS, flow: `${M_DOCUMENTS} ${M_RAIL_BOTTOM}`, dot: [207, 1006], dur: 2.1, begin: -2.2 },
+]
+
+function MobileConnectors() {
   return (
     <svg
-      viewBox={cfg.viewBox}
-      preserveAspectRatio="none"
+      viewBox={`0 0 ${MCW} ${MCH}`}
+      width={MCW}
+      height={MCH}
       fill="none"
-      className="absolute pointer-events-none overflow-visible"
-      style={{ left, top, width, height, transform }}
+      className="absolute inset-0 pointer-events-none"
     >
-      <defs>
-        {/* Cream fade over the line ends. Peak opacity is held below 1 and the
-            ramp reaches transparent well before the rect end so the dashed trace
-            stays partly visible right up to each connection point — the fully
-            opaque version dissolved the lines too early and read as confusing on
-            mobile. Still soft enough to hide that the Figma geometry stops short. */}
-        <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="115.249" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#FFFCF1" stopOpacity="0.6" />
-          <stop offset="0.82" stopColor="#FFFCF1" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-
       {/* grey dashed trace (matches desktop: #151515 @60%, 2px, dash 8/8) */}
-      {[cfg.v203, cfg.v204].map((d, i) => (
+      {M_CONNS.map((c, i) => (
         <path
-          key={i}
-          d={d}
+          key={`l-${i}`}
+          d={c.line}
           stroke="#151515"
           strokeOpacity="0.6"
           strokeWidth={2}
@@ -353,16 +334,17 @@ function MobileConnector({
         />
       ))}
 
-      {/* travelling grey pulse along each line (same as desktop) */}
-      {[cfg.v203, cfg.v204].map((d, i) => (
-        <circle key={`m${i}`} r={5.5} fill="#73716D">
-          <animateMotion dur={`${2.6 + i * 0.6}s`} begin={`${i * -0.9}s`} repeatCount="indefinite" path={d} rotate="auto" />
-        </circle>
+      {/* anchor dot where each line meets its group label */}
+      {M_CONNS.map((c, i) => (
+        <circle key={`d-${i}`} cx={c.dot[0]} cy={c.dot[1]} r={5.5} fill="#73716D" />
       ))}
 
-      {/* cream fade masks over the line ends */}
-      {cfg.rects.map((r, i) => (
-        <rect key={i} x={r.x} y={r.y} width={r.w} height={r.h} transform={r.transform} fill={`url(#${gradId})`} />
+      {/* travelling pulse, running the full route into the orb (which sits on
+          a higher layer and swallows the line + pulse at the very end) */}
+      {M_CONNS.map((c, i) => (
+        <circle key={`m-${i}`} r={5.5} fill="#73716D">
+          <animateMotion dur={`${c.dur}s`} begin={`${c.begin}s`} repeatCount="indefinite" path={c.flow} rotate="auto" />
+        </circle>
       ))}
     </svg>
   )
@@ -409,8 +391,7 @@ function MobileIntegrations() {
           style={{ width: MCW, height: MCH, transformOrigin: 'top left', transform: `scale(${scale})` }}
         >
           {/* grey dashed connectors */}
-          <MobileConnector cfg={CONN.top} gradId="mc-top-fade" left={97.5} top={71.5} width={261.9} height={617.8} transform="rotate(180deg) scaleX(-1)" />
-          <MobileConnector cfg={CONN.bottom} gradId="mc-bot-fade" left={97.5} top={774.8} width={281.7} height={513.9} />
+          <MobileConnectors />
 
           {/* centre orb */}
           <img
