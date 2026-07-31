@@ -1,39 +1,37 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { isValidPhoneNumber } from 'libphonenumber-js'
 import { useSeo } from '../lib/useSeo'
 import { pageJsonLd } from '../lib/pageSchema'
 import { useMetaPixel } from '../hooks/use-meta-pixel'
+import { useGoogleAds } from '../hooks/use-google-ads'
+import { EMPLOYEE_COUNTS, BOOK_OF_BUSINESS_BUCKETS, SOFTWARE_BUDGET_BUCKETS } from '../lib/conversions'
 import Turnstile from './Turnstile'
+// Demo requests post to the Cooper API, which verifies the Turnstile token,
+// rate-limits, and enqueues a POST to our Zapier lead webhook (see
+// backend/apps/core/demo_requests). The origin, captcha config, work-email
+// rule and E.164 helper are shared with the ROI calculator's gate — see
+// src/lib/leads.ts.
+import { API_ORIGIN, TURNSTILE_SITE_KEY, USE_TURNSTILE, isWorkEmail, leadPayload } from '../lib/leads'
 
-// Anti-spam + stopgap lead store.
-// When both env vars are set, the form posts to the Cloudflare Worker
-// (Turnstile-verified) instead of the team's API. Leave them empty and the
-// form keeps posting to api.askcooper.ai exactly as before, so a deploy without
-// the env vars never breaks the live form.
-const DEMO_ENDPOINT = import.meta.env.VITE_DEMO_ENDPOINT as string | undefined
-const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY as string | undefined
-const USE_WORKER = Boolean(DEMO_ENDPOINT && TURNSTILE_SITE_KEY)
+// Twilio Verify (SMS phone verification). When 'true', the form runs a two-step
+// flow: send an SMS code, then verify it on submit. The backend enforces it when
+// Twilio is configured server-side. Unset (dev) → single step, no code.
+const USE_PHONE_VERIFICATION = import.meta.env.VITE_PHONE_VERIFICATION === 'true'
 
-const PERSONAL_EMAIL_DOMAINS = new Set([
-  'gmail.com', 'googlemail.com', 'yahoo.com', 'yahoo.co.uk', 'yahoo.co.in',
-  'hotmail.com', 'hotmail.co.uk', 'outlook.com', 'live.com', 'msn.com',
-  'icloud.com', 'me.com', 'mac.com', 'aol.com', 'protonmail.com',
-  'proton.me', 'pm.me', 'zoho.com', 'yandex.com', 'yandex.ru',
-  'mail.com', 'gmx.com', 'gmx.net', 'inbox.com',
-])
+// Qualification-question dropdown options are defined in `conversions.ts`
+// so the lead-value lookup table can be exhaustively typed on them.
+const BOOK_OF_BUSINESS = BOOK_OF_BUSINESS_BUCKETS
+const SOFTWARE_BUDGET = SOFTWARE_BUDGET_BUCKETS
 
-function isWorkEmail(email: string): boolean {
-  const domain = email.split('@')[1]?.toLowerCase()
-  if (!domain) return false
-  return !PERSONAL_EMAIL_DOMAINS.has(domain)
-}
-
-const reasons = [
-  'Explore Cooper for my team',
-  'See a specific use case',
-  'Evaluate Cooper Enterprise',
-  'Request professional services',
+const HEAR_ABOUT_US = [
+  'Facebook/Instagram',
+  'LinkedIn',
+  'Google Search',
+  'Referral',
+  'Event/Conferences',
+  'Press/News Article',
+  'Other',
 ]
 
 const testimonials = [
@@ -50,9 +48,9 @@ const testimonials = [
 ]
 
 const stats = [
-  { value: '18 hrs/wk', label: 'back to the team to sell' },
-  { value: '93%', label: 'fewer re-entry errors' },
+  { value: '$65M+', label: 'in premiums processed' },
   { value: '4×', label: 'faster to first quote' },
+  { value: '99.2%', label: 'form fill accuracy' },
 ]
 
 type FormState = 'idle' | 'submitting' | 'success' | 'error'
@@ -71,20 +69,49 @@ export default function DemoPage() {
   })
 
   const { trackLead, trackOpenAiLead } = useMetaPixel()
+  const { trackGoogleLead } = useGoogleAds()
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
-  const [phone, setPhone] = useState('')
   const [company, setCompany] = useState('')
-  const [reason, setReason] = useState('')
+  const [employeeCount, setEmployeeCount] = useState('')
+  const [bookOfBusiness, setBookOfBusiness] = useState('')
+  const [softwareBudget, setSoftwareBudget] = useState('')
+  const [bookOfBusinessError, setBookOfBusinessError] = useState('')
+  const [softwareBudgetError, setSoftwareBudgetError] = useState('')
+  const [phone, setPhone] = useState('')
+  const [hearAbout, setHearAbout] = useState('')
   const [formState, setFormState] = useState<FormState>('idle')
   const [errorMsg, setErrorMsg] = useState('')
   const [nameError, setNameError] = useState('')
   const [emailError, setEmailError] = useState('')
+  const [companyError, setCompanyError] = useState('')
   const [phoneError, setPhoneError] = useState('')
   const [captchaToken, setCaptchaToken] = useState('')
   const [captchaError, setCaptchaError] = useState('')
   // Bumping this key remounts the widget to mint a fresh (single-use) token after a failed submit.
   const [captchaKey, setCaptchaKey] = useState(0)
+  // Form is a multi-step flow. 'details' is always shown; 'qualify' is a
+  // follow-up shown only to small/unknown prospects (see needsQualifying below)
+  // that captures book of business + software budget before we complete the
+  // submission; 'verify' collects the SMS code and is only reached under
+  // USE_PHONE_VERIFICATION.
+  const [step, setStep] = useState<'details' | 'qualify' | 'verify'>('details')
+  const [code, setCode] = useState('')
+  const [codeError, setCodeError] = useState('')
+
+  // Meta Lead event id — minted once per form session (not per submit attempt).
+  // If a submit enqueues the lead but the response is lost, the user retries and
+  // must reuse the same id: the server-side CAPI copy dedupes against the pixel
+  // Lead fire on event_id, and a fresh id per attempt would count two conversions
+  // (the email rate limit permits the retry; Meta has no email-based fallback).
+  const eventIdRef = useRef<string>(crypto.randomUUID())
+
+  // When the step changes, jump the viewport back to the top so the new step's
+  // first field is visible — otherwise on mobile the user lands mid-page at
+  // wherever the previous step's submit button was.
+  useEffect(() => {
+    if (typeof window !== 'undefined') window.scrollTo(0, 0)
+  }, [step])
 
   function handleNameBlur() {
     setNameError(!name.trim() ? 'Please enter your name.' : '')
@@ -94,105 +121,255 @@ export default function DemoPage() {
     setEmailError(email && !isWorkEmail(email) ? 'Please use a work email address.' : '')
   }
 
+  function handleCompanyBlur() {
+    setCompanyError(!company.trim() ? 'Please enter your company name.' : '')
+  }
+
   function handlePhoneBlur() {
     setPhoneError(phone && !isValidPhoneNumber(phone, 'US') ? 'Please enter a valid phone number.' : '')
   }
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
+  // Only ask book-of-business / software-budget when the prospect is small or
+  // didn't tell us their headcount. Larger orgs (11+) skip the qualifying step
+  // so we don't add friction where it doesn't help sales prioritize.
+  const needsQualifying = !employeeCount || employeeCount === '1-5' || employeeCount === '6-10'
+
+  // Both qualifying questions are required once the qualify step is shown.
+  function validateQualify(): boolean {
+    let valid = true
+    if (!bookOfBusiness) { setBookOfBusinessError('Please select an option.'); valid = false }
+    if (!softwareBudget) { setSoftwareBudgetError('Please select an option.'); valid = false }
+    return valid
+  }
+
+  function validateDetails(): boolean {
     let valid = true
     if (!name.trim()) { setNameError('Please enter your name.'); valid = false }
     if (!isWorkEmail(email)) { setEmailError('Please use a work email address.'); valid = false }
+    if (!company.trim()) { setCompanyError('Please enter your company name.'); valid = false }
     if (!isValidPhoneNumber(phone, 'US')) { setPhoneError('Please enter a valid phone number.'); valid = false }
-    if (USE_WORKER && !captchaToken) { setCaptchaError('Please complete the verification below.'); valid = false }
+    return valid
+  }
+
+  // The lead fields shared by both requests. Sent to /send-code/ too, so the
+  // backend captures the lead (flagged unverified) before the prospect verifies —
+  // abandoned leads aren't lost. Marketing attribution (utm_* + ad click IDs) is
+  // best-effort, absent when the visitor arrived without campaign params.
+  // leadPayload owns the shape every lead shares (trim, E.164, attribution,
+  // Meta cookies); the qualification answers below are demo-form-only.
+  function collectLeadFields() {
+    return {
+      ...leadPayload({ full_name: name, email, company, phone }),
+      number_of_employees: employeeCount,
+      annual_book_of_business: bookOfBusiness,
+      annual_software_budget: softwareBudget,
+      how_heard_about_us: hearAbout,
+    }
+  }
+
+  // Single-use Turnstile tokens are consumed by every /send-code/ POST, so any
+  // step-transition that leaves a step which still needs a captcha must mint a
+  // fresh one. Centralised so no back button forgets it.
+  function resetCaptcha() {
+    if (!USE_TURNSTILE) return
+    setCaptchaToken('')
+    setCaptchaKey((k) => k + 1)
+  }
+
+  // Step 1 (phone-verification flow): capture the lead in Zapier and — unless
+  // we're deferring the SMS to the qualify step — text the code. The captcha is
+  // verified server-side here; send-code is the bot gate since it writes the
+  // (unverified) lead and can trigger the SMS.
+  //
+  // For small/unknown prospects (needsQualifying) we call send-code twice:
+  //   1. details submit → defer_sms=true: fires Zap with the (partial) lead
+  //      but doesn't text yet, so we don't SMS someone who's about to answer
+  //      qualifying questions.
+  //   2. qualify submit → defer_sms=false: fires Zap again with the qualifying
+  //      answers included and finally sends the SMS.
+  // Larger prospects skip the qualify step and get the SMS immediately at
+  // details submit. Turnstile tokens are single-use, so the widget is remounted
+  // between the two calls (see showTurnstile below).
+  async function handleSendCode(e: React.FormEvent) {
+    e.preventDefault()
+    let valid = true
+    if (step === 'details' && !validateDetails()) valid = false
+    if (step === 'qualify' && !validateQualify()) valid = false
+    if (USE_TURNSTILE && !captchaToken) {
+      setCaptchaError('Please complete the verification below.')
+      valid = false
+    }
+    if (!valid) return
+    setNameError(''); setEmailError(''); setCompanyError(''); setPhoneError(''); setCaptchaError('')
+    setBookOfBusinessError(''); setSoftwareBudgetError('')
+
+    // Details submit for small/unknown prospects: capture the lead but hold the
+    // SMS until they finish qualifying.
+    const deferSms = step === 'details' && needsQualifying
+
+    setFormState('submitting')
+    setErrorMsg('')
+    try {
+      const res = await fetch(`${API_ORIGIN}/api/v1/demo-requests/send-code/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...collectLeadFields(),
+          turnstile_token: captchaToken,
+          defer_sms: deferSms,
+        }),
+      })
+      if (!res.ok) {
+        // Distinct copy for rate limits so a 429 doesn't blame the phone number.
+        if (res.status === 429) {
+          setFormState('error')
+          setErrorMsg('You\u2019ve made too many attempts. Please wait a bit and try again.')
+          resetCaptcha()
+          return
+        }
+        throw new Error(`HTTP ${res.status}`)
+      }
+      setStep(deferSms ? 'qualify' : 'verify')
+      setFormState('idle')
+      // Only remount when the next step needs a fresh token (details → qualify).
+      // Advancing to verify doesn't POST anything else until completion, and the
+      // completion request skips Turnstile once the SMS code has been checked,
+      // so clearing the token there would strand USE_PHONE_VERIFICATION-only
+      // deploys (Twilio unset) with a permanently-empty token on the final POST.
+      if (deferSms) resetCaptcha()
+    } catch {
+      setFormState('error')
+      setErrorMsg(deferSms
+        ? 'Something went wrong. Please try again.'
+        : 'Could not send the verification code. Check the number and try again.')
+      // Retry needs a fresh single-use token either way.
+      resetCaptcha()
+    }
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    // Single-step flow: on the details step, gate on qualify first for small/
+    // unknown prospects — same shape as handleSendCode's detailsToQualify hop.
+    const detailsToQualify = !USE_PHONE_VERIFICATION && step === 'details' && needsQualifying
+    let valid = true
+    // In the single-step flow, details are validated here; in the two-step flow
+    // they were already validated before the code was sent.
+    if (!USE_PHONE_VERIFICATION && step === 'details' && !validateDetails()) valid = false
+    if (!USE_PHONE_VERIFICATION && step === 'qualify' && !validateQualify()) valid = false
+    if (USE_PHONE_VERIFICATION && !code.trim()) { setCodeError('Enter the code we texted you.'); valid = false }
+    // Two-step flow solves the captcha at step 1 (send-code); only the single-step
+    // flow needs a token here. The details→qualify hop is client-side, so no token
+    // is required until the qualify step.
+    if (USE_TURNSTILE && !USE_PHONE_VERIFICATION && !detailsToQualify && !captchaToken) { setCaptchaError('Please complete the verification below.'); valid = false }
     if (!valid) return
 
-    setNameError(''); setEmailError(''); setPhoneError(''); setCaptchaError('')
+    setNameError(''); setEmailError(''); setCompanyError(''); setPhoneError(''); setCaptchaError(''); setCodeError('')
+    setBookOfBusinessError(''); setSoftwareBudgetError('')
+    if (detailsToQualify) {
+      setStep('qualify')
+      return
+    }
     setFormState('submitting')
     setErrorMsg('')
 
-    const nameParts = name.trim().split(/\s+/)
-    const noteParts: string[] = []
-    if (company) noteParts.push(`Company: ${company}`)
-    if (reason) noteParts.push(`Reason for demo: ${reason}`)
-
-    // Extract GA4 client_id from _ga cookie (format: GA1.1.XXXXXXXXXX.XXXXXXXXXX)
-    const gaCookie = document.cookie.split(';').map(c => c.trim()).find(c => c.startsWith('_ga='))
-    const gaParts = gaCookie?.split('=')[1]?.split('.')
-    const gaClientId = gaParts && gaParts.length >= 4 ? `${gaParts[2]}.${gaParts[3]}` : ''
-
-    const adParams = (() => {
-      try { return JSON.parse(sessionStorage.getItem('cooper_ad_params') ?? '{}') as Record<string, string> } catch { return {} }
-    })()
-
-    // Click IDs — append to notes for Salesforce visibility (no dedicated SF fields yet)
-    const CLICK_ID_KEYS = ['gclid', 'fbclid', 'msclkid', 'ttclid', 'li_fat_id', 'twclid']
-    const clickIds = CLICK_ID_KEYS.filter(k => adParams[k]).map(k => `${k}=${adParams[k]}`).join(' | ')
-    if (clickIds) noteParts.push(`[Click IDs: ${clickIds}]`)
-
-    const eventId = crypto.randomUUID()
+    const eventId = eventIdRef.current
+    // The API verifies the Turnstile token + SMS code, then forwards the lead to
+    // our Zapier webhook (which owns qualification/dedupe and the CRM write).
     const payload = {
-      first_name: nameParts[0],
-      last_name: nameParts.slice(1).join(' '),
-      email,
-      phone,
-      message: noteParts.join('\n\n'),
+      ...collectLeadFields(),
+      turnstile_token: captchaToken,
+      code: code.trim(),
+      // Same UUID as the Meta Pixel Lead fire below, so Meta dedupes the
+      // browser pixel event against the server-side CAPI event the backend
+      // fires from the demo-request workflow.
       event_id: eventId,
-      event_source_url: window.location.href,
-      ga_client_id: gaClientId,
-      utm_source: adParams.utm_source ?? '',
-      utm_medium: adParams.utm_medium ?? '',
-      utm_campaign: adParams.utm_campaign ?? '',
-      utm_term: adParams.utm_term ?? '',
-      utm_content: adParams.utm_content ?? '',
-      gclid: adParams.gclid ?? '',
-      fbclid: adParams.fbclid ?? '',
-      msclkid: adParams.msclkid ?? '',
-      ttclid: adParams.ttclid ?? '',
-      li_fat_id: adParams.li_fat_id ?? '',
-      twclid: adParams.twclid ?? '',
     }
 
     try {
-      let res: Response
-      if (USE_WORKER) {
-        // Stopgap: Turnstile-verified Cloudflare Worker → D1.
-        res = await fetch(DEMO_ENDPOINT as string, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...payload, turnstile_token: captchaToken }),
-        })
-      } else {
-        // Default: post straight to the team's API (original behavior).
-        res = await fetch(`https://api.askcooper.ai/api/v1/demo-requests/`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        })
+      const res = await fetch(`${API_ORIGIN}/api/v1/demo-requests/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+      if (!res.ok) {
+        // Invalid/expired SMS code — let them fix it without losing the form.
+        if (USE_PHONE_VERIFICATION && res.status === 422) {
+          setFormState('idle')
+          setCodeError('That code is invalid or expired. Try again or resend it.')
+          if (USE_TURNSTILE) { setCaptchaToken(''); setCaptchaKey((k) => k + 1) }
+          return
+        }
+        throw new Error(`HTTP ${res.status}`)
       }
-      if (!res.ok) throw new Error(`HTTP ${res.status}`)
       setFormState('success')
-      trackLead(eventId)
-      trackOpenAiLead()
+      trackLead(eventId, employeeCount, bookOfBusiness, softwareBudget)
+      trackOpenAiLead(employeeCount, bookOfBusiness, softwareBudget)
+      trackGoogleLead({
+        employeeCount,
+        bookOfBusiness,
+        softwareBudget,
+        email,
+        phone: payload.phone,
+        eventId,
+      })
     } catch {
       setFormState('error')
       setErrorMsg('Something went wrong. Please try again or email us at contact@askcooper.ai.')
       // Turnstile tokens are single-use — mint a fresh one for the retry.
-      if (USE_WORKER) {
+      if (USE_TURNSTILE) {
         setCaptchaToken('')
         setCaptchaKey((k) => k + 1)
       }
     }
   }
 
+  const showDetails = step === 'details'
+  const showQualify = step === 'qualify'
+  const showVerify = USE_PHONE_VERIFICATION && step === 'verify'
+  // Captcha lives on every step that POSTs to the API:
+  // - two-step flow: details always (send-code fires there for everyone) and
+  //   qualify for small prospects (a second send-code fires there, this time
+  //   actually sending the SMS — tokens are single-use so we need a fresh one)
+  // - single-step flow: details if the user is skipping qualify, otherwise
+  //   qualify (that's the final pre-submit screen)
+  // - never on verify (SMS is the second factor)
+  const showTurnstile =
+    USE_TURNSTILE &&
+    (USE_PHONE_VERIFICATION
+      ? showDetails || showQualify
+      : showQualify || (showDetails && !needsQualifying))
+  // Non-terminal buttons (details → qualify hop for small prospects, and the
+  // qualify → verify hop in the two-step flow) advance the flow rather than
+  // submitting the lead — label them "Continue" so users don't think they're
+  // done. The final-submit label depends on flow (single-step vs SMS).
+  const isFinalSubmit =
+    showVerify || (!needsQualifying && showDetails) || (!USE_PHONE_VERIFICATION && showQualify)
+  const submitLabel = showVerify
+    ? 'Verify'
+    : !isFinalSubmit
+      ? 'Continue'
+      : USE_PHONE_VERIFICATION
+        ? 'Submit'
+        : 'Book a demo'
+  // Consent notice belongs next to the button that actually POSTs the lead —
+  // hiding it on qualify was correct for the two-step flow (SMS is the real
+  // send there and the consent line moves to the verify step) but wrong for
+  // the single-step flow, where qualify IS the submitting step.
+  // Consent notice belongs next to the button that actually POSTs the lead —
+  // details (initial capture), and qualify when it's the terminal submit in
+  // the single-step flow. The verify step is just entering an SMS code, no new
+  // form data leaves the browser, so the notice would be misleading there.
+  const showConsent = showDetails || (!USE_PHONE_VERIFICATION && showQualify)
+
   return (
-    <div className="min-h-screen bg-cream-light flex flex-col lg:flex-row">
+    <div className="min-h-dvh bg-cream-light flex flex-col lg:flex-row overflow-x-hidden [padding-bottom:env(safe-area-inset-bottom)]">
       {/* ── Left side: Form ── (centered on tablet so it isn't jammed left with an empty right third) */}
-      <div className="w-full max-w-full md:max-w-[560px] md:mx-auto lg:max-w-[680px] lg:mx-0 lg:flex-1 flex flex-col px-5 md:px-12 lg:px-[80px] py-[48px]">
+      <div className="w-full max-w-full md:max-w-[560px] md:mx-auto lg:max-w-[680px] lg:mx-0 lg:flex-1 flex flex-col px-5 md:px-12 lg:px-[80px] pt-[24px] pb-[32px] md:py-[48px]">
         {/* Logo + back */}
-        <div className="flex items-center gap-[16px] mb-[60px]">
+        <div className="flex items-center gap-[16px] mb-[16px] lg:mb-[32px]">
           <Link to="/" className="flex items-center no-underline">
-            <img src="/images/cooper-logo-full.svg" alt="Cooper" className="h-[26px] w-auto" />
+            <img src="/images/cooper-logo-full.svg" alt="Cooper" width={154} height={36} className="h-[26px] w-auto" />
           </Link>
           <span className="text-dark/20">|</span>
           <Link to="/" className="font-sans text-[14px] text-dark/40 hover:text-dark/70 no-underline transition-colors">
@@ -201,19 +378,27 @@ export default function DemoPage() {
         </div>
 
         {/* Form area */}
-        <div className="flex-1">
+        <div className="flex-1 flex flex-col">
           {formState !== 'success' ? (
             <>
-              <h1 className="font-serif text-[26px] md:text-[34px] lg:text-[36px] leading-[1.2] text-dark mb-[12px]">
+              {/* Subtitle sits above the form on desktop, but drops below it on mobile
+                  (order-3) so the fields are the first thing a phone user sees. */}
+              <h1 className="order-1 font-serif text-[24px] md:text-[34px] lg:text-[36px] leading-[1.2] text-dark mb-[8px] lg:mb-[12px]">
                 Book a Cooper demo
               </h1>
-              <p className="font-sans text-[16px] leading-[1.6] text-dark/50 mb-[40px] max-w-[440px]">
-                Schedule a 1:1 session with an insurance AI expert from our team. We'll show you Cooper with your own workflows, no generic demo.
-              </p>
+              {!showQualify && (
+                <p className="order-3 lg:order-2 font-sans text-[15px] md:text-[16px] leading-[1.55] text-dark/60 mt-[20px] mb-0 lg:mt-0 lg:mb-[24px] max-w-[520px]">
+                  Schedule a 1:1 session with an insurance AI expert from our team. We'll show you Cooper with your own workflows, no generic demo.
+                </p>
+              )}
 
-              <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-[20px] max-w-[440px]">
+              {/* On desktop the detail fields are laid out in a 2-column grid so the
+                  submit button lands close to the fold; on mobile they stay single-column. */}
+              <form onSubmit={USE_PHONE_VERIFICATION && step !== 'verify' ? handleSendCode : handleSubmit} noValidate className="order-2 lg:order-3 flex flex-col gap-[16px] w-full lg:max-w-[560px]">
+                {showDetails && (
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-[16px] gap-y-[12px] lg:gap-y-[16px]">
                 <div>
-                  <label className="font-sans text-[13px] font-medium text-dark/70 mb-[6px] block">Full name</label>
+                  <label className="font-sans text-[13px] font-medium text-dark/70 mb-[4px] lg:mb-[6px] block">Full name</label>
                   <input
                     type="text"
                     value={name}
@@ -221,13 +406,13 @@ export default function DemoPage() {
                     onBlur={handleNameBlur}
                     placeholder="Jane Smith"
                     required
-                    className="w-full font-sans text-[15px] text-dark bg-white border border-dark/[0.12] rounded-[8px] px-[14px] py-[12px] outline-none focus:border-accent-orange/50 focus:ring-2 focus:ring-accent-orange/10 transition-all placeholder:text-dark/25"
+                    className="w-full font-sans text-[16px] md:text-[15px] text-dark bg-white border border-dark/[0.12] rounded-[8px] px-[14px] py-[12px] outline-none focus:border-accent-orange/50 focus:ring-2 focus:ring-accent-orange/10 transition-all placeholder:text-dark/25"
                   />
                   {nameError && <p className="font-sans text-[12px] text-red-500 mt-[4px]">{nameError}</p>}
                 </div>
 
                 <div>
-                  <label className="font-sans text-[13px] font-medium text-dark/70 mb-[6px] block">Work email</label>
+                  <label className="font-sans text-[13px] font-medium text-dark/70 mb-[4px] lg:mb-[6px] block">Work email</label>
                   <input
                     type="email"
                     value={email}
@@ -235,59 +420,167 @@ export default function DemoPage() {
                     onBlur={handleEmailBlur}
                     placeholder="jane@company.com"
                     required
-                    className="w-full font-sans text-[15px] text-dark bg-white border border-dark/[0.12] rounded-[8px] px-[14px] py-[12px] outline-none focus:border-accent-orange/50 focus:ring-2 focus:ring-accent-orange/10 transition-all placeholder:text-dark/25"
+                    className="w-full font-sans text-[16px] md:text-[15px] text-dark bg-white border border-dark/[0.12] rounded-[8px] px-[14px] py-[12px] outline-none focus:border-accent-orange/50 focus:ring-2 focus:ring-accent-orange/10 transition-all placeholder:text-dark/25"
                   />
                   {emailError && <p className="font-sans text-[12px] text-red-500 mt-[4px]">{emailError}</p>}
                 </div>
 
                 <div>
-                  <label className="font-sans text-[13px] font-medium text-dark/70 mb-[6px] block">Phone</label>
-                  <input
-                    type="tel"
-                    value={phone}
-                    onChange={(e) => { setPhone(e.target.value); if (phoneError) setPhoneError('') }}
-                    onBlur={handlePhoneBlur}
-                    placeholder="+1 (555) 000-0000"
-                    required
-                    autoComplete="tel"
-                    className="w-full font-sans text-[15px] text-dark bg-white border border-dark/[0.12] rounded-[8px] px-[14px] py-[12px] outline-none focus:border-accent-orange/50 focus:ring-2 focus:ring-accent-orange/10 transition-all placeholder:text-dark/25"
-                  />
+                  <label className="font-sans text-[13px] font-medium text-dark/70 mb-[4px] lg:mb-[6px] block">Mobile Phone</label>
+                  <div className="flex items-center w-full bg-white border border-dark/[0.12] rounded-[8px] transition-all focus-within:border-accent-orange/50 focus-within:ring-2 focus-within:ring-accent-orange/10">
+                    <span className="font-sans text-[16px] md:text-[15px] font-semibold text-dark/70 pl-[14px] pr-[6px] select-none">+1</span>
+                    <input
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => { setPhone(e.target.value); if (phoneError) setPhoneError('') }}
+                      onBlur={handlePhoneBlur}
+                      placeholder="(555) 000-0000"
+                      required
+                      autoComplete="tel"
+                      className="flex-1 min-w-0 font-sans text-[16px] md:text-[15px] text-dark bg-transparent border-0 rounded-r-[8px] pl-0 pr-[14px] py-[12px] outline-none placeholder:text-dark/25"
+                    />
+                  </div>
                   {phoneError && <p className="font-sans text-[12px] text-red-500 mt-[4px]">{phoneError}</p>}
                 </div>
 
                 <div>
-                  <label className="font-sans text-[13px] font-medium text-dark/70 mb-[6px] block">Company</label>
+                  <label className="font-sans text-[13px] font-medium text-dark/70 mb-[4px] lg:mb-[6px] block">Company</label>
                   <input
                     type="text"
                     value={company}
-                    onChange={(e) => setCompany(e.target.value)}
+                    onChange={(e) => { setCompany(e.target.value); if (companyError) setCompanyError('') }}
+                    onBlur={handleCompanyBlur}
                     placeholder="Acme Insurance"
-                    className="w-full font-sans text-[15px] text-dark bg-white border border-dark/[0.12] rounded-[8px] px-[14px] py-[12px] outline-none focus:border-accent-orange/50 focus:ring-2 focus:ring-accent-orange/10 transition-all placeholder:text-dark/25"
+                    required
+                    autoComplete="organization"
+                    className="w-full font-sans text-[16px] md:text-[15px] text-dark bg-white border border-dark/[0.12] rounded-[8px] px-[14px] py-[12px] outline-none focus:border-accent-orange/50 focus:ring-2 focus:ring-accent-orange/10 transition-all placeholder:text-dark/25"
                   />
+                  {companyError && <p className="font-sans text-[12px] text-red-500 mt-[4px]">{companyError}</p>}
                 </div>
 
                 <div>
-                  <label className="font-sans text-[13px] font-medium text-dark/70 mb-[6px] block">Reason for demo</label>
+                  <label className="font-sans text-[13px] font-medium text-dark/70 mb-[4px] lg:mb-[6px] block">Number of employees <span className="text-dark/60">(optional)</span></label>
                   <select
-                    value={reason}
-                    onChange={(e) => setReason(e.target.value)}
-                    className="w-full font-sans text-[15px] text-dark bg-white border border-dark/[0.12] rounded-[8px] px-[14px] py-[12px] outline-none focus:border-accent-orange/50 focus:ring-2 focus:ring-accent-orange/10 transition-all appearance-none cursor-pointer"
+                    value={employeeCount}
+                    onChange={(e) => setEmployeeCount(e.target.value)}
+                    className="w-full font-sans text-[16px] md:text-[15px] text-dark bg-white border border-dark/[0.12] rounded-[8px] px-[14px] py-[12px] outline-none focus:border-accent-orange/50 focus:ring-2 focus:ring-accent-orange/10 transition-all appearance-none cursor-pointer"
                     style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%231e1a15' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round' opacity='0.3'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 14px center' }}
                   >
-                    <option value="" disabled>Select a reason...</option>
-                    {reasons.map((r) => (
-                      <option key={r} value={r}>{r}</option>
+                    <option value="">Select one…</option>
+                    {EMPLOYEE_COUNTS.map((o) => (
+                      <option key={o} value={o}>{o}</option>
                     ))}
                   </select>
                 </div>
 
-                {USE_WORKER && TURNSTILE_SITE_KEY && (
+                <div>
+                  <label className="font-sans text-[13px] font-medium text-dark/70 mb-[4px] lg:mb-[6px] block">How did you hear about us? <span className="text-dark/60">(optional)</span></label>
+                  <select
+                    value={hearAbout}
+                    onChange={(e) => setHearAbout(e.target.value)}
+                    className="w-full font-sans text-[16px] md:text-[15px] text-dark bg-white border border-dark/[0.12] rounded-[8px] px-[14px] py-[12px] outline-none focus:border-accent-orange/50 focus:ring-2 focus:ring-accent-orange/10 transition-all appearance-none cursor-pointer"
+                    style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%231e1a15' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round' opacity='0.3'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 14px center' }}
+                  >
+                    <option value="" disabled>Select one…</option>
+                    {HEAR_ABOUT_US.map((o) => (
+                      <option key={o} value={o}>{o}</option>
+                    ))}
+                  </select>
+                </div>
+                  </div>
+                )}
+
+                {showQualify && (
+                  <div className="flex flex-col gap-[16px]">
+                    <p className="font-sans text-[14px] text-dark/70 leading-[1.5]">
+                      Two more quick questions.
+                    </p>
+                    <div>
+                      <label className="font-sans text-[13px] font-medium text-dark/70 mb-[4px] lg:mb-[6px] block">Annual commercial book of business</label>
+                      <select
+                        value={bookOfBusiness}
+                        onChange={(e) => { setBookOfBusiness(e.target.value); if (bookOfBusinessError) setBookOfBusinessError('') }}
+                        className="w-full font-sans text-[16px] md:text-[15px] text-dark bg-white border border-dark/[0.12] rounded-[8px] px-[14px] py-[12px] outline-none focus:border-accent-orange/50 focus:ring-2 focus:ring-accent-orange/10 transition-all appearance-none cursor-pointer"
+                        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%231e1a15' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round' opacity='0.3'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 14px center' }}
+                      >
+                        <option value="">Select one…</option>
+                        {BOOK_OF_BUSINESS.map((o) => (
+                          <option key={o} value={o}>{o}</option>
+                        ))}
+                      </select>
+                      {bookOfBusinessError && <p className="font-sans text-[12px] text-red-500 mt-[4px]">{bookOfBusinessError}</p>}
+                    </div>
+                    <div>
+                      <label className="font-sans text-[13px] font-medium text-dark/70 mb-[4px] lg:mb-[6px] block">Annual budget for AI software</label>
+                      <select
+                        value={softwareBudget}
+                        onChange={(e) => { setSoftwareBudget(e.target.value); if (softwareBudgetError) setSoftwareBudgetError('') }}
+                        className="w-full font-sans text-[16px] md:text-[15px] text-dark bg-white border border-dark/[0.12] rounded-[8px] px-[14px] py-[12px] outline-none focus:border-accent-orange/50 focus:ring-2 focus:ring-accent-orange/10 transition-all appearance-none cursor-pointer"
+                        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%231e1a15' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round' opacity='0.3'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 14px center' }}
+                      >
+                        <option value="">Select one…</option>
+                        {SOFTWARE_BUDGET.map((o) => (
+                          <option key={o} value={o}>{o}</option>
+                        ))}
+                      </select>
+                      {softwareBudgetError && <p className="font-sans text-[12px] text-red-500 mt-[4px]">{softwareBudgetError}</p>}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        // Match the verify back button: reset the (possibly
+                        // spent) captcha and clear stale error banners so the
+                        // details step doesn't render a red 429/network message
+                        // from a previous qualify submit.
+                        setStep('details')
+                        setBookOfBusinessError(''); setSoftwareBudgetError('')
+                        setFormState('idle'); setErrorMsg('')
+                        resetCaptcha()
+                      }}
+                      className="self-start font-sans text-[13px] text-dark/40 hover:text-dark/70 underline cursor-pointer bg-transparent border-0 p-0"
+                    >
+                      ← Edit details
+                    </button>
+                  </div>
+                )}
+
+                {showVerify && (
+                  <div>
+                    <label className="font-sans text-[13px] font-medium text-dark/70 mb-[4px] lg:mb-[6px] block">Verification code</label>
+                    <p className="font-sans text-[13px] text-dark/60 mb-[8px]">We texted a code to {phone}.</p>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      autoComplete="one-time-code"
+                      value={code}
+                      onChange={(e) => { setCode(e.target.value); if (codeError) setCodeError('') }}
+                      placeholder="123456"
+                      className="w-full font-sans text-[16px] md:text-[15px] text-dark bg-white border border-dark/[0.12] rounded-[8px] px-[14px] py-[12px] outline-none focus:border-accent-orange/50 focus:ring-2 focus:ring-accent-orange/10 transition-all placeholder:text-dark/25 tracking-[4px]"
+                    />
+                    {codeError && <p className="font-sans text-[12px] text-red-500 mt-[4px]">{codeError}</p>}
+                    <button
+                      type="button"
+                      onClick={() => { setStep('details'); setCode(''); setCodeError(''); setFormState('idle'); setErrorMsg(''); resetCaptcha() }}
+                      className="font-sans text-[13px] text-dark/40 hover:text-dark/70 mt-[8px] underline cursor-pointer bg-transparent border-0 p-0"
+                    >
+                      ← Edit details or resend code
+                    </button>
+                  </div>
+                )}
+
+                {showTurnstile && TURNSTILE_SITE_KEY && (
                   <div>
                     <Turnstile
                       key={captchaKey}
                       siteKey={TURNSTILE_SITE_KEY}
                       onToken={(t) => { setCaptchaToken(t); setCaptchaError('') }}
                       onExpire={() => setCaptchaToken('')}
+                      // Every step still POSTs to /send-code/ (or /demo-requests/)
+                      // and the backend requires a Turnstile token, but we
+                      // render invisibly so the form stays clean. Cloudflare
+                      // only surfaces a challenge if the visitor looks
+                      // suspicious.
+                      appearance="interaction-only"
                     />
                     {captchaError && <p className="font-sans text-[12px] text-red-500 mt-[4px]">{captchaError}</p>}
                   </div>
@@ -300,16 +593,18 @@ export default function DemoPage() {
                 <button
                   type="submit"
                   disabled={formState === 'submitting'}
-                  className="w-full font-sans font-medium text-[15px] text-cream-light bg-accent-orange rounded-[8px] px-[24px] py-[14px] mt-[8px] hover:opacity-90 disabled:opacity-50 transition-opacity cursor-pointer"
+                  className="w-full font-sans font-medium text-[15px] text-cream-light bg-accent-orange-deep rounded-[8px] px-[24px] py-[14px] mt-[8px] hover:opacity-90 disabled:opacity-50 transition-opacity cursor-pointer"
                 >
-                  {formState === 'submitting' ? 'Sending...' : 'Book a demo'}
+                  {formState === 'submitting' ? 'Sending...' : submitLabel}
                 </button>
 
-                <p className="font-sans text-[12px] text-dark/30 leading-[1.5]">
-                  By submitting this form you agree to our{' '}
-                  <Link to="/privacy" className="underline">Privacy Policy</Link>
-                  . We'll reach out within 1-2 business days.
-                </p>
+                {showConsent && (
+                  <p className="font-sans text-[12px] text-dark/60 leading-[1.5]">
+                    By submitting this form you agree to our{' '}
+                    <Link to="/privacy" className="underline">Privacy Policy</Link>
+                    . We'll reach out within 1-2 business days.
+                  </p>
+                )}
               </form>
             </>
           ) : (
@@ -321,7 +616,7 @@ export default function DemoPage() {
                 </svg>
               </div>
               <h2 className="font-serif text-[22px] md:text-[28px] text-dark mb-[12px]">You're all set, {name.split(' ')[0]}!</h2>
-              <p className="font-sans text-[16px] text-dark/50 mb-[32px] max-w-[380px]">
+              <p className="font-sans text-[16px] text-dark/60 mb-[32px] max-w-[380px]">
                 We'll reach out to <strong className="text-dark/70">{email}</strong> shortly to schedule your personalized demo.
               </p>
               <div className="w-full max-w-[440px] bg-white border border-dark/[0.08] rounded-[12px] p-[32px] text-left">

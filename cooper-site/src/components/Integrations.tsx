@@ -1,5 +1,5 @@
 /* ──────────────────────────────────────────────────────────────
-   Integrations — "Cooper works with the tools you already use".
+   Integrations — "Works with the tools you already use".
    Four category clusters (Records, Carriers, Documents, Communications)
    arranged around a central orange Cooper orb, linked by dashed
    orthogonal connectors over a faint grid. Followed by the
@@ -30,9 +30,17 @@ function useFitScale(natural: number) {
 }
 
 /* ── Chip icons — brand marks for the chips ──
-   Carriers use small brand marks (not wordmarks). Chubb is cropped
-   from the wordmark strip to isolate the mark, matching Figma. */
-type Chip = { src?: string; label: string; crop?: boolean; h?: number; maxW?: number; text?: boolean }
+   Carriers use small brand marks, not wordmarks. Every mark is drawn into
+   the same fixed slot (see ICON_W / ICON_H) rather than being sized
+   per-logo, so the pills keep an even height and the labels all start at
+   the same offset. Brands with no usable small mark (Chubb) render as
+   text-only pills instead of a cropped fragment of their wordmark. */
+type Chip = { src?: string; label: string; text?: boolean }
+
+/* Icon slot. Wide marks are contained inside it, so they read a little
+   smaller than square ones instead of pushing the pill around. */
+const ICON_W = 28
+const ICON_H = 24
 
 const logo = {
   epic: '/images/logo-epic.webp',
@@ -47,7 +55,6 @@ const logo = {
   salesforce: '/images/chips/salesforce.png',
   travelers: '/images/chips/travelers.png',
   libertymutual: '/images/chips/liberty-mutual.png',
-  chubb: '/images/chips/chubb.png',
   zurich: '/images/chips/zurich.png',
   hanover: '/images/chips/hanover.svg',
   outlook: '/images/logo-outlook.webp',
@@ -66,18 +73,20 @@ const GROUPS: Record<'ams' | 'carriers' | 'documents' | 'communication', Group> 
       { src: logo.guidewire, label: 'Guidewire' },
       { src: logo.ams360, label: 'AMS360' },
       { src: logo.hawksoft, label: 'HawkSoft' },
-      { src: logo.ezlynx, label: 'EzLynx', h: 21, maxW: 42 },
+      { src: logo.ezlynx, label: 'EzLynx' },
     ],
   },
   carriers: {
     label: 'Carriers',
     more: '+ hundreds more',
     chips: [
-      { src: logo.travelers, label: 'Travelers', h: 22 },
-      { src: logo.libertymutual, label: 'Liberty Mutual', h: 28 },
-      { src: logo.chubb, label: 'Chubb', crop: true },
-      { src: logo.zurich, label: 'Zurich', h: 24, maxW: 28 },
-      { src: logo.hanover, label: 'The Hanover', h: 24, maxW: 26 },
+      { src: logo.travelers, label: 'Travelers' },
+      { src: logo.libertymutual, label: 'Liberty Mutual' },
+      // Chubb's identity is a wordmark with no standalone mark, and the old
+      // crop isolated the "C", which read as a stray bracket.
+      { label: 'Chubb', text: true },
+      { src: logo.zurich, label: 'Zurich' },
+      { src: logo.hanover, label: 'The Hanover' },
     ],
   },
   documents: {
@@ -85,10 +94,10 @@ const GROUPS: Record<'ams' | 'carriers' | 'documents' | 'communication', Group> 
     more: 'And more...',
     chips: [
       { src: logo.sharepoint, label: 'SharePoint' },
-      { src: logo.onedrive, label: 'OneDrive', h: 22 },
+      { src: logo.onedrive, label: 'OneDrive' },
       { src: logo.dropbox, label: 'Dropbox' },
-      { src: logo.hubspot, label: 'HubSpot', h: 22 },
-      { src: logo.salesforce, label: 'Salesforce', h: 20, maxW: 42 },
+      { src: logo.hubspot, label: 'HubSpot' },
+      { src: logo.salesforce, label: 'Salesforce' },
     ],
   },
   communication: {
@@ -104,26 +113,13 @@ const GROUPS: Record<'ams' | 'carriers' | 'documents' | 'communication', Group> 
 
 /* ── Reusable pieces ── */
 function ChipIcon({ item }: { item: Chip }) {
-  if (item.crop) {
-    // Isolate the leftmost mark from a wide wordmark strip (Figma crop).
-    return (
-      <span className="relative block h-[23px] w-[33px] shrink-0 overflow-hidden">
-        <img src={item.src} alt="" width={229} height={23} loading="lazy" className="absolute left-0 top-0 h-full w-[693%] max-w-none" />
-      </span>
-    )
-  }
-  const h = item.h ?? 24
-  const w = item.maxW ?? 36
   return (
-    <img
-      src={item.src}
-      alt=""
-      width={w}
-      height={h}
-      loading="lazy"
-      className="w-auto shrink-0 object-contain"
-      style={{ height: h, maxWidth: w }}
-    />
+    <span
+      className="flex shrink-0 items-center justify-center"
+      style={{ width: ICON_W, height: ICON_H }}
+    >
+      <img src={item.src} alt="" loading="lazy" className="max-h-full max-w-full object-contain" />
+    </span>
   )
 }
 
@@ -212,25 +208,13 @@ const MCW = 390
 const MCH = 1515
 
 function MobileChipIcon({ item }: { item: Chip }) {
-  if (item.crop) {
-    return (
-      <span className="relative block shrink-0 overflow-hidden" style={{ height: 18, width: 26 }}>
-        <img src={item.src} alt="" width={180} height={18} loading="lazy" className="absolute left-0 top-0 h-full w-[693%] max-w-none" />
-      </span>
-    )
-  }
-  const h = (item.h ?? 24) * M
-  const w = (item.maxW ?? 36) * M
   return (
-    <img
-      src={item.src}
-      alt=""
-      width={w}
-      height={h}
-      loading="lazy"
-      className="w-auto shrink-0 object-contain"
-      style={{ height: h, maxWidth: w }}
-    />
+    <span
+      className="flex shrink-0 items-center justify-center"
+      style={{ width: ICON_W * M, height: ICON_H * M }}
+    >
+      <img src={item.src} alt="" loading="lazy" className="max-h-full max-w-full object-contain" />
+    </span>
   )
 }
 
@@ -241,8 +225,8 @@ function MobileChipTag({ item }: { item: Chip }) {
       style={{
         // Match the height of the logo chips so text-only pills ("+ hundreds
         // more" / "And more...") don't render shorter than their neighbours:
-        // default icon height (24 * M) + vertical padding + border.
-        minHeight: 24 * M + 2 * 7.8 + 2 * 0.784,
+        // icon slot height + vertical padding + border.
+        minHeight: ICON_H * M + 2 * 7.8 + 2 * 0.784,
         border: '0.784px solid transparent',
         background:
           'linear-gradient(#fffcf1, #fffcf1) padding-box, linear-gradient(154deg, rgba(30,26,21,0.29) 6%, rgba(30,26,21,0) 100%) border-box',
@@ -256,6 +240,13 @@ function MobileChipTag({ item }: { item: Chip }) {
     </div>
   )
 }
+
+/* All four mobile groups share one two-column grid. The columns are sized to
+   their widest pill, so column two starts at the same x on every row. Records
+   and Carriers used to wrap naturally instead, which let each row pack on its
+   own and left the second column ragged, plus orphan rows in Carriers. */
+const MOBILE_GRID =
+  'absolute grid grid-cols-[max-content_max-content] justify-items-start gap-x-[3.9px] gap-y-[7.8px]'
 
 /* "And more..." / "+ hundreds more" marker, rendered as a text-only pill to
    match the chips around it. */
@@ -282,69 +273,51 @@ function MobileLabel({ children }: { children: string }) {
   )
 }
 
-/* Mobile connector geometry (Figma) — reused, but restyled as the grey
-   dashed trace. Two sub-paths per connector + cream fade masks. */
-type ConnCfg = {
-  viewBox: string
-  v203: string
-  v204: string
-  rects: { x?: number; y?: number; w: number; h: number; transform?: string }[]
-}
+/* ── Mobile connectors ──
+   Authored directly in the 390×1515 canvas instead of reusing the Figma
+   export. The exported geometry left two of the four branches ending in
+   empty space, so Carriers and Documents read as connected to nothing.
 
-const CONN: Record<'top' | 'bottom', ConnCfg> = {
-  top: {
-    viewBox: '0 0 262.936 617.842',
-    v203: 'M93.5009 0.000177191V96.8205C93.5009 113.389 80.0695 126.82 63.5009 126.82H4.41357',
-    v204: 'M93.2847 0V96.8203C93.2847 113.389 106.716 126.82 123.285 126.82H231.936C248.505 126.82 261.936 140.252 261.936 156.82V550.639C261.936 567.207 248.505 580.639 231.936 580.639H93.2847',
-    rects: [
-      { w: 74.4062, h: 115.249, transform: 'matrix(0 1 1 0 0 90.176)' },
-      { w: 74.4062, h: 115.249, transform: 'matrix(0 1 1 0 83.2466 543.436)' },
-      { x: 61.4902, y: 0, w: 74.4062, h: 115.249 },
-    ],
-  },
-  bottom: {
-    viewBox: '0 0 281.702 513.949',
-    v203: 'M93.5009 1.71456e-06V96.8203C93.5009 113.389 80.0695 126.82 63.5009 126.82H4.41357',
-    v204: 'M93.2847 0.000556946V152.838C93.2847 169.407 106.716 182.838 123.285 182.838H217.894C234.462 182.838 247.894 196.27 247.894 212.838V450.436C247.894 467.004 234.462 480.436 217.894 480.436H177.082',
-    rects: [
-      { w: 74.4062, h: 115.249, transform: 'matrix(0 1 1 0 0 90.1758)' },
-      { w: 74.4062, h: 115.249, transform: 'matrix(0 1 1 0 166.452 439.543)' },
-      { x: 61.4902, y: 0, w: 74.4062, h: 115.249 },
-    ],
-  },
-}
+   Each group gets an anchor dot just past its label, a horizontal lead out
+   to a shared right-hand rail (x = 366, clear of the widest pill, Liberty
+   Mutual, which reaches 355.3), and the rail elbows back into the orb.
+   Records owns the top rail and Communications the bottom one; Carriers and
+   Documents merge into them.
 
-function MobileConnector({
-  cfg, gradId, left, top, width, height, transform,
-}: {
-  cfg: ConnCfg; gradId: string
-  left: number; top: number; width: number; height: number; transform?: string
-}) {
+   `line` is what gets stroked (the merging branches stop at the junction so
+   the rail isn't drawn twice, which would double up the dashes). `flow` is
+   the full route a group's pulse travels to reach the orb. */
+const M_RAIL_TOP = 'V 534 Q 366 560 340 560 H 220.5 Q 194.5 560 194.5 586 V 668'
+const M_RAIL_BOTTOM = 'V 890 Q 366 864 340 864 H 220.5 Q 194.5 864 194.5 838 V 764'
+
+const M_RECORDS = 'M 165 111 H 340 Q 366 111 366 137'
+const M_CARRIERS = 'M 170 325 H 340 Q 366 325 366 351'
+const M_DOCUMENTS = 'M 207 1006 H 340 Q 366 1006 366 980'
+const M_COMMS = 'M 272 1251 H 340 Q 366 1251 366 1225'
+
+type MConn = { line: string; flow: string; dot: [number, number]; dur: number; begin: number }
+
+const M_CONNS: MConn[] = [
+  { line: `${M_RECORDS} ${M_RAIL_TOP}`, flow: `${M_RECORDS} ${M_RAIL_TOP}`, dot: [165, 111], dur: 3.6, begin: -0.4 },
+  { line: M_CARRIERS, flow: `${M_CARRIERS} ${M_RAIL_TOP}`, dot: [170, 325], dur: 2.7, begin: -1.6 },
+  { line: `${M_COMMS} ${M_RAIL_BOTTOM}`, flow: `${M_COMMS} ${M_RAIL_BOTTOM}`, dot: [272, 1251], dur: 2.9, begin: -0.9 },
+  { line: M_DOCUMENTS, flow: `${M_DOCUMENTS} ${M_RAIL_BOTTOM}`, dot: [207, 1006], dur: 2.1, begin: -2.2 },
+]
+
+function MobileConnectors() {
   return (
     <svg
-      viewBox={cfg.viewBox}
-      preserveAspectRatio="none"
+      viewBox={`0 0 ${MCW} ${MCH}`}
+      width={MCW}
+      height={MCH}
       fill="none"
-      className="absolute pointer-events-none overflow-visible"
-      style={{ left, top, width, height, transform }}
+      className="absolute inset-0 pointer-events-none"
     >
-      <defs>
-        {/* Cream fade over the line ends. Peak opacity is held below 1 and the
-            ramp reaches transparent well before the rect end so the dashed trace
-            stays partly visible right up to each connection point — the fully
-            opaque version dissolved the lines too early and read as confusing on
-            mobile. Still soft enough to hide that the Figma geometry stops short. */}
-        <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="115.249" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#FFFCF1" stopOpacity="0.6" />
-          <stop offset="0.82" stopColor="#FFFCF1" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-
       {/* grey dashed trace (matches desktop: #151515 @60%, 2px, dash 8/8) */}
-      {[cfg.v203, cfg.v204].map((d, i) => (
+      {M_CONNS.map((c, i) => (
         <path
-          key={i}
-          d={d}
+          key={`l-${i}`}
+          d={c.line}
           stroke="#151515"
           strokeOpacity="0.6"
           strokeWidth={2}
@@ -353,16 +326,17 @@ function MobileConnector({
         />
       ))}
 
-      {/* travelling grey pulse along each line (same as desktop) */}
-      {[cfg.v203, cfg.v204].map((d, i) => (
-        <circle key={`m${i}`} r={5.5} fill="#73716D">
-          <animateMotion dur={`${2.6 + i * 0.6}s`} begin={`${i * -0.9}s`} repeatCount="indefinite" path={d} rotate="auto" />
-        </circle>
+      {/* anchor dot where each line meets its group label */}
+      {M_CONNS.map((c, i) => (
+        <circle key={`d-${i}`} cx={c.dot[0]} cy={c.dot[1]} r={5.5} fill="#73716D" />
       ))}
 
-      {/* cream fade masks over the line ends */}
-      {cfg.rects.map((r, i) => (
-        <rect key={i} x={r.x} y={r.y} width={r.w} height={r.h} transform={r.transform} fill={`url(#${gradId})`} />
+      {/* travelling pulse, running the full route into the orb (which sits on
+          a higher layer and swallows the line + pulse at the very end) */}
+      {M_CONNS.map((c, i) => (
+        <circle key={`m-${i}`} r={5.5} fill="#73716D">
+          <animateMotion dur={`${c.dur}s`} begin={`${c.begin}s`} repeatCount="indefinite" path={c.flow} rotate="auto" />
+        </circle>
       ))}
     </svg>
   )
@@ -409,8 +383,7 @@ function MobileIntegrations() {
           style={{ width: MCW, height: MCH, transformOrigin: 'top left', transform: `scale(${scale})` }}
         >
           {/* grey dashed connectors */}
-          <MobileConnector cfg={CONN.top} gradId="mc-top-fade" left={97.5} top={71.5} width={261.9} height={617.8} transform="rotate(180deg) scaleX(-1)" />
-          <MobileConnector cfg={CONN.bottom} gradId="mc-bot-fade" left={97.5} top={774.8} width={281.7} height={513.9} />
+          <MobileConnectors />
 
           {/* centre orb */}
           <img
@@ -428,26 +401,25 @@ function MobileIntegrations() {
           <div className="absolute" style={{ left: 40.6, top: 1240 }}><MobileLabel>{GROUPS.communication.label}</MobileLabel></div>
 
           {/* AMS — natural-wrap grid (even spacing, pills sit adjacent) */}
-          <div className="absolute flex flex-wrap items-center gap-x-[8px] gap-y-[7.8px]" style={{ left: 32.7, top: 163.5, width: 300.5 }}>
+          <div className={MOBILE_GRID} style={{ left: 32.7, top: 163.5 }}>
             {GROUPS.ams.chips.map((c, i) => <MobileChip key={i} item={c} />)}
             <MobileMore>{GROUPS.ams.more}</MobileMore>
           </div>
 
-          {/* Carriers — natural-wrap grid (all pills visible, no fade-off edge).
-              Nudged up as a block so the wrapped rows clear the flow line. */}
-          <div className="absolute flex flex-wrap items-center gap-x-[11px] gap-y-[10.2px]" style={{ left: 32.7, top: 364.4, width: 300.5 }}>
+          {/* Carriers */}
+          <div className={MOBILE_GRID} style={{ left: 32.7, top: 364.4 }}>
             {GROUPS.carriers.chips.map((c, i) => <MobileChip key={i} item={c} />)}
             <MobileMore>{GROUPS.carriers.more}</MobileMore>
           </div>
 
-          {/* Documents — bottom-left 2-col grid */}
-          <div className="absolute grid grid-cols-2 justify-items-start gap-x-[3.9px] gap-y-[7.8px]" style={{ left: 40.6, top: 1063.8, width: 281 }}>
+          {/* Documents */}
+          <div className={MOBILE_GRID} style={{ left: 40.6, top: 1063.8 }}>
             {GROUPS.documents.chips.map((c, i) => <MobileChip key={i} item={c} />)}
             <MobileMore>{GROUPS.documents.more}</MobileMore>
           </div>
 
-          {/* Communication — bottom-right 2-col grid */}
-          <div className="absolute grid grid-cols-2 justify-items-start gap-x-[3.9px] gap-y-[7.8px]" style={{ left: 40.6, top: 1303.5, width: 249.3 }}>
+          {/* Communication */}
+          <div className={MOBILE_GRID} style={{ left: 40.6, top: 1303.5 }}>
             {GROUPS.communication.chips.map((c, i) => <MobileChip key={i} item={c} />)}
             <MobileMore>{GROUPS.communication.more}</MobileMore>
           </div>
@@ -469,7 +441,7 @@ export default function Integrations() {
               Integrations
             </p>
             <h2 className="font-serif text-[32px] leading-[1.12] text-dark md:text-[44px] lg:text-[48px]">
-              Cooper works with the tools you already use
+              Works with the tools you already use
             </h2>
           </div>
           <div className="lg:max-w-[360px] lg:pb-[6px]">
@@ -478,9 +450,10 @@ export default function Integrations() {
             </p>
             <Link
               to="/integrations"
-              className="mt-[12px] inline-flex items-center gap-1 font-sans text-[15px] font-semibold text-accent-orange no-underline hover:underline"
+              /* py/-my pair gives the tap target 44px of height without moving it */
+              className="-my-[11px] mt-[1px] inline-flex items-center gap-1 py-[11px] font-sans text-[15px] font-semibold text-accent-orange no-underline hover:underline"
             >
-              Read more <ArrowRight size={15} weight="bold" />
+              See More <ArrowRight size={15} weight="bold" />
             </Link>
           </div>
         </div>

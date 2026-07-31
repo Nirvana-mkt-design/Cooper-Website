@@ -258,6 +258,21 @@
   animation: headline-accent 2.4s ease-out both;
 }
 
+/* ── Integrations page (/integrations) — ported from the design-team build ── */
+/* Hero conveyor — pulsing "+" chip at the end of the logo queue */
+@keyframes stream-pulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(217,86,17,0.45); }
+  50%      { transform: scale(1.08); box-shadow: 0 0 0 6px rgba(217,86,17,0); }
+}
+/* Integration detail modal — overlay + panel entrance */
+@keyframes overlay-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes modal-in {
+  from { opacity: 0; transform: translateY(14px) scale(0.985); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@utility animate-overlay-in { animation: overlay-in 0.2s ease-out both; }
+@utility animate-modal-in { animation: modal-in 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+
 @keyframes cooper-glow {
   0%, 100% { box-shadow: 0 0 0 10px rgba(217,86,17,0.10); opacity: 1; }
   50% { box-shadow: 0 0 0 18px rgba(217,86,17,0.0); opacity: 0.7; }
@@ -516,18 +531,46 @@
   }
 }
 
-/* ── Integrations page (/integrations) — preserved from design team's build ── */
-/* Integrations hero — pulsing "+" at the end of the logo conveyor */
-@keyframes stream-pulse {
-  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(217,86,17,0.45); }
-  50%      { transform: scale(1.08); box-shadow: 0 0 0 6px rgba(217,86,17,0); }
+/*
+ * Range sliders (ROI calculator). `appearance: none` removes the native track
+ * as well as the chrome, so both halves are redrawn here. The input stays 24px
+ * tall for a usable touch target while the visible track is 4px.
+ */
+.range-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
 }
-
-/* Integration modals — overlay + panel entrance */
-@keyframes overlay-in { from { opacity: 0; } to { opacity: 1; } }
-@keyframes modal-in {
-  from { opacity: 0; transform: translateY(14px) scale(0.985); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
+.range-slider::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(30, 26, 21, 0.12);
 }
-@utility animate-overlay-in { animation: overlay-in 0.2s ease-out both; }
-@utility animate-modal-in { animation: modal-in 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 18px;
+  width: 18px;
+  margin-top: -7px;
+  border-radius: 999px;
+  background: var(--color-accent-orange-deep);
+  border: none;
+  cursor: pointer;
+}
+.range-slider::-moz-range-track {
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(30, 26, 21, 0.12);
+}
+.range-slider::-moz-range-thumb {
+  height: 18px;
+  width: 18px;
+  border-radius: 999px;
+  background: var(--color-accent-orange-deep);
+  border: none;
+  cursor: pointer;
+}
+.range-slider:focus-visible::-webkit-slider-thumb {
+  outline: 2px solid var(--color-accent-orange);
+  outline-offset: 2px;
+}

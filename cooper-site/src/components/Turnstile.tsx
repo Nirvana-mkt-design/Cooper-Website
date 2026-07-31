@@ -43,17 +43,25 @@ interface TurnstileProps {
   onToken: (token: string) => void
   onExpire?: () => void
   className?: string
+  // 'always' shows the classic Turnstile box.
+  // 'interaction-only' keeps the widget invisible unless Cloudflare decides the
+  // visitor needs to solve a challenge — use it on steps where we still need a
+  // token but don't want a captcha widget cluttering the UI.
+  appearance?: 'always' | 'execute' | 'interaction-only'
 }
 
-export default function Turnstile({ siteKey, onToken, onExpire, className }: TurnstileProps) {
+export default function Turnstile({ siteKey, onToken, onExpire, className, appearance = 'always' }: TurnstileProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const widgetId = useRef<string | null>(null)
   // Hold the latest callbacks in refs so the widget never re-renders just because
-  // the parent passed a new inline function.
+  // the parent passed a new inline function. Updated in an effect (not during
+  // render) so the render stays pure.
   const onTokenRef = useRef(onToken)
   const onExpireRef = useRef(onExpire)
-  onTokenRef.current = onToken
-  onExpireRef.current = onExpire
+  useEffect(() => {
+    onTokenRef.current = onToken
+    onExpireRef.current = onExpire
+  })
 
   useEffect(() => {
     let cancelled = false
@@ -66,6 +74,7 @@ export default function Turnstile({ siteKey, onToken, onExpire, className }: Tur
           'expired-callback': () => onExpireRef.current?.(),
           'error-callback': () => onExpireRef.current?.(),
           theme: 'light',
+          appearance,
         })
       })
       .catch(() => {
@@ -83,7 +92,7 @@ export default function Turnstile({ siteKey, onToken, onExpire, className }: Tur
         widgetId.current = null
       }
     }
-  }, [siteKey])
+  }, [siteKey, appearance])
 
   return <div ref={containerRef} className={className} />
 }
