@@ -1,5 +1,5 @@
 /* ──────────────────────────────────────────────────────────────
-   Integrations — "Cooper works with the tools you already use".
+   Integrations — "Works with the tools you already use".
    Four category clusters (Records, Carriers, Documents, Communications)
    arranged around a central orange Cooper orb, linked by dashed
    orthogonal connectors over a faint grid. Followed by the
@@ -441,7 +441,7 @@ export default function Integrations() {
               Integrations
             </p>
             <h2 className="font-serif text-[32px] leading-[1.12] text-dark md:text-[44px] lg:text-[48px]">
-              Cooper works with the tools you already use
+              Works with the tools you already use
             </h2>
           </div>
           <div className="lg:max-w-[360px] lg:pb-[6px]">
@@ -450,9 +450,10 @@ export default function Integrations() {
             </p>
             <Link
               to="/integrations"
-              className="mt-[12px] inline-flex items-center gap-1 font-sans text-[15px] font-semibold text-accent-orange no-underline hover:underline"
+              /* py/-my pair gives the tap target 44px of height without moving it */
+              className="-my-[11px] mt-[1px] inline-flex items-center gap-1 py-[11px] font-sans text-[15px] font-semibold text-accent-orange no-underline hover:underline"
             >
-              Read more <ArrowRight size={15} weight="bold" />
+              See More <ArrowRight size={15} weight="bold" />
             </Link>
           </div>
         </div>

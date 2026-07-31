@@ -20,6 +20,8 @@ const DemoPage = lazy(() => import('./components/DemoPage'))
 const PersonaPage = lazy(() => import('./components/PersonaPage'))
 const AboutPage = lazy(() => import('./components/AboutPage'))
 const IntegrationsPage = lazy(() => import('./components/IntegrationsPage'))
+const RoiCalculatorPage = lazy(() => import('./components/RoiCalculatorPage'))
+const WhitePaperPage = lazy(() => import('./components/WhitePaperPage'))
 const CareersPage = lazy(() => import('./components/CareersPage'))
 const CareerRolePage = lazy(() => import('./components/CareerRolePage'))
 const PrivacyPage = lazy(() => import('./components/PrivacyPage'))
@@ -146,6 +148,11 @@ export default function App() {
           <Route path="/demo" element={<DemoPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/integrations" element={<IntegrationsPage />} />
+          {/* Resources is a nav dropdown only — no hub page. Each entry is its
+              own route, and the integrations directory stays at /integrations
+              (already indexed and linked from the homepage). */}
+          <Route path="/resources/roi-calculator" element={<RoiCalculatorPage />} />
+          <Route path="/resources/white-paper" element={<WhitePaperPage />} />
           <Route path="/careers" element={<CareersPage />} />
           <Route path="/careers/:roleId" element={<CareerRolePage />} />
           {/* Product / use-case pages (formerly /personas/*). Reinsurers is pulled

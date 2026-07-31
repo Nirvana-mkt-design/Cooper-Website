@@ -162,9 +162,9 @@ export default function AboutPage() {
               {/* Left — team photo */}
               <div className="w-full overflow-hidden">
                 <img
-                  src="/images/about/team-photo.jpg"
+                  src="/images/about/team-photo.webp"
                   alt="Cooper team"
-                  className="w-full h-full object-cover grayscale"
+                  className="w-full h-full object-cover"
                 />
               </div>
 

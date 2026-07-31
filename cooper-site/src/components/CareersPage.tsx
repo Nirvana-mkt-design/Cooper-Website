@@ -38,28 +38,37 @@ function RevealSection({ children, delay = 0 }: { children: React.ReactNode; del
   )
 }
 
-/* ── Team photos for marquee ── */
+/* ── Team photos for marquee ──
+   Order matters: the strip is only ~2 frames wide on phones and ~4 on desktop,
+   so the opening pair is all most visitors ever see. Those lead with the team
+   at work and then the whole-team group shot (one frame showing many people
+   beats several showing few), alternate setting and group size, and avoid
+   putting the same faces in consecutive frames. Frames with no people in them,
+   and repeat appearances, sit at the back where the loop reaches them later. */
 const teamPhotos = [
-  '/images/careers/IMG_2940.jpg',
-  '/images/careers/IMG_5227.jpg',
-  '/images/careers/IMG_8999.jpg',
-  '/images/careers/IMG_7892.jpg',
-  '/images/careers/IMG_2942.jpg',
-  '/images/careers/IMG_3044.jpg',
-  '/images/careers/IMG_7951.jpg',
-  '/images/careers/IMG_9741.jpg',
-  '/images/careers/IMG_8809.jpg',
-  '/images/careers/IMG_3113.jpg',
-  '/images/careers/IMG_2953.jpg',
-  '/images/careers/IMG_9381.jpg',
-  '/images/careers/IMG_9001.jpg',
-  '/images/careers/IMG_3224.jpg',
-  '/images/careers/IMG_3423.jpg',
-  '/images/careers/IMG_9785.jpg',
-  '/images/careers/IMG_3462.jpg',
-  '/images/careers/image-1.jpg',
-  '/images/careers/WhatsApp Image 2026-06-22 at 15.35.21.jpeg',
+  '/images/careers/IMG_3044.jpg', // meeting room
+  '/images/careers/IMG_9381.jpg', // whole team, waterfront
+  '/images/careers/IMG_5984.webp', // offsite
+  '/images/careers/IMG_9785.jpg', // World Cup bracket
+  '/images/careers/IMG_8809.jpg', // team dinner
+  '/images/careers/IMG_2953.jpg', // pier lunch
+  '/images/careers/IMG_5227.jpg', // candid
+  '/images/careers/IMG_5985.webp', // offsite
   '/images/careers/IMG_5522.jpg',
+  '/images/careers/IMG_9001.jpg',
+  '/images/careers/IMG_2940.jpg',
+  '/images/careers/IMG_3224.jpg',
+  '/images/careers/team-waterfront.webp',
+  '/images/careers/IMG_3113.jpg',
+  '/images/careers/image-1.jpg',
+  '/images/careers/IMG_3423.jpg',
+  '/images/careers/IMG_7892.jpg',
+  '/images/careers/WhatsApp Image 2026-06-22 at 15.35.21.jpeg',
+  '/images/careers/IMG_2942.jpg',
+  '/images/careers/IMG_9741.jpg',
+  '/images/careers/IMG_7951.jpg',
+  '/images/careers/IMG_3462.jpg',
+  '/images/careers/IMG_8999.jpg', // arcade cabinets, no people — last
 ]
 
 /* ── Investors ── */

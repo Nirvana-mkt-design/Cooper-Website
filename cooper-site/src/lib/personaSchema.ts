@@ -1,5 +1,5 @@
 import type { Persona } from '../data/personas'
-import { SITE_ORIGIN, absoluteUrl } from './site'
+import { COOPER_DESCRIPTION, SITE_ORIGIN, absoluteUrl } from './site'
 
 /**
  * Structured data for a persona ("product") page.
@@ -49,8 +49,7 @@ export function personaJsonLd(persona: Persona) {
         applicationCategory: 'BusinessApplication',
         applicationSubCategory: 'Insurance Workflow Automation',
         operatingSystem: 'Web',
-        description:
-          'Cooper is an AI platform built for insurance professionals. It automates submissions, renewals, coverage checks, certificates, and reporting for agencies, brokers, MGAs, insurers, claims TPAs, and reinsurers.',
+        description: COOPER_DESCRIPTION,
         publisher: { '@id': `${SITE_ORIGIN}/#organization` },
       },
     ],
