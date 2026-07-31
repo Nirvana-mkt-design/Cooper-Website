@@ -21,11 +21,17 @@
       with no file on disk the SPA fallback answers with the index.html shell
       at 200 and clients cache HTML as an icon.
 
-      The PNGs are here for Safari, which drew a blank tile without them. It
-      does not reliably take an SVG favicon, and every entry inside our .ico is
-      PNG-compressed rather than BMP, which Safari also handles badly — so it
-      had nothing left to fall back to. A plain PNG it does take, and Chrome
-      and Firefox still prefer the SVG below. Regenerate them from favicon.svg
+      Safari drew a blank tile here. Two causes, both fixed:
+
+      favicon.svg had a viewBox but no width/height on its root, and Safari
+      refuses an SVG favicon with no intrinsic size where Chrome and Firefox
+      infer one. Compare the mark this replaced, which did carry width and
+      height and did render in Safari. Keep those attributes.
+
+      The PNGs are belt and braces for the same problem: every entry inside our
+      .ico is PNG-compressed rather than BMP, which Safari also handles badly,
+      so without them there was nothing left it could decode. Chrome and
+      Firefox still prefer the SVG below. Regenerate the PNGs from favicon.svg
       with `node scripts/favicons/generate.cjs`.
     -->
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
