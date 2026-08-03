@@ -224,20 +224,56 @@ export default function RoiCalculatorPage() {
     <div className="min-h-screen bg-cream-light">
       <Navbar variant="light" />
 
-      {/* ══════════════ HEADER ══════════════ */}
-      <section className="px-5 pb-[32px] pt-[128px] md:px-10 lg:px-[62px] lg:pt-[152px]">
-        <div className="mx-auto grid max-w-[1180px] gap-[28px] lg:grid-cols-2 lg:gap-[64px]">
+      {/* ══════════════ HERO ══════════════
+
+          Headline left, the photograph right, a figure floating over its lower
+          corner. The figure is the live one rather than a decorative screenshot:
+          it is the same monthly number the calculator below computes, from the
+          same state, so moving a slider moves it. A hero that shows a made-up
+          result next to a calculator that shows a real one teaches the reader
+          not to trust either.
+
+          The photograph follows the imagery direction in the Cooper design
+          system: golden hour, seen from behind with no face, warm oak, and the
+          amber reeded-glass signature down the right. ══════════════ */}
+      <section className="px-5 pb-[36px] pt-[120px] md:px-10 lg:px-[62px] lg:pt-[140px]">
+        <div className="mx-auto grid max-w-[1180px] items-center gap-[36px] lg:grid-cols-[minmax(0,1fr)_minmax(0,460px)] lg:gap-[64px]">
           <div>
-            <p className="mb-[14px] font-grotesk text-[13px] font-medium uppercase tracking-[1.6px] text-accent-orange">
-              ROI calculator
-            </p>
+            <span className="mb-[20px] inline-flex items-center rounded-full border border-dark/15 px-[13px] py-[5px] font-grotesk text-[11.5px] font-medium uppercase tracking-[1.2px] text-dark/60">
+              ROI Calculator
+            </span>
             <h1 className="font-serif text-[38px] leading-[1.06] tracking-[-1px] text-dark md:text-[46px] lg:text-[52px]">
-              See Cooper's impact on your team
+              See the return your team could get with Cooper
             </h1>
+            <p className="mt-[20px] max-w-[480px] font-sans text-[16.5px] leading-[1.6] text-dark/60">
+              Cooper is your AI coworker for the busywork, from intake to renewal. Tell us
+              the shape of your book and this estimates the value Cooper can generate for
+              you every month.
+            </p>
           </div>
-          <p className="self-end font-sans text-[16.5px] leading-[1.6] text-dark/60">
-            Cooper is your AI coworker for the busywork, from intake to renewal. Tell us the shape of your book and this estimates the value Cooper can generate for you every month.
-          </p>
+
+          <div className="relative">
+            <img
+              src="/images/roi-hero.jpg"
+              alt=""
+              aria-hidden
+              width={1100}
+              height={1473}
+              className="block w-full rounded-[18px] object-cover lg:aspect-[4/5]"
+            />
+            {/* Sits over the calm lower corner the frame was composed to leave. */}
+            <div className="absolute bottom-[18px] left-[18px] rounded-[14px] bg-cream-light/95 px-[20px] py-[16px] shadow-[0_20px_44px_-20px_rgba(30,26,21,0.5)] backdrop-blur-[2px]">
+              <p className="font-grotesk text-[10.5px] font-medium uppercase tracking-[1.2px] text-dark/45">
+                Cost avoided, monthly
+              </p>
+              <p className="mt-[6px] font-serif text-[30px] leading-none text-dark">
+                {usd(r.monthlyValue)}
+              </p>
+              <p className="mt-[7px] font-sans text-[12px] text-dark/45">
+                {num(r.monthlyHours)} hours back a month
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -298,13 +334,13 @@ export default function RoiCalculatorPage() {
                 {/* Headline + gate */}
                 <div className="flex flex-wrap items-start justify-between gap-[16px]">
                   <div>
-                    <span className="font-grotesk text-[11.5px] font-medium uppercase tracking-[1.3px] text-dark/45">
+                    <span className="font-grotesk text-[11.5px] font-medium uppercase tracking-[1.3px] text-cream-light/45">
                       Additional revenue a month
                     </span>
-                    <div className="mt-[8px] font-serif text-[44px] leading-[1] tabular-nums text-dark lg:text-[58px]">
+                    <div className="mt-[8px] font-serif text-[44px] leading-[1] tabular-nums text-cream-light lg:text-[58px]">
                       {usd(r.monthlyRevenue)}
                     </div>
-                    <p className="mt-[8px] max-w-[420px] font-sans text-[14px] leading-[1.5] text-dark/50">
+                    <p className="mt-[8px] max-w-[420px] font-sans text-[14px] leading-[1.5] text-cream-light/50">
                       {accounts === 0
                         ? 'Set your monthly accounts to see what the freed capacity is worth.'
                         : `${num(r.monthlyHours)} hours back a month buys ${num(r.extraAccounts)} more submissions, and ${num(r.extraBound)} of them bind.`}
@@ -314,7 +350,7 @@ export default function RoiCalculatorPage() {
                     <button
                       type="button"
                       onClick={() => setGateOpen(true)}
-                      className="inline-flex shrink-0 items-center gap-[8px] rounded-[7px] bg-dark px-[20px] py-[12px] font-sans text-[14.5px] font-medium text-cream-light transition-all duration-200 hover:scale-[1.03]"
+                      className="inline-flex shrink-0 items-center gap-[8px] rounded-[7px] bg-cream-light px-[20px] py-[12px] font-sans text-[14.5px] font-medium text-dark transition-all duration-200 hover:scale-[1.03]"
                     >
                       <LockSimple size={15} weight="bold" /> Reveal full results
                     </button>
@@ -337,8 +373,8 @@ export default function RoiCalculatorPage() {
                             {t.label}
                           </span>
                         </div>
-                        <div className="font-serif text-[27px] leading-[1.05] tabular-nums text-dark">{t.value}</div>
-                        <p className="mt-[6px] font-sans text-[12.5px] leading-[1.4] text-dark/50">{t.sub}</p>
+                        <div className="font-serif text-[27px] leading-[1.05] tabular-nums text-cream-light">{t.value}</div>
+                        <p className="mt-[6px] font-sans text-[12.5px] leading-[1.4] text-cream-light/50">{t.sub}</p>
                       </div>
                     )
                   })}
@@ -348,12 +384,12 @@ export default function RoiCalculatorPage() {
                 <div className="mt-[26px] overflow-x-auto">
                   <table className="w-full min-w-[400px] border-collapse">
                     <thead>
-                      <tr className="border-b border-dark/[0.1]">
+                      <tr className="border-b border-cream-light/[0.16]">
                         <th className="pb-[10px] text-left">&nbsp;</th>
                         {['Per month', 'First 12 months', 'Over 3 years'].map((h, i) => (
                           <th
                             key={h}
-                            className="pb-[10px] text-right font-grotesk text-[11px] font-medium uppercase tracking-[1.1px] text-dark/40"
+                            className="pb-[10px] text-right font-grotesk text-[11px] font-medium uppercase tracking-[1.1px] text-cream-light/40"
                           >
                             <Locked locked={!unlocked && i > 0}>{h}</Locked>
                           </th>
@@ -362,10 +398,10 @@ export default function RoiCalculatorPage() {
                     </thead>
                     <tbody>
                       {tableRows.map((row) => (
-                        <tr key={row.label} className="border-b border-dark/[0.06] last:border-b-0">
-                          <td className="py-[14px] font-sans text-[14px] text-dark/70">{row.label}</td>
+                        <tr key={row.label} className="border-b border-cream-light/[0.09] last:border-b-0">
+                          <td className="py-[14px] font-sans text-[14px] text-cream-light/70">{row.label}</td>
                           {row.cells.map((c, i) => (
-                            <td key={i} className="py-[14px] text-right font-sans text-[15px] font-medium tabular-nums text-dark">
+                            <td key={i} className="py-[14px] text-right font-sans text-[15px] font-medium tabular-nums text-cream-light">
                               <Locked locked={!unlocked && i > 0}>{c}</Locked>
                             </td>
                           ))}
@@ -375,13 +411,13 @@ export default function RoiCalculatorPage() {
                   </table>
                 </div>
 
-                <p className="mt-[16px] font-sans text-[12.5px] leading-[1.5] text-dark/45">
+                <p className="mt-[16px] font-sans text-[12.5px] leading-[1.5] text-cream-light/45">
                   The monthly figure is the steady rate. The 12-month total runs at {Math.round(RAMP[0] * 100)}% of it, because a rollout takes a month or two to reach every desk.
                 </p>
 
                 {/* CTA */}
                 <div className="mt-[24px] flex flex-col gap-[14px] rounded-[14px] border border-accent-orange/25 bg-accent-orange/[0.06] p-[20px] sm:flex-row sm:items-center sm:justify-between">
-                  <p className="max-w-[400px] font-sans text-[14px] leading-[1.55] text-dark/70">
+                  <p className="max-w-[400px] font-sans text-[14px] leading-[1.55] text-cream-light/70">
                     {unlocked
                       ? 'Bring a real submission and we will run it through Cooper live, so you can check these numbers against your own file.'
                       : 'Want these numbers on your own workflows? We will walk through them with you.'}
