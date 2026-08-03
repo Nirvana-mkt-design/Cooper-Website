@@ -214,6 +214,10 @@ export default function RoiCalculatorPage() {
     { icon: CurrencyDollar, label: 'Cost avoided', value: `${usd(r.monthlyValue)}/mo`, sub: `Those hours at a ${usd(BLENDED_HOURLY_COST)} blended rate.` },
   ]
 
+  /* The figure the hero floats over the photograph. Picked out of the same
+     array the results panel renders, so there is one definition of it. */
+  const heroTile = tiles.find((t) => t.label === 'Cost avoided')
+
   const tableRows = [
     { label: 'Additional revenue', cells: [usd(r.monthlyRevenue), usd(r.firstYearRevenue), usd(r.threeYearRevenue)] },
     { label: 'Hours returned', cells: [num(r.monthlyHours), num(r.firstYearHours), num(r.threeYearHours)] },
@@ -240,10 +244,10 @@ export default function RoiCalculatorPage() {
         <div className="mx-auto grid max-w-[1180px] items-center gap-[36px] lg:grid-cols-[minmax(0,1fr)_minmax(0,460px)] lg:gap-[64px]">
           <div>
             <span className="mb-[20px] inline-flex items-center rounded-full border border-dark/15 px-[13px] py-[5px] font-grotesk text-[11.5px] font-medium uppercase tracking-[1.2px] text-dark/60">
-              ROI Calculator
+              ROI calculator
             </span>
             <h1 className="font-serif text-[38px] leading-[1.06] tracking-[-1px] text-dark md:text-[46px] lg:text-[52px]">
-              See the return your team could get with Cooper
+              See Cooper's impact on your team
             </h1>
             <p className="mt-[20px] max-w-[480px] font-sans text-[16.5px] leading-[1.6] text-dark/60">
               Cooper is your AI coworker for the busywork, from intake to renewal. Tell us
@@ -261,18 +265,20 @@ export default function RoiCalculatorPage() {
               height={1473}
               className="block w-full rounded-[18px] object-cover lg:aspect-[4/5]"
             />
-            {/* Sits over the calm lower corner the frame was composed to leave. */}
-            <div className="absolute bottom-[18px] left-[18px] rounded-[14px] bg-cream-light/95 px-[20px] py-[16px] shadow-[0_20px_44px_-20px_rgba(30,26,21,0.5)] backdrop-blur-[2px]">
-              <p className="font-grotesk text-[10.5px] font-medium uppercase tracking-[1.2px] text-dark/45">
-                Cost avoided, monthly
-              </p>
-              <p className="mt-[6px] font-serif text-[30px] leading-none text-dark">
-                {usd(r.monthlyValue)}
-              </p>
-              <p className="mt-[7px] font-sans text-[12px] text-dark/45">
-                {num(r.monthlyHours)} hours back a month
-              </p>
-            </div>
+            {/* Sits over the calm lower corner the frame was composed to leave.
+                It renders one of the tiles the calculator already builds rather
+                than restating it, so the hero cannot carry a number, a label or
+                a wording the results below disagree with. */}
+            {heroTile && (
+              <div className="absolute bottom-[18px] left-[18px] rounded-[14px] bg-cream-light/95 px-[20px] py-[16px] shadow-[0_20px_44px_-20px_rgba(30,26,21,0.5)] backdrop-blur-[2px]">
+                <p className="font-grotesk text-[10.5px] font-medium uppercase tracking-[1.2px] text-dark/45">
+                  {heroTile.label}
+                </p>
+                <p className="mt-[6px] font-serif text-[30px] leading-none text-dark">
+                  {heroTile.value}
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </section>
