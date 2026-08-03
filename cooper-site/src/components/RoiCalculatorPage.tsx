@@ -21,7 +21,7 @@
 
 import { lazy, Suspense, useMemo, useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, LockSimple, Clock, CurrencyDollar, TrendUp, UsersThree } from '@phosphor-icons/react'
+import { ArrowRight, Calculator, LockSimple, Clock, CurrencyDollar, TrendUp, UsersThree } from '@phosphor-icons/react'
 import Navbar from './Navbar'
 import Footer from './Footer'
 import Reveal from './Reveal'
@@ -243,9 +243,15 @@ export default function RoiCalculatorPage() {
       <section className="px-5 pb-[36px] pt-[120px] md:px-10 lg:px-[62px] lg:pt-[140px]">
         <div className="mx-auto grid max-w-[1180px] items-center gap-[36px] lg:grid-cols-[minmax(0,1fr)_minmax(0,460px)] lg:gap-[64px]">
           <div>
-            <span className="mb-[20px] inline-flex items-center rounded-full border border-dark/15 px-[13px] py-[5px] font-grotesk text-[11.5px] font-medium uppercase tracking-[1.2px] text-dark/60">
-              ROI calculator
-            </span>
+            {/* Same treatment as the white paper's kicker: the icon from the
+                resources catalog, then the label. The white paper follows its
+                label with "// July 2026 edition"; this page has no edition or
+                date in its copy, and inventing one is not mine to do, so the
+                slash and its text are left off rather than filled in. */}
+            <div className="mb-[18px] flex items-center gap-[8px] font-sans text-[14px]">
+              <Calculator size={16} weight="regular" className="shrink-0 text-dark" />
+              <span className="font-medium text-dark">ROI calculator</span>
+            </div>
             <h1 className="font-serif text-[38px] leading-[1.06] tracking-[-1px] text-dark md:text-[46px] lg:text-[52px]">
               See Cooper's impact on your team
             </h1>
@@ -263,7 +269,7 @@ export default function RoiCalculatorPage() {
               aria-hidden
               width={1100}
               height={1473}
-              className="block w-full rounded-[18px] object-cover lg:aspect-[4/5]"
+              className="block aspect-square w-full rounded-[18px] object-cover"
             />
             {/* Sits over the calm lower corner the frame was composed to leave.
                 It renders one of the tiles the calculator already builds rather
@@ -334,8 +340,17 @@ export default function RoiCalculatorPage() {
             </p>
           </div>
 
-          {/* ── Results ── */}
-          <div className="p-[24px] lg:p-[32px]">
+          {/* ── Results ──
+              Filled, against the white inputs beside it. That contrast is the
+              structural idea in the reference: one side is where you put things
+              in, the other is the answer, and the two should not read as halves
+              of one surface. Cooper's dark rather than the reference's brand
+              fill — orange is an accent in this system, not a field.
+
+              The fill and the light type inside it are one change, not two. A
+              rebase once dropped the fill and kept the type, which put pale
+              text on a pale panel and made the whole answer invisible. */}
+          <div className="min-w-0 bg-dark p-[24px] text-cream-light lg:p-[32px]">
             <>
                 {/* Headline + gate */}
                 <div className="flex flex-wrap items-start justify-between gap-[16px]">
