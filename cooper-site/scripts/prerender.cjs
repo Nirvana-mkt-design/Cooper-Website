@@ -46,7 +46,9 @@ const routes = [
   })),
   { path: '/about', title: 'About Cooper — AI for Insurance Professionals', description: "Cooper's mission, team, and why we're building AI for insurance professionals.", ogImage: DEFAULT_OG },
   { path: '/integrations', title: 'Integrations — Cooper', description: 'Cooper connects to the systems insurance teams already use: email, Excel, carrier portals, AMS/CRM, ACORD forms, and loss runs. See what connects, how the data moves, and how it stays secure.', ogImage: DEFAULT_OG },
-  { path: '/resources/roi-calculator', title: 'ROI Calculator — Cooper', description: 'Estimate what Cooper returns to your team. Pick the workflows you run, put in your monthly volume, and see the hours and cost each one gives back every month.', ogImage: DEFAULT_OG },
+  /* /resources/roi-calculator is a draft — see the `draft` flag in
+     src/data/resources.ts. It has no route in a production build, so it
+     must not be prerendered or listed in the sitemap either. */
   { path: '/resources/white-paper', title: 'AI for Insurance Agents: How to Evaluate Tools — Cooper', description: 'Why the moment to adopt AI is now, and how to evaluate the tools that actually finish the job, from intake to renewal. A Cooper white paper for insurance agents and brokers.', ogImage: DEFAULT_OG },
   { path: '/demo', title: 'Request a Demo — Cooper', description: 'See Cooper in action with your own data. Book a personalized demo for your insurance team.', ogImage: DEFAULT_OG },
   { path: '/careers', title: 'Careers — Cooper', description: 'Join the team building AI for insurance professionals. See open roles at Cooper.', ogImage: DEFAULT_OG },
