@@ -1,0 +1,192 @@
+/* ──────────────────────────────────────────────────────────────
+   Layout C — the report page, after Ramp's Business Spending Report.
+
+   The third answer to the same question, and the one that argues least
+   with the reader. A and B both withhold: A blurs the remainder behind
+   a rail form, B cuts the page off and raises a panel. C withholds
+   nothing but the paper itself. It gives the findings in full and in the
+   open, and asks for an address only for the rest.
+
+   The bet: a visitor who has read four real findings knows whether the
+   paper is worth their address. A visitor with only blurred text is
+   being asked to bet on writing they cannot read. The summary still
+   trails off into blur, but by then it is a signal that there is more
+   rather than the only thing on offer.
+
+   The structure is Ramp's, near enough beat for beat:
+
+     kicker      icon, "White Paper", a double slash, the edition
+     headline    then a standfirst, then a rule
+     findings    a labelled list, one specific icon per item
+     summary     the public opening, trailing off into blur
+     rail        the cover, standing in a lit scene
+     gate        the panel from layout B, rising at the foot of the page
+
+   The icons are the detail worth being careful about: each one has to
+   mean its own line rather than decorate it, or the column turns into
+   three identical bullets wearing different hats.
+─────────────────────────────────────────────────────────────── */
+
+import type { ReactNode } from 'react'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import {
+  ArrowsLeftRight,
+  FileText,
+  Lightning,
+  ListChecks,
+  TrendUp,
+  type Icon,
+} from '@phosphor-icons/react'
+
+/* One icon per finding, chosen to carry the sentence rather than sit beside it:
+   work being done, a curve moving, a list to check against, two ends joined. */
+const FINDINGS: { icon: Icon; lead: string; rest: string }[] = [
+  {
+    icon: Lightning,
+    lead: 'AI has moved from chat assistants to doing the work.',
+    rest: ' Modern platforms complete submissions, fill ACORD forms and carrier supplements, drive live carrier portals, compare quotes, and build proposals.',
+  },
+  {
+    icon: TrendUp,
+    lead: 'The adoption window favors agencies that move now.',
+    rest: ' 76% of insurance executives say their organization has deployed generative AI somewhere, yet only 7% of insurers have scaled it and just 8% of independent agents use AI regularly and strategically.',
+  },
+  {
+    icon: ListChecks,
+    lead: 'Evaluate on seven criteria.',
+    rest: ' End-to-end workflow coverage, measured accuracy, real portal execution, security and data-use policies, fit with your systems, human oversight, and insurance-specific depth.',
+  },
+  {
+    icon: ArrowsLeftRight,
+    lead: 'End-to-end beats point solutions.',
+    rest: ' Tools that automate one step just move the bottleneck. Cooper completes the entire workflow, intake to renewal, with 99.2% form-fill accuracy and quotes reaching clients 4x faster.',
+  },
+]
+
+function SectionTitle({ children }: { children: ReactNode }) {
+  return <h2 className="mb-[16px] font-serif text-[27px] leading-[1.18] text-dark">{children}</h2>
+}
+
+export default function WhitePaperReport({
+  body,
+  lockedSummary,
+  mdComponents,
+}: {
+  /** The paper's markdown once unlocked, or null. */
+  body: string | null
+  /** The public opening plus its blurred tail, shown while locked. */
+  lockedSummary: ReactNode
+  mdComponents: Record<string, unknown>
+}) {
+  return (
+    <div className="mx-auto max-w-[1440px] px-5 pb-[72px] pt-[104px] md:px-10 lg:px-[62px]">
+      <div className="grid gap-[44px] lg:grid-cols-[minmax(0,1fr)_400px] lg:items-start lg:gap-[64px]">
+        {/* ─────────── the article ─────────── */}
+        <div className="max-w-[720px]">
+          <div className="flex animate-fade-blur-in items-center gap-[8px] font-sans text-[14px] text-dark/45">
+            <FileText size={16} weight="regular" className="text-dark shrink-0" />
+            <span className="font-medium text-dark">White Paper</span>
+            <span aria-hidden>//</span>
+            <span>July 2026 edition</span>
+          </div>
+
+          <h1
+            className="mt-[14px] animate-fade-blur-in font-serif text-[38px] leading-[1.1] tracking-[-1px] text-dark md:text-[50px]"
+            style={{ animationDelay: '0.05s' }}
+          >
+            The AI Advantage for Insurance Agents
+          </h1>
+          <p
+            className="mt-[18px] max-w-[560px] animate-fade-blur-in font-sans text-[17px] leading-[1.5] text-dark/55"
+            style={{ animationDelay: '0.08s' }}
+          >
+            Why the moment to adopt is now, and how to evaluate tools that actually finish
+            the job, from intake to renewal.
+          </p>
+
+          <hr className="my-[36px] border-dark/[0.12]" />
+
+          <p className="mb-[22px] font-sans text-[14.5px] font-medium text-dark">Key findings</p>
+          <ul className="flex flex-col gap-[18px]">
+            {FINDINGS.map(({ icon: Glyph, lead, rest }) => (
+              <li key={lead} className="flex gap-[16px]">
+                {/* Nudged to sit on the first line rather than above it. */}
+                <Glyph size={19} weight="regular" className="mt-[3px] shrink-0 text-dark" />
+                <p className="font-sans text-[15.5px] leading-[1.55] text-dark/70">
+                  <span className="font-medium text-dark">{lead}</span>
+                  {rest}
+                </p>
+              </li>
+            ))}
+          </ul>
+
+          <div className="mt-[52px]">
+            <SectionTitle>Summary</SectionTitle>
+            {/* While locked this is the public opening. Once the gate is passed
+                the whole paper renders here instead, so the reader carries on
+                down the page they were already reading rather than being sent
+                somewhere new. */}
+            {body ? (
+              <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
+                {body}
+              </ReactMarkdown>
+            ) : (
+              lockedSummary
+            )}
+          </div>
+
+        </div>
+
+        {/* ─────────── the rail ───────────
+
+            The cover, and only the cover. The form that used to sit under it is
+            now the panel that rises from the foot of the page — the same one
+            layout B ends on. A form in the rail and a panel at the bottom would
+            be two asks competing, and the panel is the one that arrives at the
+            moment the reader has read enough to answer it.
+
+            The cover stays after the gate is passed. It is the thing the reader
+            just asked for, and having it vanish at the moment they get it reads
+            as the page taking something away. ─── */}
+        <div className="lg:sticky lg:top-[96px]">
+            {/* The cover, standing in a lit scene rather than pasted flat on the
+                page. The scene is two surfaces — a wall, and a floor meeting it
+                in a line — with the cover's own shadow cast away from the light.
+                All CSS, so it costs nothing and re-colours with the page.
+
+                The book is fully inside the scene, with air on all four sides.
+                The first pass had padding on three and none at the foot, so the
+                cover ran into the rounded corner and was clipped — which reads
+                as a photograph cropped badly rather than as an object standing
+                on a floor. The floor line sits behind its lower third, which is
+                what puts it in the room instead of in front of a backdrop. */}
+            <div className="relative overflow-hidden rounded-[16px] bg-gradient-to-b from-[#efe9dc] to-[#e7e0d1] px-[46px] pb-[46px] pt-[44px]">
+              <div
+                aria-hidden
+                className="absolute inset-x-0 bottom-0 h-[30%] bg-gradient-to-b from-[#f5f0e4] to-[#ebe4d5]"
+              />
+              <div className="relative">
+                <img
+                  src="/images/white-paper-cover.jpg"
+                  alt="The AI Advantage for Insurance Agents, a Cooper white paper"
+                  width={900}
+                  height={1244}
+                  className="block w-full rounded-l-[2px] rounded-r-[10px] shadow-[14px_26px_36px_-16px_rgba(30,26,21,0.42)]"
+                />
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute inset-y-0 left-0 w-[8%] rounded-l-[2px] bg-gradient-to-r from-black/22 via-black/[0.05] to-transparent"
+                />
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute inset-y-0 left-0 w-[2px] bg-black/25"
+                />
+              </div>
+            </div>
+
+        </div>
+      </div>
+    </div>
+  )
+}

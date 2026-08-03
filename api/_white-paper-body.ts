@@ -1,4 +1,25 @@
-## Executive summary
+/**
+ * The white paper, whole.
+ *
+ * This file is the reason the gate is real. It lives under api/, is imported
+ * only by api/white-paper.ts, and is therefore compiled into the serverless
+ * function and nowhere else. Nothing under cooper-site/src may import it: the
+ * moment something does, the paper is back in the client bundle and in the
+ * prerendered HTML, which is exactly the hole this replaced.
+ *
+ * It holds the complete paper rather than only the withheld part, so that
+ * unlocking swaps the teaser for the real thing instead of splicing a
+ * continuation onto a half-finished paragraph. The reader never sees both.
+ *
+ * The first two sentences also live in
+ * cooper-site/src/content/white-paper-preview.md, which is the public teaser.
+ * That duplication is deliberate and checked: scripts/assert-gate.cjs fails the
+ * build if the teaser stops being a verbatim prefix of this text, so editing
+ * the opening in one place and not the other cannot ship quietly. The same
+ * script fails the build if any of the withheld text reaches dist/.
+ */
+
+export const WHITE_PAPER_BODY = `## Executive summary
 
 Independent agents and brokers win business on relationships, advice, and speed. Yet most agency hours are still spent on none of those things. They go to re-keying data from dec pages and loss runs, filling the same ACORD forms and carrier supplements again and again, logging into a dozen carrier portals per risk, and reformatting mismatched quotes into a client-ready proposal. The work is essential. Doing it by hand is not.
 
@@ -107,3 +128,4 @@ Look for independent attestation rather than assurances. Cooper is SOC 2 Type II
 3. Vertafore, "2026 Agency Trends Outlook," February 6, 2026. Survey of 1,300+ US independent agency professionals. Sentiment split: 23% confident, 39% exploring, 29% cautious, 9% skeptical. https://www.vertafore.com/resources/ebooks-whitepapers/2026-agency-trends-outlook
 4. Big "I" Agents Council for Technology, "2026 TECH Trends Report." https://www.independentagent.com/technology-trends-report/
 5. Cooper product and performance claims: askcooper.ai.
+`
