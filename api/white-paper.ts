@@ -31,13 +31,39 @@
  * branch returns an error and no content.
  */
 
-import type { IncomingMessage, ServerResponse } from 'node:http'
 /* The .js extension is required, not optional. The repo root's package.json
    sets "type": "module", so this compiles to ESM, and ESM resolves relative
    specifiers literally — no extension means no file. It typechecks and builds
    clean without it, and then fails only inside the Vercel runtime, with
    ERR_MODULE_NOT_FOUND at import time and a 500 on every request to the gate. */
 import { WHITE_PAPER_BODY } from './_white-paper-body.js'
+
+/* ── Types declared here rather than imported from @types/node.
+
+   Vercel's installCommand is `cd cooper-site && npm install`, so the root's
+   dependencies are never on disk when this file is type-checked. Importing
+   node:http, or touching `process` and `Buffer` bare, fills the build log with
+   "Cannot find name" errors on every deploy. They are non-fatal — the function
+   builds and runs — but an error in a build log that is always there is an
+   error nobody reads when it starts mattering.
+
+   Declaring the handful of members this file actually uses costs less than
+   installing a second dependency tree in CI, and it documents the surface the
+   function depends on. ── */
+declare const process: { env: Record<string, string | undefined> }
+declare const Buffer: { concat(list: Uint8Array[]): { toString(encoding: string): string } }
+
+interface IncomingMessage extends AsyncIterable<Uint8Array> {
+  method?: string
+  headers: Record<string, string | string[] | undefined>
+  socket: { remoteAddress?: string }
+}
+
+interface ServerResponse {
+  statusCode: number
+  setHeader(name: string, value: string): void
+  end(chunk: string): void
+}
 
 const API_ORIGIN = process.env.API_ORIGIN ?? 'https://api.askcooper.ai'
 const LEAD_PATH = '/api/v1/demo-requests/send-code/'
@@ -89,8 +115,8 @@ function send(res: ServerResponse, status: number, data: unknown): void {
 /** Vercel pre-parses JSON bodies; the Vite dev middleware does not. */
 async function readBody(req: IncomingMessage & { body?: unknown }): Promise<Payload> {
   if (req.body && typeof req.body === 'object') return req.body as Payload
-  const chunks: Buffer[] = []
-  for await (const chunk of req) chunks.push(chunk as Buffer)
+  const chunks: Uint8Array[] = []
+  for await (const chunk of req) chunks.push(chunk)
   if (!chunks.length) return {}
   try {
     return JSON.parse(Buffer.concat(chunks).toString('utf8')) as Payload
