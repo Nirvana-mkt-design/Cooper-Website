@@ -32,7 +32,12 @@
  */
 
 import type { IncomingMessage, ServerResponse } from 'node:http'
-import { WHITE_PAPER_BODY } from './_white-paper-body'
+/* The .js extension is required, not optional. The repo root's package.json
+   sets "type": "module", so this compiles to ESM, and ESM resolves relative
+   specifiers literally — no extension means no file. It typechecks and builds
+   clean without it, and then fails only inside the Vercel runtime, with
+   ERR_MODULE_NOT_FOUND at import time and a 500 on every request to the gate. */
+import { WHITE_PAPER_BODY } from './_white-paper-body.js'
 
 const API_ORIGIN = process.env.API_ORIGIN ?? 'https://api.askcooper.ai'
 const LEAD_PATH = '/api/v1/demo-requests/send-code/'
