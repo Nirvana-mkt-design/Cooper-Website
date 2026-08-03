@@ -135,3 +135,33 @@ export async function captureLead(
   })
   if (!res.ok) throw Object.assign(new Error(`HTTP ${res.status}`), { status: res.status })
 }
+
+/**
+ * Trade a lead for the body of the white paper.
+ *
+ * The one form on the site that does not post to the API directly. The paper is
+ * not in the bundle and not in the prerendered HTML — api/white-paper.ts holds
+ * it and hands it over only once the same /send-code/ call the other forms make
+ * has come back 2xx. So the lead still lands in exactly one pipeline; the extra
+ * hop exists so that "did this visitor actually convert" is answered by the
+ * server rather than by a CSS class the visitor can delete.
+ *
+ * Resolves with markdown. Throws on any failure, with `status` attached.
+ */
+export async function unlockWhitePaper(
+  fields: LeadFields & { turnstile_token?: string; variant: 'rail' | 'modal' | 'sheet' | 'report' }
+): Promise<string> {
+  const res = await fetch('/api/white-paper', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      ...leadPayload(fields),
+      turnstile_token: fields.turnstile_token ?? '',
+      variant: fields.variant,
+    }),
+  })
+  if (!res.ok) throw Object.assign(new Error(`HTTP ${res.status}`), { status: res.status })
+  const data = (await res.json()) as { body?: string }
+  if (!data.body) throw Object.assign(new Error('empty body'), { status: res.status })
+  return data.body
+}
