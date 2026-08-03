@@ -20,6 +20,7 @@ const DemoPage = lazy(() => import('./components/DemoPage'))
 const PersonaPage = lazy(() => import('./components/PersonaPage'))
 const AboutPage = lazy(() => import('./components/AboutPage'))
 const IntegrationsPage = lazy(() => import('./components/IntegrationsPage'))
+const WhitePaperPage = lazy(() => import('./components/WhitePaperPage'))
 const CareersPage = lazy(() => import('./components/CareersPage'))
 const CareerRolePage = lazy(() => import('./components/CareerRolePage'))
 const PrivacyPage = lazy(() => import('./components/PrivacyPage'))
@@ -146,6 +147,7 @@ export default function App() {
           <Route path="/demo" element={<DemoPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/integrations" element={<IntegrationsPage />} />
+          <Route path="/resources/white-paper" element={<WhitePaperPage />} />
           <Route path="/careers" element={<CareersPage />} />
           <Route path="/careers/:roleId" element={<CareerRolePage />} />
           {/* Product / use-case pages (formerly /personas/*). Reinsurers is pulled
