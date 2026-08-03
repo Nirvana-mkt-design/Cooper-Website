@@ -8,6 +8,7 @@ import {
   Newspaper, Package, Monitor,
   List, X, CaretDown,
 } from '@phosphor-icons/react'
+import { RESOURCES } from '../data/resources'
 
 /* ── Panel data ── */
 interface NavItem {
@@ -18,8 +19,11 @@ interface NavItem {
 }
 
 interface NavPanel {
-  cols: { label: string; items: NavItem[] }[]
-  featured: { badge: string; title: string; desc: string; link: string; image: string }
+  /** Column header; omit it for a panel that needs no section label. */
+  cols: { label?: string; items: NavItem[] }[]
+  /* Nothing renders `featured` yet; the panels below keep the copy ready for
+     when the mega-menu gains a featured card. */
+  featured?: { badge: string; title: string; desc: string; link: string; image: string }
 }
 
 const productPanel: NavPanel = {
@@ -100,8 +104,27 @@ const aboutPanel: NavPanel = {
   },
 }
 
+/* Resources — driven by the shared catalog so the dropdown and the footer
+   column can never drift apart. There is no hub page; the dropdown routes
+   straight to each resource. */
+const resourcesPanel: NavPanel = {
+  cols: [
+    {
+      /* No column label — the three entries speak for themselves, and a lone
+         "Tools & research" header over a single column was pure chrome. */
+      items: RESOURCES.map((r) => ({
+        title: r.title,
+        desc: r.desc,
+        href: r.to,
+        icon: r.icon,
+      })),
+    },
+  ],
+}
+
 const panels: Record<string, NavPanel> = {
   Product: productPanel,
+  Resources: resourcesPanel,
   /* Customers and About dropdowns hidden for now — registered but not triggered
      (navLinks below don't enable their dropdowns, so these never render) */
   Customers: customersPanel,
@@ -111,8 +134,10 @@ const panels: Record<string, NavPanel> = {
 const navLinks = [
   { label: 'Product', hasDropdown: true },
   // { label: 'Customers', hasDropdown: false },
-  { label: 'Integrations', hasDropdown: false, href: '/integrations' },
+  /* Integrations has no nav entry of its own — it sits under Resources, and
+     the homepage integrations section's "See More" link still points at it. */
   { label: 'About', hasDropdown: false, href: '/about' },
+  { label: 'Resources', hasDropdown: true },
   /* Blog hidden for now — will be used later */
   // { label: 'Blog', hasDropdown: false },
   { label: 'Careers', hasDropdown: false, href: '/careers', badge: "We're hiring" },
@@ -231,7 +256,12 @@ export default function Navbar({ variant = 'dark' }: { variant?: 'dark' | 'light
           className="inline-flex items-center min-h-[40px] no-underline"
           onClick={handleLogoClick}
         >
-          <CooperLogo dark={isLight || mobileOpen} className={`origin-left transition-transform duration-300 ${scrolled || isLight || mobileOpen ? 'scale-100' : 'scale-[1.3] sm:scale-[1.5] lg:scale-[1.8]'}`} />
+          {/* The unscrolled logo is scaled up, and `transform` reserves no
+              layout space, so `justify-between` cannot see the extra width.
+              Below 375px the bar is already full at scale 1, so the scale-up
+              is what pushed the wordmark under the demo button — hold it at
+              scale-100 there. */}
+          <CooperLogo dark={isLight || mobileOpen} className={`origin-left transition-transform duration-300 ${scrolled || isLight || mobileOpen ? 'scale-100' : 'scale-100 min-[375px]:scale-[1.3] sm:scale-[1.5] lg:scale-[1.8]'}`} />
         </Link>
 
         <div className="hidden lg:flex items-center gap-1">
@@ -299,7 +329,9 @@ export default function Navbar({ variant = 'dark' }: { variant?: 'dark' | 'light
               aria-hidden="true"
               width={16}
               height={16}
-              className="h-[16px] w-auto"
+              /* Dropped below 375px: even at scale-100 the logo and this pill
+                 sit flush there, and the label alone carries the CTA. */
+              className="hidden h-[16px] w-auto min-[375px]:block"
               style={{ filter: 'brightness(0) invert(1)' }}
             />
             Request a Demo
@@ -416,13 +448,15 @@ export default function Navbar({ variant = 'dark' }: { variant?: 'dark' | 'light
               {/* Columns */}
               {panel.cols.map((col, ci) => (
                 <div
-                  key={col.label}
+                  key={ci}
                   className={ci > 0 ? `pl-[32px] border-l ${isLight ? 'border-dark/[0.08]' : 'border-white/[0.08]'}` : ''}
                   style={{ paddingRight: 32 }}
                 >
-                  <div className={`font-grotesk font-medium text-[11px] tracking-[1.1px] uppercase mb-[16px] ${isLight ? 'text-dark/40' : 'text-white/40'}`}>
-                    {col.label}
-                  </div>
+                  {col.label && (
+                    <div className={`font-grotesk font-medium text-[11px] tracking-[1.1px] uppercase mb-[16px] ${isLight ? 'text-dark/40' : 'text-white/40'}`}>
+                      {col.label}
+                    </div>
+                  )}
                   <div className={`${panel.cols.length === 1 ? 'grid grid-cols-3 gap-x-[16px] gap-y-[2px]' : 'flex flex-col gap-[2px]'}`}>
                     {col.items.map((item) => {
                       const Icon = item.icon
