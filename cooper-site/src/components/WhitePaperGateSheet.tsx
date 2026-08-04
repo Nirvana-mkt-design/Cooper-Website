@@ -44,16 +44,40 @@ import { LockSimple, X } from '@phosphor-icons/react'
 import GateFields from './WhitePaperGateFields'
 import { useWhitePaperGate, type GateVariant } from '../lib/whitePaperGate'
 
-/** How far the reader has to move before the panel comes up. A share of the
-    viewport rather than a fixed nudge, so the reader gets roughly a screenful
-    of the report to read before the ask arrives rather than having it jump up
-    on the first flick. Floored so a short viewport still asks for real scroll. */
-const scrollTrigger = () => Math.max(460, window.innerHeight * 0.6)
+/* ── How far the reader has to move before the panel comes up.
 
-/** Shown anyway after this long, for a viewport tall enough that the locked
-    page does not scroll at all — otherwise the ask would never arrive. Only
-    armed when the page cannot actually scroll, so on the normal long report it
-    is the reader's scroll, not a timer, that decides when the panel arrives. */
+   A share of the viewport, so they get roughly a screenful of the report to
+   read before the ask arrives rather than having it jump up on the first
+   flick — but capped by what the page can actually give them, which is the
+   part that was missing and which stopped the panel appearing at all.
+
+   The locked page is short. Everything below the gate is held back while it is
+   up, so the document is the findings, the summary and a few hundred pixels of
+   blur, and on a desktop window that is barely taller than the window itself.
+   Measured on a 1280x1319 viewport: 791px of scroll asked for, 152px of scroll
+   in existence. The trigger could not be reached, and the time fallback was
+   armed only when the page could not scroll at all — which this page can, just
+   not nearly far enough. So the ask never arrived. Reported by Hygor, Aug 3,
+   from the live page.
+
+   Capping at a share of the real scroll room fixes that without giving up what
+   the share of the viewport was for: on a phone, where the report runs to more
+   than a thousand pixels of scroll, the viewport figure is still the smaller of
+   the two and nothing changes.
+
+   Measured on every check rather than once at mount, because the page grows as
+   images and fonts land and a number taken at hydration describes a shorter
+   document than the reader is looking at. ── */
+function scrollTrigger(): number {
+  const room = document.documentElement.scrollHeight - window.innerHeight
+  /* Nothing meaningful to scroll: leave it to the timer rather than return a
+     trigger of nought, which the first check would clear instantly. */
+  if (room < 80) return Infinity
+  return Math.max(80, Math.min(Math.max(460, window.innerHeight * 0.6), room * 0.6))
+}
+
+/** Shown anyway after this long, for a page that cannot give the reader enough
+    scroll to reach the trigger on their own. */
 const FALLBACK_MS = 6500
 
 export default function WhitePaperGateSheet({
@@ -74,8 +98,7 @@ export default function WhitePaperGateSheet({
   const [collapsed, setCollapsed] = useState(false)
 
   useEffect(() => {
-    const trigger = scrollTrigger()
-    const check = () => { if (window.scrollY > trigger) setShown(true) }
+    const check = () => { if (window.scrollY > scrollTrigger()) setShown(true) }
 
     /* The initial check waits a frame rather than running here. Someone who
        reloads part-way down the page is already past the trigger, and setting
@@ -85,11 +108,16 @@ export default function WhitePaperGateSheet({
     const raf = requestAnimationFrame(check)
     window.addEventListener('scroll', check, { passive: true })
 
-    /* Only arm the fallback when the page has nothing to scroll — otherwise the
-       reader's own scroll past the trigger is what raises the panel, and a
-       timer firing first would defeat the point of giving them room to read. */
-    const canScroll = document.documentElement.scrollHeight > window.innerHeight + 40
-    const timer = canScroll ? undefined : window.setTimeout(() => setShown(true), FALLBACK_MS)
+    /* Arm the fallback only where the page has little to read past: half a
+       viewport of scroll or less, which on a desktop window is the whole of the
+       locked page. Where there is a real scroll to make — every phone, and any
+       window short enough that the report runs well past it — the reader's own
+       scroll is what raises the panel, and a timer firing first would defeat the
+       point of giving them room to read. */
+    const room = document.documentElement.scrollHeight - window.innerHeight
+    const timer = room < window.innerHeight * 0.5
+      ? window.setTimeout(() => setShown(true), FALLBACK_MS)
+      : undefined
 
     return () => {
       cancelAnimationFrame(raf)
