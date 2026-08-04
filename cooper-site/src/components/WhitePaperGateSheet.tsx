@@ -25,16 +25,21 @@
 ─────────────────────────────────────────────────────────────── */
 
 import { useEffect, useState } from 'react'
-import { LockSimple } from '@phosphor-icons/react'
+import { LockSimple, X } from '@phosphor-icons/react'
 import GateFields from './WhitePaperGateFields'
 import { useWhitePaperGate, type GateVariant } from '../lib/whitePaperGate'
 
-/** How far the reader has to move before the panel comes up. */
-const SCROLL_TRIGGER = 60
+/** How far the reader has to move before the panel comes up. A share of the
+    viewport rather than a fixed nudge, so the reader gets roughly a screenful
+    of the report to read before the ask arrives rather than having it jump up
+    on the first flick. Floored so a short viewport still asks for real scroll. */
+const scrollTrigger = () => Math.max(460, window.innerHeight * 0.6)
 
 /** Shown anyway after this long, for a viewport tall enough that the locked
-    page does not scroll at all — otherwise the ask would never arrive. */
-const FALLBACK_MS = 2600
+    page does not scroll at all — otherwise the ask would never arrive. Only
+    armed when the page cannot actually scroll, so on the normal long report it
+    is the reader's scroll, not a timer, that decides when the panel arrives. */
+const FALLBACK_MS = 6500
 
 export default function WhitePaperGateSheet({
   onUnlock,
@@ -47,9 +52,15 @@ export default function WhitePaperGateSheet({
 }) {
   const gate = useWhitePaperGate({ variant, onUnlock })
   const [shown, setShown] = useState(false)
+  /* The reader has closed the panel with the X. It collapses to a small
+     "Keep reading" tab so the paper below is theirs to read again, and the tab
+     is how they bring the form back — a closed gate with no way back would just
+     be a broken one. */
+  const [collapsed, setCollapsed] = useState(false)
 
   useEffect(() => {
-    const check = () => { if (window.scrollY > SCROLL_TRIGGER) setShown(true) }
+    const trigger = scrollTrigger()
+    const check = () => { if (window.scrollY > trigger) setShown(true) }
 
     /* The initial check waits a frame rather than running here. Someone who
        reloads part-way down the page is already past the trigger, and setting
@@ -58,14 +69,21 @@ export default function WhitePaperGateSheet({
        from. One frame is enough for it to slide. */
     const raf = requestAnimationFrame(check)
     window.addEventListener('scroll', check, { passive: true })
-    const timer = window.setTimeout(() => setShown(true), FALLBACK_MS)
+
+    /* Only arm the fallback when the page has nothing to scroll — otherwise the
+       reader's own scroll past the trigger is what raises the panel, and a
+       timer firing first would defeat the point of giving them room to read. */
+    const canScroll = document.documentElement.scrollHeight > window.innerHeight + 40
+    const timer = canScroll ? undefined : window.setTimeout(() => setShown(true), FALLBACK_MS)
 
     return () => {
       cancelAnimationFrame(raf)
       window.removeEventListener('scroll', check)
-      window.clearTimeout(timer)
+      if (timer) window.clearTimeout(timer)
     }
   }, [])
+
+  const open = shown && !collapsed
 
   return (
     <>
@@ -75,7 +93,7 @@ export default function WhitePaperGateSheet({
       <div
         aria-hidden
         className={`pointer-events-none fixed inset-x-0 bottom-0 z-[59] h-[570px] bg-cream-light transition-opacity duration-700 ${
-          shown ? 'opacity-100' : 'opacity-0'
+          open ? 'opacity-100' : 'opacity-0'
         }`}
         style={{
           maskImage: 'linear-gradient(to bottom, transparent 0%, black 62%)',
@@ -83,13 +101,36 @@ export default function WhitePaperGateSheet({
         }}
       />
 
+      {/* The collapsed tab. Once the reader closes the panel it waits at the
+          foot of the screen rather than vanishing, so the form is one tap away
+          again. Only rendered after the panel has been shown at least once. */}
+      <button
+        type="button"
+        onClick={() => setCollapsed(false)}
+        aria-label="Keep reading the white paper"
+        className={`fixed bottom-[18px] left-1/2 z-[60] inline-flex -translate-x-1/2 items-center gap-[7px] rounded-full border border-dark/[0.08] bg-dark px-[20px] py-[11px] font-grotesk text-[11px] font-medium uppercase tracking-[1.2px] text-cream-light shadow-[0_16px_40px_-16px_rgba(30,26,21,0.6)] transition-all duration-300 hover:scale-[1.03] ${
+          shown && collapsed ? 'pointer-events-auto opacity-100' : 'pointer-events-none translate-y-[80px] opacity-0'
+        }`}
+      >
+        <LockSimple size={13} weight="bold" /> Keep reading
+      </button>
+
       <aside
         aria-label="Read the full white paper"
         className={`fixed inset-x-0 bottom-0 z-[60] max-h-[88vh] overflow-y-auto border-t border-dark/[0.07] shadow-[0_-30px_80px_-40px_rgba(30,26,21,0.4)] transition-transform duration-[700ms] ease-[cubic-bezier(0.22,1,0.36,1)] bg-cream-light ${
-          shown ? 'translate-y-0' : 'translate-y-full'
+          open ? 'translate-y-0' : 'translate-y-full'
         }`}
       >
-        <div className="mx-auto max-w-[1440px] px-5 py-[36px] md:px-10 lg:px-[62px] lg:py-[44px]">
+        <div className="relative mx-auto max-w-[1440px] px-5 py-[36px] md:px-10 lg:px-[62px] lg:py-[44px]">
+          {/* Close the panel and hand the page back to the reader. */}
+          <button
+            type="button"
+            onClick={() => setCollapsed(true)}
+            aria-label="Close and keep reading the page"
+            className="absolute right-[14px] top-[14px] z-10 inline-flex size-[34px] items-center justify-center rounded-full border border-dark/[0.08] bg-cream-light/80 text-dark/55 transition-colors hover:bg-cream hover:text-dark md:right-[24px] md:top-[20px]"
+          >
+            <X size={16} weight="bold" />
+          </button>
           <div className="mx-auto max-w-[560px] text-center">
             <span className="inline-flex items-center gap-[7px] font-grotesk text-[11px] font-medium uppercase tracking-[1.3px] text-accent-orange">
               <LockSimple size={13} weight="bold" /> Keep reading

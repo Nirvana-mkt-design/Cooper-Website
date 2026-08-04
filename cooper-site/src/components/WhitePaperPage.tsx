@@ -528,9 +528,13 @@ function LockedPaperInner({ onOpen, height }: { onOpen?: () => void; height: str
           so the card could not be positioned against it. Overflow is clipped
           where the mask has already faded the ink to nothing, so the cut lands
           on pixels that are transparent anyway. */}
+      {/* The bleed is smaller on mobile than the page's own side gutter (px-5 =
+          20px on the report layout), so it never pushes past the viewport edge
+          and adds a few px of horizontal scroll. It widens to 28px from sm up,
+          where the gutters are wider and the extra room is safe. */}
       <div
         aria-hidden
-        className={`-mx-[28px] select-none overflow-hidden px-[28px] blur-[6px] ${height}`}
+        className={`-mx-[14px] select-none overflow-hidden px-[14px] blur-[6px] sm:-mx-[28px] sm:px-[28px] ${height}`}
         style={{
           /* Fades out rather than stopping, so the page reads as continuing
              past the bottom of the blur instead of ending there. */
