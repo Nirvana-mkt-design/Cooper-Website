@@ -36,7 +36,10 @@ export default function GateFields({
 
   return (
     <form onSubmit={handleSubmit} noValidate>
-      <div className={columns ? 'grid gap-x-[14px] gap-y-[13px] sm:grid-cols-2' : 'flex flex-col gap-[13px]'}>
+      {/* Tighter between rows before the columns kick in: below sm the four
+          fields are a single stack inside a panel that has a phone's height to
+          work with, and 13px four times over is what pushed it past the fold. */}
+      <div className={columns ? 'grid gap-x-[14px] gap-y-[10px] sm:grid-cols-2 sm:gap-y-[13px]' : 'flex flex-col gap-[13px]'}>
         {GATE_FIELDS.map((f) => (
           <div key={f.id}>
             <label
