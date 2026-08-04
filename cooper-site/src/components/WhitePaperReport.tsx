@@ -68,6 +68,52 @@ function SectionTitle({ children }: { children: ReactNode }) {
   return <h2 className="mb-[16px] font-serif text-[27px] leading-[1.18] text-dark">{children}</h2>
 }
 
+/* ── The cover, standing in a lit scene rather than pasted flat on the page.
+   The scene is two surfaces — a wall, and a floor meeting it in a line — with
+   the cover's own shadow cast away from the light. All CSS, so it costs nothing
+   and re-colours with the page.
+
+   `compact` trims the scene's padding for the mobile placement, where the cover
+   sits inline under the standfirst rather than filling a rail and does not need
+   the same air around it. ── */
+function CoverScene({ compact = false }: { compact?: boolean }) {
+  return (
+    <div
+      className={`relative overflow-hidden rounded-[16px] bg-gradient-to-b from-[#efe9dc] to-[#e7e0d1] ${
+        compact ? 'px-[30px] pb-[30px] pt-[28px]' : 'px-[46px] pb-[46px] pt-[44px]'
+      }`}
+    >
+      {/* The floor line, sitting behind the cover's lower third, which is what
+          puts it in the room instead of in front of a backdrop. */}
+      <div
+        aria-hidden
+        className="absolute inset-x-0 bottom-0 h-[30%] bg-gradient-to-b from-[#f5f0e4] to-[#ebe4d5]"
+      />
+      {/* Compact caps the book's width and centres it, so the scene can fill the
+          column's width while the cover itself does not grow taller with it. The
+          spine overlays sit on this wrapper, so capping it keeps them on the
+          book's own edge rather than the card's. */}
+      <div className={`relative ${compact ? 'mx-auto max-w-[248px]' : ''}`}>
+        <img
+          src="/images/white-paper-cover.jpg"
+          alt="The AI Advantage for Insurance Agents, a Cooper white paper"
+          width={900}
+          height={1244}
+          className="block w-full rounded-l-[2px] rounded-r-[10px] shadow-[14px_26px_36px_-16px_rgba(30,26,21,0.42)]"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-y-0 left-0 w-[8%] rounded-l-[2px] bg-gradient-to-r from-black/22 via-black/[0.05] to-transparent"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-y-0 left-0 w-[2px] bg-black/25"
+        />
+      </div>
+    </div>
+  )
+}
+
 export default function WhitePaperReport({
   body,
   lockedSummary,
@@ -104,6 +150,17 @@ export default function WhitePaperReport({
             Why the moment to adopt is now, and how to evaluate tools that actually finish
             the job, from intake to renewal.
           </p>
+
+          {/* The cover, on mobile only: right under the standfirst and at a
+              smaller size, so it introduces the paper without taking up a whole
+              screen at the foot of a long scroll. From lg up it lives in the
+              sticky rail instead. */}
+          <div
+            className="mt-[28px] w-full animate-fade-blur-in lg:hidden"
+            style={{ animationDelay: '0.1s' }}
+          >
+            <CoverScene compact />
+          </div>
 
           <hr className="my-[36px] border-dark/[0.12]" />
 
@@ -149,42 +206,11 @@ export default function WhitePaperReport({
             The cover stays after the gate is passed. It is the thing the reader
             just asked for, and having it vanish at the moment they get it reads
             as the page taking something away. ─── */}
-        <div className="lg:sticky lg:top-[96px]">
-            {/* The cover, standing in a lit scene rather than pasted flat on the
-                page. The scene is two surfaces — a wall, and a floor meeting it
-                in a line — with the cover's own shadow cast away from the light.
-                All CSS, so it costs nothing and re-colours with the page.
-
-                The book is fully inside the scene, with air on all four sides.
-                The first pass had padding on three and none at the foot, so the
-                cover ran into the rounded corner and was clipped — which reads
-                as a photograph cropped badly rather than as an object standing
-                on a floor. The floor line sits behind its lower third, which is
-                what puts it in the room instead of in front of a backdrop. */}
-            <div className="relative overflow-hidden rounded-[16px] bg-gradient-to-b from-[#efe9dc] to-[#e7e0d1] px-[46px] pb-[46px] pt-[44px]">
-              <div
-                aria-hidden
-                className="absolute inset-x-0 bottom-0 h-[30%] bg-gradient-to-b from-[#f5f0e4] to-[#ebe4d5]"
-              />
-              <div className="relative">
-                <img
-                  src="/images/white-paper-cover.jpg"
-                  alt="The AI Advantage for Insurance Agents, a Cooper white paper"
-                  width={900}
-                  height={1244}
-                  className="block w-full rounded-l-[2px] rounded-r-[10px] shadow-[14px_26px_36px_-16px_rgba(30,26,21,0.42)]"
-                />
-                <div
-                  aria-hidden
-                  className="pointer-events-none absolute inset-y-0 left-0 w-[8%] rounded-l-[2px] bg-gradient-to-r from-black/22 via-black/[0.05] to-transparent"
-                />
-                <div
-                  aria-hidden
-                  className="pointer-events-none absolute inset-y-0 left-0 w-[2px] bg-black/25"
-                />
-              </div>
-            </div>
-
+        {/* Below lg the cover moves up under the standfirst (above), so the rail
+            is desktop-only — otherwise it would render a second, full-size cover
+            at the foot of the mobile scroll. */}
+        <div className="hidden lg:sticky lg:top-[96px] lg:block">
+          <CoverScene />
         </div>
       </div>
     </div>
