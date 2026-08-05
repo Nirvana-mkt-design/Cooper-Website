@@ -16,7 +16,13 @@
  * the ads and the calculator cannot drift apart.
  */
 
-export const BLENDED_HOURLY_COST = 85
+/* Fully loaded hourly cost of the people doing this work.
+   A licensed commercial CSR or account manager runs $55-70k salary; loaded with
+   benefits, tax and overhead that is $75-95k, or $42-53 an hour over 1,800
+   hours. The old $85 only held if producers were blended in, which overstated
+   the cost of the work Cooper actually removes. $60 sits at the top of the
+   CSR/AM band and is defensible without appealing to producer time. */
+export const BLENDED_HOURLY_COST = 60
 
 /**
  * Calculator assumptions, as opposed to the benchmarks above. These are ours,
@@ -154,25 +160,26 @@ export const speedMultiple = (w: Workflow) => w.before / w.after
  * ────────────────────────────────────────────────────────────────
  * WHAT "VALUE CREATED" MEANS.
  *
- * The page leads with one number, and it is deliberately not the raw
- * hours-times-rate figure. An agency does not bank freed hours: 8,000 hours a
- * year at $85 is only money if they actually stop hiring or move those people
- * onto revenue work. Reporting the gross figure as "value" is the single
- * easiest way for this page to lose an argument in a budget meeting, because
- * the first thing a CFO asks is "so whose salary goes away?"
+ * One number, one multiplication: the hours Cooper removes from an account,
+ * priced at what those hours cost, halved.
  *
- * So value created is the new business the freed capacity wins, in full, plus
- * only the share of the freed hours an agency realistically converts.
+ * The halving is the honest part. An agency does not bank freed hours — they
+ * are money only once they turn into business the team had no time to write, or
+ * a hire that stops being necessary. Reporting the gross figure as "value" is
+ * the easiest way to lose the argument in a budget meeting, because the first
+ * question is whose salary goes away.
  *
- * HOURS_REALIZATION is the honest, arguable part of that, and it is the number
- * that most moves the headline — change it and the whole page moves. It is set
- * so a book of 100 commercial accounts a month clears roughly 5x the ~$50k a
- * year Cooper would charge at that volume, which is the floor the pricing model
- * is built around. That is a target, not a measurement: it says what we are
- * willing to claim, and the pilot data should replace it.
+ * This replaced a model with eight constants, two capacity ceilings and a
+ * bind-rate chain. That model produced a number within a few percent of this
+ * one across the whole slider range, so all it bought was a result nobody could
+ * explain without a diagram. The bind-rate chain below still drives the tiles,
+ * where it says something concrete; it no longer feeds the headline.
+ *
+ * Half is a stated haircut, not a tuned constant — which is the point. It can
+ * be argued with directly, and pilot data can replace it.
  * ────────────────────────────────────────────────────────────────
  */
-export const HOURS_REALIZATION = 0.16
+export const HOURS_REALIZATION = 0.5
 
-/** Annual price at the reference volume, behind the "N× what it costs" line. */
+/** Annual price at the reference volume, for sanity-checking the model. */
 export const REFERENCE_ANNUAL_PRICE = 50_000

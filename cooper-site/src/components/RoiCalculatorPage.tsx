@@ -145,7 +145,10 @@ function calculate({ accounts, commercialShare, headcount }: Inputs) {
      discount buried inside that number makes the answer depend on when you
      happen to be reading. The ramp still applies to the year-one column, where
      the horizon is stated. */
-  const monthlyValue = monthlyRevenue + monthlyHoursValue * HOURS_REALIZATION
+  /* Hours removed, priced, halved. New business is no longer a separate term:
+     it is part of what the retained half represents, alongside the hire that
+     stops being necessary. The bind-rate chain above still feeds the tiles. */
+  const monthlyValue = monthlyHoursValue * HOURS_REALIZATION
   const annualValue = monthlyValue * 12
   const firstYearValue = annualValue
   const threeYearValue = monthlyValue * 36
