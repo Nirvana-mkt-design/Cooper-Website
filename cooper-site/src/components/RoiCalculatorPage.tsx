@@ -292,24 +292,9 @@ export default function RoiCalculatorPage() {
       <section className="px-5 pb-[36px] pt-[120px] md:px-10 lg:px-[62px] lg:pt-[140px]">
         <div className="mx-auto grid max-w-[1180px] gap-[36px] lg:grid-cols-[minmax(0,1fr)_minmax(0,460px)] lg:items-start lg:gap-[64px]">
           <div>
-            {/* The white paper's kicker, matched piece for piece: icon, label,
-                a double slash, then a qualifier the muted container colours
-                down. See WhitePaperReport.tsx.
-
-                The qualifier is a date rather than a claim. A page that turns
-                estimates into a dollar figure should say how old the estimates
-                are, and these come from Akhilesh's brief of 29 July 2026 — the
-                source note in cooperEffect.ts. "Benchmarks" was the other
-                candidate and is the wrong word: that note is explicit that
-                these are internal estimates, not measured customer averages.
-
-                It dates the same way the white paper's edition does. Whoever
-                revises the workflow times moves this string too. */}
             <div className="mb-[18px] flex items-center gap-[8px] font-sans text-[14px] text-dark/45">
               <Calculator size={16} weight="regular" className="shrink-0 text-dark" />
               <span className="font-medium text-dark">ROI calculator</span>
-              <span aria-hidden>//</span>
-              <span>Updated July 2026</span>
             </div>
             <h1 className="font-serif text-[38px] leading-[1.06] tracking-[-1px] text-dark md:text-[46px] lg:text-[52px]">
               See Cooper's impact on your team
