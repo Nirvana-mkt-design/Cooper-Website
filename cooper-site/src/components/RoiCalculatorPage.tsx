@@ -25,7 +25,7 @@ import Navbar from './Navbar'
 import Footer from './Footer'
 import { useSeo } from '../lib/useSeo'
 import { pageJsonLd } from '../lib/pageSchema'
-import { WORKFLOWS, BLENDED_HOURLY_COST, FTE_HOURS, RAMP, REFERENCE_ACCOUNTS, REFERENCE_HEADCOUNT, PERSONAL_LINES_FACTOR, BIND_RATE, REVENUE_PER_POLICY, NEW_ACCOUNTS_PER_PERSON, HOURS_TO_WIN_AN_ACCOUNT, PERSONAL_REVENUE_FACTOR, HOURS_REALIZATION, minutesSaved, speedMultiple } from '../data/cooperEffect'
+import { WORKFLOWS, BLENDED_HOURLY_COST, FTE_HOURS, REFERENCE_ACCOUNTS, REFERENCE_HEADCOUNT, PERSONAL_LINES_FACTOR, BIND_RATE, REVENUE_PER_POLICY, NEW_ACCOUNTS_PER_PERSON, HOURS_TO_WIN_AN_ACCOUNT, PERSONAL_REVENUE_FACTOR, HOURS_REALIZATION, minutesSaved, speedMultiple } from '../data/cooperEffect'
 
 // The gate only mounts on a click, and it drags in libphonenumber-js (~125 kB)
 // for the phone field. Static-importing it made a direct visit to this page
@@ -131,9 +131,13 @@ function calculate({ accounts, commercialShare, headcount }: Inputs) {
   const mixRevenue = commercial + (1 - commercial) * PERSONAL_REVENUE_FACTOR
   const monthlyRevenue = extraBound * REVENUE_PER_POLICY * mixRevenue
 
-  // RAMP discounts year one for rollout; years two and three run at full rate.
-  const yearHours = RAMP.map((factor) => monthlyHours * 12 * factor)
-  const threeYearHours = yearHours.reduce((a, b) => a + b, 0)
+  /* No rollout ramp. It used to discount year one to 60%, which meant the
+     headline ("a year") and the table's first-12-months column were two
+     different annual numbers on the same screen — the sort of gap a prospect
+     notices and then stops trusting the rest of the page over. Both are now
+     simply the monthly figure times twelve. */
+  const firstYearHours = monthlyHours * 12
+  const threeYearHours = monthlyHours * 36
 
   /* Value created: the new business in full, plus only the share of the freed
      hours an agency actually converts into money. The headline is the steady
@@ -143,15 +147,15 @@ function calculate({ accounts, commercialShare, headcount }: Inputs) {
      the horizon is stated. */
   const monthlyValue = monthlyRevenue + monthlyHoursValue * HOURS_REALIZATION
   const annualValue = monthlyValue * 12
-  const firstYearValue = annualValue * RAMP[0]
-  const threeYearValue = monthlyValue * 12 * RAMP.reduce((a, b) => a + b, 0)
+  const firstYearValue = annualValue
+  const threeYearValue = monthlyValue * 36
 
   return {
     monthlyHours,
     monthlyHoursValue,
     monthlyValue,
     annualValue,
-    firstYearHours: yearHours[0],
+    firstYearHours,
     firstYearValue,
     threeYearHours,
     threeYearValue,
@@ -161,8 +165,8 @@ function calculate({ accounts, commercialShare, headcount }: Inputs) {
     extraBound,
     monthlyRevenue,
     cappedByPeople,
-    firstYearRevenue: monthlyRevenue * 12 * RAMP[0],
-    threeYearRevenue: monthlyRevenue * 12 * RAMP.reduce((a, b) => a + b, 0),
+    firstYearRevenue: monthlyRevenue * 12,
+    threeYearRevenue: monthlyRevenue * 36,
     accountsPerPerson: accounts / Math.max(1, headcount),
     accountsPerPersonAfter: (accounts + extraAccounts) / Math.max(1, headcount),
   }
@@ -248,13 +252,13 @@ export default function RoiCalculatorPage() {
   )
 
   const tiles = [
-    { icon: Clock, label: 'Hours a month', value: `${num(r.monthlyHours)} hrs`, sub: `Across ${num(accounts)} accounts a month.` },
+    { icon: Clock, label: 'Hours saved a month', value: `${num(r.monthlyHours)} hrs`, sub: `Across ${num(accounts)} accounts a month.` },
     {
       icon: TrendUp, label: 'Submissions per person', value: `${num(r.accountsPerPerson, 1)} → ${num(r.accountsPerPersonAfter, 1)}`,
-      sub: `Each of your ${num(headcount)} people carries more without working longer.`,
+      sub: `Each of your ${num(headcount)} people delivers more in less time.`,
     },
     {
-      icon: UsersThree, label: 'More policies bound', value: `${num(r.extraBound)}/mo`,
+      icon: UsersThree, label: 'More policies bound', value: `${num(r.extraBound)} a month`,
       sub: `At a ${Math.round(BIND_RATE * 100)}% bind rate${r.cappedByPeople ? `, limited by ${num(headcount)} people rather than by hours` : ''}.`,
     },
   ]

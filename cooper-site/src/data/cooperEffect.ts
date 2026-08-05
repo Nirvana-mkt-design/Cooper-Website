@@ -107,6 +107,11 @@ export const HOURS_TO_WIN_AN_ACCOUNT = 32
  * more accounts but earns less per account. Unmeasured, like the rest.
  */
 export const PERSONAL_REVENUE_FACTOR = 0.15
+
+/* Retained for reference; the calculator no longer applies it. Discounting year
+   one meant the page showed two different annual figures at once — the headline
+   and the first-12-months column — which cost more in credibility than the
+   conservatism bought. */
 export const RAMP = [0.6, 1, 1] as const
 
 export interface Workflow {
