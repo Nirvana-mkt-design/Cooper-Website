@@ -15,10 +15,15 @@ export interface Resource {
   icon: ComponentType<{ size?: number; weight?: 'thin' | 'light' | 'regular'; className?: string }>
 }
 
-/* The ROI calculator was held back from production by #72 and published here.
-   The draft gate is gone from all four places it lived: this list, the route
-   and the dynamic import in App.tsx, and the prerender list. It now ships like
-   any other resource, with a prerendered page and an entry in the sitemap.
+/* ── The ROI calculator is a draft again.
+   #78 published it, but its value model was rebuilt afterwards and "The method"
+   section — which carried the only disclaimer on the page — was removed with
+   it. Until a disclaimer is back, it stays out of production: this list, the
+   route and dynamic import in App.tsx, and the prerender list.
+
+   Spread in conditionally rather than filtered afterwards. A filter runs at
+   runtime, so the title and path would ship in the bundle and merely be hidden;
+   the conditional spread lets a production build drop them.
 
    Its figures come from Akhilesh's brief rather than from measured customer
    results, and the page says so in "The method". Read the source note at the
@@ -37,7 +42,7 @@ export const RESOURCES: Resource[] = [
     desc: 'Every system Cooper connects to, and how the data moves.',
     icon: Plugs,
   },
-  roiCalculator,
+  ...(import.meta.env.DEV ? [roiCalculator] : []),
   {
     to: '/resources/white-paper',
     title: 'White Paper',

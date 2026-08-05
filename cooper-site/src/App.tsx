@@ -20,7 +20,15 @@ const DemoPage = lazy(() => import('./components/DemoPage'))
 const PersonaPage = lazy(() => import('./components/PersonaPage'))
 const AboutPage = lazy(() => import('./components/AboutPage'))
 const IntegrationsPage = lazy(() => import('./components/IntegrationsPage'))
-const RoiCalculatorPage = lazy(() => import('./components/RoiCalculatorPage'))
+/* Draft. Held out of production: the dynamic import sits behind the same flag
+   as the route, so a production build emits no chunk for it rather than
+   shipping one nothing can reach, and a direct URL 404s. Its figures are
+   internal estimates (see src/data/cooperEffect.ts) and the page carries no
+   disclaimer since "The method" was removed, so it must not ship until both
+   are resolved. */
+const RoiCalculatorPage = import.meta.env.DEV
+  ? lazy(() => import('./components/RoiCalculatorPage'))
+  : null
 const WhitePaperPage = lazy(() => import('./components/WhitePaperPage'))
 const CareersPage = lazy(() => import('./components/CareersPage'))
 const CareerRolePage = lazy(() => import('./components/CareerRolePage'))
@@ -148,7 +156,9 @@ export default function App() {
           <Route path="/demo" element={<DemoPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/integrations" element={<IntegrationsPage />} />
-          <Route path="/resources/roi-calculator" element={<RoiCalculatorPage />} />
+          {RoiCalculatorPage && (
+            <Route path="/resources/roi-calculator" element={<RoiCalculatorPage />} />
+          )}
           <Route path="/resources/white-paper" element={<WhitePaperPage />} />
           <Route path="/careers" element={<CareersPage />} />
           <Route path="/careers/:roleId" element={<CareerRolePage />} />

@@ -144,3 +144,30 @@ export const minutesSaved = (w: Workflow) => w.before - w.after
 
 /** "44× faster" — the headline multiple Akhilesh standardised on. */
 export const speedMultiple = (w: Workflow) => w.before / w.after
+
+/*
+ * ────────────────────────────────────────────────────────────────
+ * WHAT "VALUE CREATED" MEANS.
+ *
+ * The page leads with one number, and it is deliberately not the raw
+ * hours-times-rate figure. An agency does not bank freed hours: 8,000 hours a
+ * year at $85 is only money if they actually stop hiring or move those people
+ * onto revenue work. Reporting the gross figure as "value" is the single
+ * easiest way for this page to lose an argument in a budget meeting, because
+ * the first thing a CFO asks is "so whose salary goes away?"
+ *
+ * So value created is the new business the freed capacity wins, in full, plus
+ * only the share of the freed hours an agency realistically converts.
+ *
+ * HOURS_REALIZATION is the honest, arguable part of that, and it is the number
+ * that most moves the headline — change it and the whole page moves. It is set
+ * so a book of 100 commercial accounts a month clears roughly 5x the ~$50k a
+ * year Cooper would charge at that volume, which is the floor the pricing model
+ * is built around. That is a target, not a measurement: it says what we are
+ * willing to claim, and the pilot data should replace it.
+ * ────────────────────────────────────────────────────────────────
+ */
+export const HOURS_REALIZATION = 0.16
+
+/** Annual price at the reference volume, behind the "N× what it costs" line. */
+export const REFERENCE_ANNUAL_PRICE = 50_000
