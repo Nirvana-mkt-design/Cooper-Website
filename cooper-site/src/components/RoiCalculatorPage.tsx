@@ -19,8 +19,8 @@
    claim-bearing copy on this page.
 ─────────────────────────────────────────────────────────────── */
 
-import { lazy, Suspense, useEffect, useMemo, useState, type CSSProperties, type ReactNode } from 'react'
-import { Calculator, LockSimple, Clock, ListChecks, SlidersHorizontal, Timer, TrendUp, UsersThree, type Icon } from '@phosphor-icons/react'
+import { lazy, Suspense, useMemo, useState, type CSSProperties, type ReactNode } from 'react'
+import { Calculator, LockSimple, Clock, TrendUp, UsersThree } from '@phosphor-icons/react'
 import Navbar from './Navbar'
 import Footer from './Footer'
 import { useSeo } from '../lib/useSeo'
@@ -84,31 +84,12 @@ const BLENDED_SPEED_MULTIPLE =
   WORKFLOWS.reduce((sum, w) => sum + speedMultiple(w) * minutesSaved(w) * (w.defaultVolume ?? 0), 0) /
   WORKFLOWS.reduce((sum, w) => sum + minutesSaved(w) * (w.defaultVolume ?? 0), 0)
 
-/* Three notes for the foot of the input rail, in the white paper's key-findings
-   shape: a glyph, a lead in full black, the rest muted. Scaled down, because a
-   344px column is not a 720px article column.
+/* One line under the controls, not three.
 
-   Short on purpose. This is the slack under the controls, not a section, and
-   the three things worth saying there are what the estimate counts, how it
-   counts, and that the reader can keep moving the sliders. The count comes off
-   WORKFLOWS so it cannot disagree with the figure in the hero. */
-const RAIL_NOTES: { icon: Icon; lead: string; rest: string }[] = [
-  {
-    icon: ListChecks,
-    lead: `${WORKFLOWS.length} workflows.`,
-    rest: ' From submissions and applications to renewals and claims.',
-  },
-  {
-    icon: Timer,
-    lead: 'Priced per workflow.',
-    rest: ' Your volume times the minutes each one gives back.',
-  },
-  {
-    icon: SlidersHorizontal,
-    lead: 'Move any slider.',
-    rest: ' Every figure updates as you drag.',
-  },
-]
+   It used to explain the model — what it counts, how it counts, that the
+   sliders move. That is the machinery, and the machinery is not the reason
+   anyone is on this page. This says what the machinery is for. */
+const RAIL_NOTE = 'Cooper frees up your time to bind more policies instead of re-entering data'
 
 interface Inputs {
   accounts: number
@@ -200,45 +181,6 @@ function calculate({ accounts, commercialShare, headcount }: Inputs) {
 function Locked({ locked, children }: { locked: boolean; children: ReactNode }) {
   if (!locked) return <>{children}</>
   return <span className="pointer-events-none select-none blur-[5px] saturate-50">{children}</span>
-}
-
-/** Guarded for the server: this page is not prerendered, but the guard costs
- *  nothing and the module is imported by the SSR build all the same. */
-const prefersReducedMotion = () =>
-  typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-
-/** Eases from 0 to the target on mount, matching the integrations hero's count.
- *
- *  Kept local rather than imported from IntegrationsPage: that module is 48 kB
- *  of page, and pulling it in for eighteen lines would put the whole thing in
- *  this page's chunk. Honours prefers-reduced-motion by landing on the target
- *  immediately. */
-function CountUp({ to, duration = 1400 }: { to: number; duration?: number }) {
-  // The preference is read at initial state rather than written from inside the
-  // effect: under reduced motion the number is simply born at its target. The
-  // effect would have to set state synchronously to do the same, which is the
-  // cascading-render pattern react-hooks/set-state-in-effect exists to catch.
-  const [n, setN] = useState(() => (prefersReducedMotion() ? to : 0))
-
-  useEffect(() => {
-    if (prefersReducedMotion()) return
-
-    let raf = 0
-    let start = 0
-    const ease = (t: number) => 1 - Math.pow(1 - t, 3) // easeOutCubic
-    const tick = (ts: number) => {
-      if (!start) start = ts
-      const p = Math.min(1, (ts - start) / duration)
-      setN(Math.round(ease(p) * to))
-      if (p < 1) raf = requestAnimationFrame(tick)
-    }
-    // A beat after paint, so the count starts from a settled page rather than
-    // racing the hero in.
-    const t = window.setTimeout(() => { raf = requestAnimationFrame(tick) }, 300)
-    return () => { clearTimeout(t); cancelAnimationFrame(raf) }
-  }, [to, duration])
-
-  return <span>{n}</span>
 }
 
 function Slider({
@@ -374,22 +316,6 @@ export default function RoiCalculatorPage() {
               you every month.
             </p>
 
-            {/* Standing figure, counted up the way the integrations hero counts
-                its connectors.
-
-                It is WORKFLOWS.length rather than a literal, so the hero cannot
-                claim a number the model below does not actually price. No "+"
-                either: the integrations count carries one because more keep
-                arriving, and there are exactly fifteen workflows in this model,
-                not "at least fifteen". */}
-            <div className="mt-[38px]">
-              <div className="font-serif text-[52px] leading-[0.9] tabular-nums text-dark lg:text-[64px]">
-                <CountUp to={WORKFLOWS.length} />
-              </div>
-              <p className="mt-[12px] font-grotesk text-[14px] font-medium text-dark">
-                workflows priced
-              </p>
-            </div>
           </div>
 
           <div>
@@ -478,19 +404,9 @@ export default function RoiCalculatorPage() {
             />
 
 
-            <ul className="mt-[20px] flex flex-col gap-[14px] border-t border-dark/[0.08] pt-[20px]">
-              {RAIL_NOTES.map(({ icon: Glyph, lead, rest }) => (
-                <li key={lead} className="flex gap-[11px]">
-                  {/* Nudged onto the first line rather than above it, as the
-                      white paper's findings are. */}
-                  <Glyph size={16} weight="regular" className="mt-[2px] shrink-0 text-dark" />
-                  <p className="font-sans text-[13px] leading-[1.5] text-dark/55">
-                    <span className="font-medium text-dark">{lead}</span>
-                    {rest}
-                  </p>
-                </li>
-              ))}
-            </ul>
+            <p className="mt-[20px] border-t border-dark/[0.08] pt-[20px] font-sans text-[13.5px] leading-[1.55] text-dark/55">
+              {RAIL_NOTE}
+            </p>
 
             {/* Last in the column, and last in the order of things to do: set
                 the three sliders, read what the estimate covers, then open the
