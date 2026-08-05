@@ -19,15 +19,13 @@
    claim-bearing copy on this page.
 ─────────────────────────────────────────────────────────────── */
 
-import { lazy, Suspense, useEffect, useMemo, useState, type CSSProperties, type ReactNode } from 'react'
-import { Link } from 'react-router-dom'
-import { ArrowRight, Calculator, LockSimple, Clock, CurrencyDollar, ListChecks, SlidersHorizontal, Timer, TrendUp, UsersThree, type Icon } from '@phosphor-icons/react'
+import { lazy, Suspense, useMemo, useState, type CSSProperties, type ReactNode } from 'react'
+import { Calculator, LockSimple, Clock, TrendUp, UsersThree } from '@phosphor-icons/react'
 import Navbar from './Navbar'
 import Footer from './Footer'
-import Reveal from './Reveal'
 import { useSeo } from '../lib/useSeo'
 import { pageJsonLd } from '../lib/pageSchema'
-import { WORKFLOWS, BLENDED_HOURLY_COST, FTE_HOURS, RAMP, REFERENCE_ACCOUNTS, REFERENCE_HEADCOUNT, PERSONAL_LINES_FACTOR, BIND_RATE, REVENUE_PER_POLICY, NEW_ACCOUNTS_PER_PERSON, HOURS_TO_WIN_AN_ACCOUNT, PERSONAL_REVENUE_FACTOR, minutesSaved, speedMultiple } from '../data/cooperEffect'
+import { WORKFLOWS, BLENDED_HOURLY_COST, FTE_HOURS, REFERENCE_ACCOUNTS, REFERENCE_HEADCOUNT, PERSONAL_LINES_FACTOR, BIND_RATE, REVENUE_PER_POLICY, NEW_ACCOUNTS_PER_PERSON, HOURS_TO_WIN_AN_ACCOUNT, PERSONAL_REVENUE_FACTOR, HOURS_REALIZATION, minutesSaved, speedMultiple } from '../data/cooperEffect'
 
 // The gate only mounts on a click, and it drags in libphonenumber-js (~125 kB)
 // for the phone field. Static-importing it made a direct visit to this page
@@ -47,6 +45,20 @@ const ONE_DP = new Intl.NumberFormat('en-US', { maximumFractionDigits: 1 })
 
 const usd = (n: number) => USD.format(n)
 const num = (n: number, digits: 0 | 1 = 0) => (digits ? ONE_DP : PLAIN).format(n)
+
+/**
+ * Round down to a figure someone would say out loud, and mark it as a floor.
+ *
+ * The estimate is built on unmeasured benchmarks, so "671 hours" claims a
+ * precision the model does not have — and a number that exact invites an
+ * argument about the last digit instead of the size of the prize. Rounding
+ * down rather than to nearest keeps the "+" honest. The table stays exact: a
+ * table of figures should be figures.
+ */
+function approx(n: number): string {
+  const step = n >= 1000 ? 100 : n >= 200 ? 50 : n >= 50 ? 10 : n >= 10 ? 5 : 1
+  return `${PLAIN.format(Math.floor(n / step) * step)}+`
+}
 
 /*
  * Minutes of manual work a single commercial account carries, derived from the
@@ -72,31 +84,12 @@ const BLENDED_SPEED_MULTIPLE =
   WORKFLOWS.reduce((sum, w) => sum + speedMultiple(w) * minutesSaved(w) * (w.defaultVolume ?? 0), 0) /
   WORKFLOWS.reduce((sum, w) => sum + minutesSaved(w) * (w.defaultVolume ?? 0), 0)
 
-/* Three notes for the foot of the input rail, in the white paper's key-findings
-   shape: a glyph, a lead in full black, the rest muted. Scaled down, because a
-   344px column is not a 720px article column.
+/* One line under the controls, not three.
 
-   Short on purpose. This is the slack under the controls, not a section, and
-   the three things worth saying there are what the estimate counts, how it
-   counts, and that the reader can keep moving the sliders. The count comes off
-   WORKFLOWS so it cannot disagree with the figure in the hero. */
-const RAIL_NOTES: { icon: Icon; lead: string; rest: string }[] = [
-  {
-    icon: ListChecks,
-    lead: `${WORKFLOWS.length} workflows.`,
-    rest: ' From submissions and applications to renewals and claims.',
-  },
-  {
-    icon: Timer,
-    lead: 'Priced per workflow.',
-    rest: ' Your volume times the minutes each one gives back.',
-  },
-  {
-    icon: SlidersHorizontal,
-    lead: 'Move any slider.',
-    rest: ' Every figure updates as you drag.',
-  },
-]
+   It used to explain the model — what it counts, how it counts, that the
+   sliders move. That is the machinery, and the machinery is not the reason
+   anyone is on this page. This says what the machinery is for. */
+const RAIL_NOTE = 'Cooper frees up your time to bind more policies instead of re-entering data'
 
 interface Inputs {
   accounts: number
@@ -114,7 +107,9 @@ function calculate({ accounts, commercialShare, headcount }: Inputs) {
   const minutesPerAccount = COMMERCIAL_MINUTES_PER_ACCOUNT * mixWork
 
   const monthlyHours = (accounts * minutesPerAccount) / 60
-  const monthlyValue = monthlyHours * BLENDED_HOURLY_COST
+  // Gross hours value. A real component of the answer, but not what the page
+  // leads with — see HOURS_REALIZATION.
+  const monthlyHoursValue = monthlyHours * BLENDED_HOURLY_COST
 
   // The revenue chain: freed hours buy capacity, capacity quotes more
   // submissions, a share of those bind.
@@ -136,25 +131,45 @@ function calculate({ accounts, commercialShare, headcount }: Inputs) {
   const mixRevenue = commercial + (1 - commercial) * PERSONAL_REVENUE_FACTOR
   const monthlyRevenue = extraBound * REVENUE_PER_POLICY * mixRevenue
 
-  // RAMP discounts year one for rollout; years two and three run at full rate.
-  const yearHours = RAMP.map((factor) => monthlyHours * 12 * factor)
-  const threeYearHours = yearHours.reduce((a, b) => a + b, 0)
+  /* No rollout ramp. It used to discount year one to 60%, which meant the
+     headline ("a year") and the table's first-12-months column were two
+     different annual numbers on the same screen — the sort of gap a prospect
+     notices and then stops trusting the rest of the page over. Both are now
+     simply the monthly figure times twelve. */
+  const firstYearHours = monthlyHours * 12
+  const threeYearHours = monthlyHours * 36
+
+  /* Value created: the new business in full, plus only the share of the freed
+     hours an agency actually converts into money. The headline is the steady
+     rate, not year one — it answers "what is this worth to us", and a rollout
+     discount buried inside that number makes the answer depend on when you
+     happen to be reading. The ramp still applies to the year-one column, where
+     the horizon is stated. */
+  /* Hours removed, priced, halved. New business is no longer a separate term:
+     it is part of what the retained half represents, alongside the hire that
+     stops being necessary. The bind-rate chain above still feeds the tiles. */
+  const monthlyValue = monthlyHoursValue * HOURS_REALIZATION
+  const annualValue = monthlyValue * 12
+  const firstYearValue = annualValue
+  const threeYearValue = monthlyValue * 36
 
   return {
     monthlyHours,
+    monthlyHoursValue,
     monthlyValue,
-    firstYearHours: yearHours[0],
-    firstYearValue: yearHours[0] * BLENDED_HOURLY_COST,
+    annualValue,
+    firstYearHours,
+    firstYearValue,
     threeYearHours,
-    threeYearValue: threeYearHours * BLENDED_HOURLY_COST,
+    threeYearValue,
     fte: (monthlyHours * 12) / FTE_HOURS,
     blendedMultiple: BLENDED_SPEED_MULTIPLE,
     extraAccounts,
     extraBound,
     monthlyRevenue,
     cappedByPeople,
-    firstYearRevenue: monthlyRevenue * 12 * RAMP[0],
-    threeYearRevenue: monthlyRevenue * 12 * RAMP.reduce((a, b) => a + b, 0),
+    firstYearRevenue: monthlyRevenue * 12,
+    threeYearRevenue: monthlyRevenue * 36,
     accountsPerPerson: accounts / Math.max(1, headcount),
     accountsPerPersonAfter: (accounts + extraAccounts) / Math.max(1, headcount),
   }
@@ -173,45 +188,6 @@ function calculate({ accounts, commercialShare, headcount }: Inputs) {
 function Locked({ locked, children }: { locked: boolean; children: ReactNode }) {
   if (!locked) return <>{children}</>
   return <span className="pointer-events-none select-none blur-[5px] saturate-50">{children}</span>
-}
-
-/** Guarded for the server: this page is not prerendered, but the guard costs
- *  nothing and the module is imported by the SSR build all the same. */
-const prefersReducedMotion = () =>
-  typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-
-/** Eases from 0 to the target on mount, matching the integrations hero's count.
- *
- *  Kept local rather than imported from IntegrationsPage: that module is 48 kB
- *  of page, and pulling it in for eighteen lines would put the whole thing in
- *  this page's chunk. Honours prefers-reduced-motion by landing on the target
- *  immediately. */
-function CountUp({ to, duration = 1400 }: { to: number; duration?: number }) {
-  // The preference is read at initial state rather than written from inside the
-  // effect: under reduced motion the number is simply born at its target. The
-  // effect would have to set state synchronously to do the same, which is the
-  // cascading-render pattern react-hooks/set-state-in-effect exists to catch.
-  const [n, setN] = useState(() => (prefersReducedMotion() ? to : 0))
-
-  useEffect(() => {
-    if (prefersReducedMotion()) return
-
-    let raf = 0
-    let start = 0
-    const ease = (t: number) => 1 - Math.pow(1 - t, 3) // easeOutCubic
-    const tick = (ts: number) => {
-      if (!start) start = ts
-      const p = Math.min(1, (ts - start) / duration)
-      setN(Math.round(ease(p) * to))
-      if (p < 1) raf = requestAnimationFrame(tick)
-    }
-    // A beat after paint, so the count starts from a settled page rather than
-    // racing the hero in.
-    const t = window.setTimeout(() => { raf = requestAnimationFrame(tick) }, 300)
-    return () => { clearTimeout(t); cancelAnimationFrame(raf) }
-  }, [to, duration])
-
-  return <span>{n}</span>
 }
 
 function Slider({
@@ -279,22 +255,20 @@ export default function RoiCalculatorPage() {
   )
 
   const tiles = [
-    { icon: Clock, label: 'Hours a month', value: `${num(r.monthlyHours)} hrs`, sub: `Across ${num(accounts)} accounts a month.` },
+    { icon: Clock, label: 'Hours saved a month', value: `${num(r.monthlyHours)} hrs`, sub: `Across ${num(accounts)} accounts a month.` },
     {
       icon: TrendUp, label: 'Submissions per person', value: `${num(r.accountsPerPerson, 1)} → ${num(r.accountsPerPersonAfter, 1)}`,
-      sub: `Each of your ${num(headcount)} people carries more without working longer.`,
+      sub: `Each of your ${num(headcount)} people delivers more in less time.`,
     },
     {
-      icon: UsersThree, label: 'More policies bound', value: `${num(r.extraBound)}/mo`,
+      icon: UsersThree, label: 'More policies bound', value: `${num(r.extraBound)} a month`,
       sub: `At a ${Math.round(BIND_RATE * 100)}% bind rate${r.cappedByPeople ? `, limited by ${num(headcount)} people rather than by hours` : ''}.`,
     },
-    { icon: CurrencyDollar, label: 'Cost avoided', value: `${usd(r.monthlyValue)}/mo`, sub: `Those hours at a ${usd(BLENDED_HOURLY_COST)} blended rate.` },
   ]
 
   const tableRows = [
-    { label: 'Additional revenue', cells: [usd(r.monthlyRevenue), usd(r.firstYearRevenue), usd(r.threeYearRevenue)] },
+    { label: 'Value created', cells: [usd(r.monthlyValue), usd(r.firstYearValue), usd(r.threeYearValue)] },
     { label: 'Hours returned', cells: [num(r.monthlyHours), num(r.firstYearHours), num(r.threeYearHours)] },
-    { label: 'Cost avoided', cells: [usd(r.monthlyValue), usd(r.firstYearValue), usd(r.threeYearValue)] },
   ]
 
   return (
@@ -321,24 +295,9 @@ export default function RoiCalculatorPage() {
       <section className="px-5 pb-[36px] pt-[120px] md:px-10 lg:px-[62px] lg:pt-[140px]">
         <div className="mx-auto grid max-w-[1180px] gap-[36px] lg:grid-cols-[minmax(0,1fr)_minmax(0,460px)] lg:items-start lg:gap-[64px]">
           <div>
-            {/* The white paper's kicker, matched piece for piece: icon, label,
-                a double slash, then a qualifier the muted container colours
-                down. See WhitePaperReport.tsx.
-
-                The qualifier is a date rather than a claim. A page that turns
-                estimates into a dollar figure should say how old the estimates
-                are, and these come from Akhilesh's brief of 29 July 2026 — the
-                source note in cooperEffect.ts. "Benchmarks" was the other
-                candidate and is the wrong word: that note is explicit that
-                these are internal estimates, not measured customer averages.
-
-                It dates the same way the white paper's edition does. Whoever
-                revises the workflow times moves this string too. */}
             <div className="mb-[18px] flex items-center gap-[8px] font-sans text-[14px] text-dark/45">
               <Calculator size={16} weight="regular" className="shrink-0 text-dark" />
               <span className="font-medium text-dark">ROI calculator</span>
-              <span aria-hidden>//</span>
-              <span>Updated July 2026</span>
             </div>
             <h1 className="font-serif text-[38px] leading-[1.06] tracking-[-1px] text-dark md:text-[46px] lg:text-[52px]">
               See Cooper's impact on your team
@@ -349,22 +308,6 @@ export default function RoiCalculatorPage() {
               you every month.
             </p>
 
-            {/* Standing figure, counted up the way the integrations hero counts
-                its connectors.
-
-                It is WORKFLOWS.length rather than a literal, so the hero cannot
-                claim a number the model below does not actually price. No "+"
-                either: the integrations count carries one because more keep
-                arriving, and there are exactly fifteen workflows in this model,
-                not "at least fifteen". */}
-            <div className="mt-[38px]">
-              <div className="font-serif text-[52px] leading-[0.9] tabular-nums text-dark lg:text-[64px]">
-                <CountUp to={WORKFLOWS.length} />
-              </div>
-              <p className="mt-[12px] font-grotesk text-[14px] font-medium text-dark">
-                workflows priced
-              </p>
-            </div>
           </div>
 
           <div>
@@ -452,23 +395,10 @@ export default function RoiCalculatorPage() {
               onChange={setHeadcountIndex}
             />
 
-            <p className="mt-[18px] border-t border-dark/[0.08] pt-[16px] font-sans text-[12.5px] leading-[1.5] text-dark/45">
-              Priced at a {usd(BLENDED_HOURLY_COST)} blended hourly rate. A personal-lines account counts as about a third of a commercial one.
-            </p>
 
-            <ul className="mt-[20px] flex flex-col gap-[14px] border-t border-dark/[0.08] pt-[20px]">
-              {RAIL_NOTES.map(({ icon: Glyph, lead, rest }) => (
-                <li key={lead} className="flex gap-[11px]">
-                  {/* Nudged onto the first line rather than above it, as the
-                      white paper's findings are. */}
-                  <Glyph size={16} weight="regular" className="mt-[2px] shrink-0 text-dark" />
-                  <p className="font-sans text-[13px] leading-[1.5] text-dark/55">
-                    <span className="font-medium text-dark">{lead}</span>
-                    {rest}
-                  </p>
-                </li>
-              ))}
-            </ul>
+            <p className="mt-[20px] border-t border-dark/[0.08] pt-[20px] font-sans text-[13.5px] leading-[1.55] text-dark/55">
+              {RAIL_NOTE}
+            </p>
 
             {/* Last in the column, and last in the order of things to do: set
                 the three sliders, read what the estimate covers, then open the
@@ -506,15 +436,17 @@ export default function RoiCalculatorPage() {
                     in the input column now. */}
                 <div>
                   <span className="font-grotesk text-[11.5px] font-medium uppercase tracking-[1.3px] text-dark/45">
-                    Additional revenue a month
+                    Additional value created a year
                   </span>
                   <div className="mt-[8px] font-serif text-[44px] leading-[1] tabular-nums text-dark lg:text-[58px]">
-                    {usd(r.monthlyRevenue)}
+                    {usd(r.annualValue)}
                   </div>
-                  <p className="mt-[8px] max-w-[420px] font-sans text-[14px] leading-[1.5] text-dark/55">
+                  {/* Says what the money is, rather than narrating the
+                      mechanics that produced it. */}
+                  <p className="mt-[8px] max-w-[430px] font-sans text-[14px] leading-[1.5] text-dark/55">
                     {accounts === 0
                       ? 'Set your monthly accounts to see what the freed capacity is worth.'
-                      : `${num(r.monthlyHours)} hours back a month buys ${num(r.extraAccounts)} more submissions, and ${num(r.extraBound)} of them bind.`}
+                      : `${approx(r.extraBound)} more policies bound a month, and ${approx(r.monthlyHours)} hours your team stops spending on paperwork.`}
                   </p>
                 </div>
 
@@ -579,81 +511,20 @@ export default function RoiCalculatorPage() {
                   </table>
                 </div>
 
-                <p className="mt-[16px] font-sans text-[12.5px] leading-[1.5] text-dark/45">
-                  The monthly figure is the steady rate. The 12-month total runs at {Math.round(RAMP[0] * 100)}% of it, because a rollout takes a month or two to reach every desk.
-                </p>
 
-                {/* CTA — only once the gate is open.
-                    While it is shut the panel is asking for one thing, and the
-                    reader has one button to press. A second call to action
-                    beside it competes with the step that has to happen first.
-
-                    Its locked wording went with it. It said "Want these numbers
-                    on your own workflows?" next to numbers the reader could not
-                    see yet, and with the CTA gone there is no state left that
-                    renders it. */}
-                {unlocked && (
-                  <div className="mt-[24px] flex flex-col gap-[14px] border border-accent-orange/25 bg-accent-orange/[0.06] p-[20px] sm:flex-row sm:items-center sm:justify-between">
-                    <p className="max-w-[400px] font-sans text-[14px] leading-[1.55] text-dark/70">
-                      Bring a real submission and we will run it through Cooper live, so you can check these numbers against your own file.
-                    </p>
-                    <Link
-                      to="/demo?utm_content=roi-calculator"
-                      className="inline-flex shrink-0 items-center justify-center gap-[8px] rounded-[6px] bg-dark px-[22px] py-[12px] font-sans text-[14.5px] font-medium text-cream-light no-underline transition-all duration-200 hover:scale-[1.03]"
-                    >
-                      Request a Demo <ArrowRight size={15} weight="bold" />
-                    </Link>
-                  </div>
-                )}
             </>
           </div>
         </div>
-      </section>
 
-      {/* ══════════════ METHOD ══════════════ */}
-      <section className="bg-dark px-5 py-[64px] md:px-10 lg:px-[62px] lg:py-[80px]">
-        <div className="mx-auto max-w-[1180px]">
-          <Reveal>
-            <p className="mb-[16px] font-grotesk text-[13px] font-medium uppercase tracking-[1.6px] text-accent-orange">
-              The method
-            </p>
-            <h2 className="max-w-[680px] font-serif text-[30px] leading-[1.14] text-cream-light md:text-[38px]">
-              How this is calculated
-            </h2>
-          </Reveal>
-          <Reveal delay={80}>
-            <div className="mt-[36px] grid gap-[16px] md:grid-cols-3">
-              {[
-                {
-                  n: '01',
-                  title: 'Per workflow, not per seat',
-                  body: 'Each workflow carries a before and after time. Your monthly volume times the minutes returned is the hours that workflow gives back each month. Nothing is assumed about work Cooper does not touch.',
-                },
-                {
-                  n: '02',
-                  title: 'Hours priced at your cost',
-                  body: `Monthly hours times your fully loaded hourly cost. The ${usd(BLENDED_HOURLY_COST)} default is a blended rate for the people doing this work; change it to yours.`,
-                },
-                {
-                  n: '03',
-                  title: 'Where the times come from',
-                  body: "The before and after times are Cooper's internal estimates of how these workflows run in practice. They are not audited customer averages, and your mix will differ.",
-                },
-              ].map((s) => (
-                <div key={s.n} className="rounded-[16px] border border-cream-light/10 bg-cream-light/[0.03] p-[26px]">
-                  <span className="font-grotesk text-[13px] font-medium text-cream-light/30">{s.n}</span>
-                  <h3 className="mb-[10px] mt-[14px] font-serif text-[21px] text-cream-light">{s.title}</h3>
-                  <p className="font-sans text-[14.5px] leading-[1.55] text-cream-light/50">{s.body}</p>
-                </div>
-              ))}
-            </div>
-          </Reveal>
-          <Reveal delay={120}>
-            <p className="mt-[28px] max-w-[760px] font-sans text-[13.5px] leading-[1.6] text-cream-light/40">
-              These are estimates for discussion, not a quote or a guarantee. Cooper does not promise any particular amount of time saved or cost avoided. Actual results depend on your book, your systems, and how your team adopts Cooper.
-            </p>
-          </Reveal>
-        </div>
+        {/* Outside the results panel on purpose, so the gate's blur cannot sit
+            over it. A page that turns internal benchmarks into a dollar figure a
+            prospect carries into a budget meeting has to say what the figure is
+            and is not, and it has to say it whether or not they converted. */}
+        <p className="mx-auto mt-[20px] max-w-[1180px] font-sans text-[12.5px] leading-[1.55] text-dark/40">
+          These are estimates for discussion, not a quote or a guarantee. The figures come from
+          Cooper's internal workflow benchmarks rather than measured customer results, and actual
+          savings vary with your book, your systems, and how your team adopts Cooper.
+        </p>
       </section>
 
       <Footer />
