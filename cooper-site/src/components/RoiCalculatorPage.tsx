@@ -515,6 +515,16 @@ export default function RoiCalculatorPage() {
             </>
           </div>
         </div>
+
+        {/* Outside the results panel on purpose, so the gate's blur cannot sit
+            over it. A page that turns internal benchmarks into a dollar figure a
+            prospect carries into a budget meeting has to say what the figure is
+            and is not, and it has to say it whether or not they converted. */}
+        <p className="mx-auto mt-[20px] max-w-[1180px] font-sans text-[12.5px] leading-[1.55] text-dark/40">
+          These are estimates for discussion, not a quote or a guarantee. The figures come from
+          Cooper's internal workflow benchmarks rather than measured customer results, and actual
+          savings vary with your book, your systems, and how your team adopts Cooper.
+        </p>
       </section>
 
       <Footer />
