@@ -19,9 +19,9 @@
    claim-bearing copy on this page.
 ─────────────────────────────────────────────────────────────── */
 
-import { lazy, Suspense, useMemo, useState, type ReactNode } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useState, type CSSProperties, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, Calculator, LockSimple, Clock, CurrencyDollar, TrendUp, UsersThree } from '@phosphor-icons/react'
+import { ArrowRight, Calculator, LockSimple, Clock, CurrencyDollar, ListChecks, SlidersHorizontal, Timer, TrendUp, UsersThree, type Icon } from '@phosphor-icons/react'
 import Navbar from './Navbar'
 import Footer from './Footer'
 import Reveal from './Reveal'
@@ -71,6 +71,32 @@ const COMMERCIAL_MINUTES_PER_ACCOUNT =
 const BLENDED_SPEED_MULTIPLE =
   WORKFLOWS.reduce((sum, w) => sum + speedMultiple(w) * minutesSaved(w) * (w.defaultVolume ?? 0), 0) /
   WORKFLOWS.reduce((sum, w) => sum + minutesSaved(w) * (w.defaultVolume ?? 0), 0)
+
+/* Three notes for the foot of the input rail, in the white paper's key-findings
+   shape: a glyph, a lead in full black, the rest muted. Scaled down, because a
+   344px column is not a 720px article column.
+
+   Short on purpose. This is the slack under the controls, not a section, and
+   the three things worth saying there are what the estimate counts, how it
+   counts, and that the reader can keep moving the sliders. The count comes off
+   WORKFLOWS so it cannot disagree with the figure in the hero. */
+const RAIL_NOTES: { icon: Icon; lead: string; rest: string }[] = [
+  {
+    icon: ListChecks,
+    lead: `${WORKFLOWS.length} workflows.`,
+    rest: ' From submissions and applications to renewals and claims.',
+  },
+  {
+    icon: Timer,
+    lead: 'Priced per workflow.',
+    rest: ' Your volume times the minutes each one gives back.',
+  },
+  {
+    icon: SlidersHorizontal,
+    lead: 'Move any slider.',
+    rest: ' Every figure updates as you drag.',
+  },
+]
 
 interface Inputs {
   accounts: number
@@ -138,10 +164,54 @@ function calculate({ accounts, commercialShare, headcount }: Inputs) {
    PIECES
    ══════════════════════════════════════════════════════════════ */
 
-/** Blurs its children until unlocked — Harvey's teaser mechanic. */
+/** Blurs its children until unlocked — Harvey's teaser mechanic.
+ *
+ *  Lighter than the blur over the tiles, because this covers 15px figures
+ *  rather than 27px ones. A radius that reads as depth of field on a headline
+ *  erases a table cell down to a grey dash, and a row of dashes reads as a
+ *  rendering fault rather than as something withheld. */
 function Locked({ locked, children }: { locked: boolean; children: ReactNode }) {
   if (!locked) return <>{children}</>
-  return <span className="pointer-events-none select-none blur-[7px] saturate-50">{children}</span>
+  return <span className="pointer-events-none select-none blur-[5px] saturate-50">{children}</span>
+}
+
+/** Guarded for the server: this page is not prerendered, but the guard costs
+ *  nothing and the module is imported by the SSR build all the same. */
+const prefersReducedMotion = () =>
+  typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+
+/** Eases from 0 to the target on mount, matching the integrations hero's count.
+ *
+ *  Kept local rather than imported from IntegrationsPage: that module is 48 kB
+ *  of page, and pulling it in for eighteen lines would put the whole thing in
+ *  this page's chunk. Honours prefers-reduced-motion by landing on the target
+ *  immediately. */
+function CountUp({ to, duration = 1400 }: { to: number; duration?: number }) {
+  // The preference is read at initial state rather than written from inside the
+  // effect: under reduced motion the number is simply born at its target. The
+  // effect would have to set state synchronously to do the same, which is the
+  // cascading-render pattern react-hooks/set-state-in-effect exists to catch.
+  const [n, setN] = useState(() => (prefersReducedMotion() ? to : 0))
+
+  useEffect(() => {
+    if (prefersReducedMotion()) return
+
+    let raf = 0
+    let start = 0
+    const ease = (t: number) => 1 - Math.pow(1 - t, 3) // easeOutCubic
+    const tick = (ts: number) => {
+      if (!start) start = ts
+      const p = Math.min(1, (ts - start) / duration)
+      setN(Math.round(ease(p) * to))
+      if (p < 1) raf = requestAnimationFrame(tick)
+    }
+    // A beat after paint, so the count starts from a settled page rather than
+    // racing the hero in.
+    const t = window.setTimeout(() => { raf = requestAnimationFrame(tick) }, 300)
+    return () => { clearTimeout(t); cancelAnimationFrame(raf) }
+  }, [to, duration])
+
+  return <span>{n}</span>
 }
 
 function Slider({
@@ -150,6 +220,12 @@ function Slider({
   id: string; label: string; caption?: string; value: number; display: string
   min: number; max: number; step: number; onChange: (n: number) => void
 }) {
+  // Where the orange stops and the grey starts. WebKit has no progress
+  // pseudo-element, so the track's gradient reads this instead. Unitless,
+  // because the stop is a calc against the knob's travel rather than a plain
+  // percentage of the track. See the .range-slider block in index.css.
+  const frac = max > min ? (value - min) / (max - min) : 0
+
   return (
     <div className="border-b border-dark/[0.07] py-[14px] last:border-b-0">
       <div className="flex items-baseline justify-between gap-[12px]">
@@ -167,6 +243,7 @@ function Slider({
         step={step}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
+        style={{ '--range-frac': frac } as CSSProperties}
         className="range-slider mt-[10px] h-[24px] w-full cursor-pointer"
       />
     </div>
@@ -214,10 +291,6 @@ export default function RoiCalculatorPage() {
     { icon: CurrencyDollar, label: 'Cost avoided', value: `${usd(r.monthlyValue)}/mo`, sub: `Those hours at a ${usd(BLENDED_HOURLY_COST)} blended rate.` },
   ]
 
-  /* The figure the hero floats over the photograph. Picked out of the same
-     array the results panel renders, so there is one definition of it. */
-  const heroTile = tiles.find((t) => t.label === 'Cost avoided')
-
   const tableRows = [
     { label: 'Additional revenue', cells: [usd(r.monthlyRevenue), usd(r.firstYearRevenue), usd(r.threeYearRevenue)] },
     { label: 'Hours returned', cells: [num(r.monthlyHours), num(r.firstYearHours), num(r.threeYearHours)] },
@@ -230,27 +303,42 @@ export default function RoiCalculatorPage() {
 
       {/* ══════════════ HERO ══════════════
 
-          Headline left, the photograph right, a figure floating over its lower
-          corner. The figure is the live one rather than a decorative screenshot:
-          it is the same monthly number the calculator below computes, from the
-          same state, so moving a slider moves it. A hero that shows a made-up
-          result next to a calculator that shows a real one teaches the reader
-          not to trust either.
+          Headline left, the photograph right, and a standing figure under the
+          copy. The figure is a constant, not the calculator's live output: the
+          hero used to float the monthly cost-avoided tile over the photograph,
+          wired to the same state as the panel below, so dragging a slider moved
+          a number two screens away from the slider. The calculator answers
+          inside the calculator; the hero states a fact about the model and
+          stops there.
+
+          Top-aligned rather than centred. Against a 460px square photograph,
+          centring pushed the whole column down to float in the middle of the
+          frame with nothing above it.
 
           The photograph follows the imagery direction in the Cooper design
           system: golden hour, seen from behind with no face, warm oak, and the
           amber reeded-glass signature down the right. ══════════════ */}
       <section className="px-5 pb-[36px] pt-[120px] md:px-10 lg:px-[62px] lg:pt-[140px]">
-        <div className="mx-auto grid max-w-[1180px] items-center gap-[36px] lg:grid-cols-[minmax(0,1fr)_minmax(0,460px)] lg:gap-[64px]">
+        <div className="mx-auto grid max-w-[1180px] gap-[36px] lg:grid-cols-[minmax(0,1fr)_minmax(0,460px)] lg:items-start lg:gap-[64px]">
           <div>
-            {/* Same treatment as the white paper's kicker: the icon from the
-                resources catalog, then the label. The white paper follows its
-                label with "// July 2026 edition"; this page has no edition or
-                date in its copy, and inventing one is not mine to do, so the
-                slash and its text are left off rather than filled in. */}
-            <div className="mb-[18px] flex items-center gap-[8px] font-sans text-[14px]">
+            {/* The white paper's kicker, matched piece for piece: icon, label,
+                a double slash, then a qualifier the muted container colours
+                down. See WhitePaperReport.tsx.
+
+                The qualifier is a date rather than a claim. A page that turns
+                estimates into a dollar figure should say how old the estimates
+                are, and these come from Akhilesh's brief of 29 July 2026 — the
+                source note in cooperEffect.ts. "Benchmarks" was the other
+                candidate and is the wrong word: that note is explicit that
+                these are internal estimates, not measured customer averages.
+
+                It dates the same way the white paper's edition does. Whoever
+                revises the workflow times moves this string too. */}
+            <div className="mb-[18px] flex items-center gap-[8px] font-sans text-[14px] text-dark/45">
               <Calculator size={16} weight="regular" className="shrink-0 text-dark" />
               <span className="font-medium text-dark">ROI calculator</span>
+              <span aria-hidden>//</span>
+              <span>Updated July 2026</span>
             </div>
             <h1 className="font-serif text-[38px] leading-[1.06] tracking-[-1px] text-dark md:text-[46px] lg:text-[52px]">
               See Cooper's impact on your team
@@ -260,39 +348,68 @@ export default function RoiCalculatorPage() {
               the shape of your book and this estimates the value Cooper can generate for
               you every month.
             </p>
+
+            {/* Standing figure, counted up the way the integrations hero counts
+                its connectors.
+
+                It is WORKFLOWS.length rather than a literal, so the hero cannot
+                claim a number the model below does not actually price. No "+"
+                either: the integrations count carries one because more keep
+                arriving, and there are exactly fifteen workflows in this model,
+                not "at least fifteen". */}
+            <div className="mt-[38px]">
+              <div className="font-serif text-[52px] leading-[0.9] tabular-nums text-dark lg:text-[64px]">
+                <CountUp to={WORKFLOWS.length} />
+              </div>
+              <p className="mt-[12px] font-grotesk text-[14px] font-medium text-dark">
+                workflows priced
+              </p>
+            </div>
           </div>
 
-          <div className="relative">
+          <div>
             <img
               src="/images/roi-hero.jpg"
               alt=""
               aria-hidden
               width={1100}
               height={1473}
-              className="block aspect-square w-full rounded-[18px] object-cover"
+              /* Square corners, like every other photograph on this site: the
+                 persona heroes, the team photo, the home hero. The 18px this
+                 carried was the only instance of that radius in the codebase
+                 outside the white paper cover, where the rounding is a book's
+                 fore edge and means something. Here it meant nothing. */
+              className="block aspect-square w-full object-cover"
             />
-            {/* Sits over the calm lower corner the frame was composed to leave.
-                It renders one of the tiles the calculator already builds rather
-                than restating it, so the hero cannot carry a number, a label or
-                a wording the results below disagree with. */}
-            {heroTile && (
-              <div className="absolute bottom-[18px] left-[18px] rounded-[14px] bg-cream-light/95 px-[20px] py-[16px] shadow-[0_20px_44px_-20px_rgba(30,26,21,0.5)] backdrop-blur-[2px]">
-                <p className="font-grotesk text-[10.5px] font-medium uppercase tracking-[1.2px] text-dark/45">
-                  {heroTile.label}
-                </p>
-                <p className="mt-[6px] font-serif text-[30px] leading-none text-dark">
-                  {heroTile.value}
-                </p>
-              </div>
-            )}
           </div>
         </div>
       </section>
 
-      {/* ══════════════ CALCULATOR ══════════════ */}
-      <section className="px-5 pb-[64px] md:px-10 lg:px-[62px] lg:pb-[88px]">
-        <div className="mx-auto grid max-w-[1180px] overflow-hidden rounded-[20px] border border-dark/[0.1] bg-white/50 lg:grid-cols-[minmax(0,400px)_minmax(0,1fr)]">
-          {/* ── Inputs ── */}
+      {/* ══════════════ CALCULATOR ══════════════
+
+          The band stays the page's cream, so the hero runs into the calculator
+          without a seam. The card is then plain white on it, and the lifting is
+          left to the shadow and the border alone — the same two the home page's
+          spotlight card uses, at the same values, minus the darker surround it
+          gets to sit on. See OnePlatform.tsx. ══════════════ */}
+      <section className="px-5 pb-[64px] pt-[56px] md:px-10 lg:px-[62px] lg:pb-[88px] lg:pt-[72px]">
+        {/* Square, no radius, matching the home page's spotlight card and the
+            hero photograph above it.
+
+            White throughout. The input rail used to carry the page's cream to
+            set it apart from the answer, which only worked while the band
+            behind was darker; on cream it would have dissolved into the page.
+            The rule between the two columns tells them apart now. */}
+        <div
+          className="mx-auto grid max-w-[1180px] border-4 border-black/[0.02] bg-white lg:grid-cols-[minmax(0,400px)_minmax(0,1fr)]"
+          style={{ boxShadow: '0px 7.5px 69.6px -20px rgba(0,0,0,0.33)' }}
+        >
+          {/* ── Inputs ──
+              Static. The column ran short against the answer beside it, and
+              the slack was briefly given to a sticky block that followed the
+              scroll; the three notes at its foot fill the column instead, so
+              there is no longer much slack to travel through and nothing left
+              for the sticky to buy. */}
           <div className="border-b border-dark/[0.1] p-[24px] lg:border-b-0 lg:border-r lg:p-[28px]">
             <h2 className="font-grotesk text-[12px] font-medium uppercase tracking-[1.3px] text-dark/45">
               Your team
@@ -338,64 +455,93 @@ export default function RoiCalculatorPage() {
             <p className="mt-[18px] border-t border-dark/[0.08] pt-[16px] font-sans text-[12.5px] leading-[1.5] text-dark/45">
               Priced at a {usd(BLENDED_HOURLY_COST)} blended hourly rate. A personal-lines account counts as about a third of a commercial one.
             </p>
+
+            <ul className="mt-[20px] flex flex-col gap-[14px] border-t border-dark/[0.08] pt-[20px]">
+              {RAIL_NOTES.map(({ icon: Glyph, lead, rest }) => (
+                <li key={lead} className="flex gap-[11px]">
+                  {/* Nudged onto the first line rather than above it, as the
+                      white paper's findings are. */}
+                  <Glyph size={16} weight="regular" className="mt-[2px] shrink-0 text-dark" />
+                  <p className="font-sans text-[13px] leading-[1.5] text-dark/55">
+                    <span className="font-medium text-dark">{lead}</span>
+                    {rest}
+                  </p>
+                </li>
+              ))}
+            </ul>
+
+            {/* Last in the column, and last in the order of things to do: set
+                the three sliders, read what the estimate covers, then open the
+                rest. Full width because the column is narrow, and set off from
+                the notes by more than their own spacing so it reads as the
+                step after them rather than a fourth item in the list. */}
+            {!unlocked && (
+              <button
+                type="button"
+                onClick={() => setGateOpen(true)}
+                className="mt-[38px] inline-flex w-full items-center justify-center gap-[8px] rounded-[6px] bg-dark px-[20px] py-[13px] font-sans text-[14.5px] font-medium text-cream-light transition-all duration-200 hover:scale-[1.02]"
+              >
+                <LockSimple size={15} weight="bold" /> Reveal full results
+              </button>
+            )}
           </div>
 
           {/* ── Results ──
-              Filled, against the white inputs beside it. That contrast is the
-              structural idea in the reference: one side is where you put things
-              in, the other is the answer, and the two should not read as halves
-              of one surface. Cooper's dark rather than the reference's brand
-              fill — orange is an accent in this system, not a field.
+              White, not Cooper's dark. The dark fill came from the reference
+              layout, where a filled answer panel separates the side you type
+              into from the side that answers. It cost more than it bought:
+              #1e1a15 is a warm near-black, and at this size it stops reading as
+              "dark" and starts reading as a brown field, which is not a colour
+              in this palette.
 
-              The fill and the light type inside it are one change, not two. A
-              rebase once dropped the fill and kept the type, which put pale
-              text on a pale panel and made the whole answer invisible. */}
-          <div className="min-w-0 bg-dark p-[24px] text-cream-light lg:p-[32px]">
+              The two sides are still told apart, by surface rather than by
+              fill: the input rail is the page's warm cream, the answer is
+              plain white, and the rule between them already exists. The type
+              inside is dark throughout — the fill and the type are one change,
+              and a past rebase that moved one without the other put pale text
+              on a pale panel and made the whole answer invisible. */}
+          <div className="min-w-0 bg-white p-[24px] text-dark lg:p-[32px]">
             <>
-                {/* Headline + gate */}
-                <div className="flex flex-wrap items-start justify-between gap-[16px]">
-                  <div>
-                    <span className="font-grotesk text-[11.5px] font-medium uppercase tracking-[1.3px] text-cream-light/45">
-                      Additional revenue a month
-                    </span>
-                    <div className="mt-[8px] font-serif text-[44px] leading-[1] tabular-nums text-cream-light lg:text-[58px]">
-                      {usd(r.monthlyRevenue)}
-                    </div>
-                    <p className="mt-[8px] max-w-[420px] font-sans text-[14px] leading-[1.5] text-cream-light/50">
-                      {accounts === 0
-                        ? 'Set your monthly accounts to see what the freed capacity is worth.'
-                        : `${num(r.monthlyHours)} hours back a month buys ${num(r.extraAccounts)} more submissions, and ${num(r.extraBound)} of them bind.`}
-                    </p>
+                {/* Headline. The gate button used to sit to its right; it is
+                    in the input column now. */}
+                <div>
+                  <span className="font-grotesk text-[11.5px] font-medium uppercase tracking-[1.3px] text-dark/45">
+                    Additional revenue a month
+                  </span>
+                  <div className="mt-[8px] font-serif text-[44px] leading-[1] tabular-nums text-dark lg:text-[58px]">
+                    {usd(r.monthlyRevenue)}
                   </div>
-                  {!unlocked && (
-                    <button
-                      type="button"
-                      onClick={() => setGateOpen(true)}
-                      className="inline-flex shrink-0 items-center gap-[8px] rounded-[7px] bg-cream-light px-[20px] py-[12px] font-sans text-[14.5px] font-medium text-dark transition-all duration-200 hover:scale-[1.03]"
-                    >
-                      <LockSimple size={15} weight="bold" /> Reveal full results
-                    </button>
-                  )}
+                  <p className="mt-[8px] max-w-[420px] font-sans text-[14px] leading-[1.5] text-dark/55">
+                    {accounts === 0
+                      ? 'Set your monthly accounts to see what the freed capacity is worth.'
+                      : `${num(r.monthlyHours)} hours back a month buys ${num(r.extraAccounts)} more submissions, and ${num(r.extraBound)} of them bind.`}
+                  </p>
                 </div>
 
-                {/* Year-one tiles — always legible, this is the teaser */}
+                {/* Year-one tiles, behind the gate — the coverage Amar shipped
+                    in 2419038.
+
+                    They also had his colours back: a light card carrying dark
+                    type. A later commit filled the panel dark and moved the
+                    type to cream without moving the card, which is what left
+                    the figures invisible once the gate opened. */}
                 <div className={`mt-[26px] grid gap-[12px] sm:grid-cols-2 ${
-                  unlocked ? '' : 'pointer-events-none select-none blur-[7px] saturate-50'
+                  unlocked ? '' : 'pointer-events-none select-none blur-[6px] saturate-50'
                 }`}>
                   {tiles.map((t) => {
                     const Icon = t.icon
                     return (
-                      <div key={t.label} className="rounded-[14px] border border-dark/[0.09] bg-cream-light/70 p-[18px]">
+                      <div key={t.label} className="border border-[#E2D9CF] bg-cream-light p-[18px]">
                         <div className="mb-[10px] flex items-center gap-[9px]">
-                          <span className="grid h-[30px] w-[30px] place-items-center rounded-[8px] bg-accent-orange/10 text-accent-orange">
+                          <span className="grid h-[30px] w-[30px] place-items-center rounded-[6px] bg-accent-orange/10 text-accent-orange">
                             <Icon size={16} weight="regular" />
                           </span>
                           <span className="font-grotesk text-[11px] font-medium uppercase tracking-[1.1px] text-dark/45">
                             {t.label}
                           </span>
                         </div>
-                        <div className="font-serif text-[27px] leading-[1.05] tabular-nums text-cream-light">{t.value}</div>
-                        <p className="mt-[6px] font-sans text-[12.5px] leading-[1.4] text-cream-light/50">{t.sub}</p>
+                        <div className="font-serif text-[27px] leading-[1.05] tabular-nums text-dark">{t.value}</div>
+                        <p className="mt-[6px] font-sans text-[12.5px] leading-[1.4] text-dark/55">{t.sub}</p>
                       </div>
                     )
                   })}
@@ -405,12 +551,13 @@ export default function RoiCalculatorPage() {
                 <div className="mt-[26px] overflow-x-auto">
                   <table className="w-full min-w-[400px] border-collapse">
                     <thead>
-                      <tr className="border-b border-cream-light/[0.16]">
+                      <tr className="border-b border-dark/[0.12]">
                         <th className="pb-[10px] text-left">&nbsp;</th>
+                        {/* Headers gated with their columns, as Amar had them. */}
                         {['Per month', 'First 12 months', 'Over 3 years'].map((h, i) => (
                           <th
                             key={h}
-                            className="pb-[10px] text-right font-grotesk text-[11px] font-medium uppercase tracking-[1.1px] text-cream-light/40"
+                            className="pb-[10px] text-right font-grotesk text-[11px] font-medium uppercase tracking-[1.1px] text-dark/40"
                           >
                             <Locked locked={!unlocked && i > 0}>{h}</Locked>
                           </th>
@@ -419,10 +566,10 @@ export default function RoiCalculatorPage() {
                     </thead>
                     <tbody>
                       {tableRows.map((row) => (
-                        <tr key={row.label} className="border-b border-cream-light/[0.09] last:border-b-0">
-                          <td className="py-[14px] font-sans text-[14px] text-cream-light/70">{row.label}</td>
+                        <tr key={row.label} className="border-b border-dark/[0.08] last:border-b-0">
+                          <td className="py-[14px] font-sans text-[14px] text-dark/70">{row.label}</td>
                           {row.cells.map((c, i) => (
-                            <td key={i} className="py-[14px] text-right font-sans text-[15px] font-medium tabular-nums text-cream-light">
+                            <td key={i} className="py-[14px] text-right font-sans text-[15px] font-medium tabular-nums text-dark">
                               <Locked locked={!unlocked && i > 0}>{c}</Locked>
                             </td>
                           ))}
@@ -432,24 +579,32 @@ export default function RoiCalculatorPage() {
                   </table>
                 </div>
 
-                <p className="mt-[16px] font-sans text-[12.5px] leading-[1.5] text-cream-light/45">
+                <p className="mt-[16px] font-sans text-[12.5px] leading-[1.5] text-dark/45">
                   The monthly figure is the steady rate. The 12-month total runs at {Math.round(RAMP[0] * 100)}% of it, because a rollout takes a month or two to reach every desk.
                 </p>
 
-                {/* CTA */}
-                <div className="mt-[24px] flex flex-col gap-[14px] rounded-[14px] border border-accent-orange/25 bg-accent-orange/[0.06] p-[20px] sm:flex-row sm:items-center sm:justify-between">
-                  <p className="max-w-[400px] font-sans text-[14px] leading-[1.55] text-cream-light/70">
-                    {unlocked
-                      ? 'Bring a real submission and we will run it through Cooper live, so you can check these numbers against your own file.'
-                      : 'Want these numbers on your own workflows? We will walk through them with you.'}
-                  </p>
-                  <Link
-                    to="/demo?utm_content=roi-calculator"
-                    className="inline-flex shrink-0 items-center justify-center gap-[8px] rounded-[6px] bg-dark px-[22px] py-[12px] font-sans text-[14.5px] font-medium text-cream-light no-underline transition-all duration-200 hover:scale-[1.03]"
-                  >
-                    Request a Demo <ArrowRight size={15} weight="bold" />
-                  </Link>
-                </div>
+                {/* CTA — only once the gate is open.
+                    While it is shut the panel is asking for one thing, and the
+                    reader has one button to press. A second call to action
+                    beside it competes with the step that has to happen first.
+
+                    Its locked wording went with it. It said "Want these numbers
+                    on your own workflows?" next to numbers the reader could not
+                    see yet, and with the CTA gone there is no state left that
+                    renders it. */}
+                {unlocked && (
+                  <div className="mt-[24px] flex flex-col gap-[14px] border border-accent-orange/25 bg-accent-orange/[0.06] p-[20px] sm:flex-row sm:items-center sm:justify-between">
+                    <p className="max-w-[400px] font-sans text-[14px] leading-[1.55] text-dark/70">
+                      Bring a real submission and we will run it through Cooper live, so you can check these numbers against your own file.
+                    </p>
+                    <Link
+                      to="/demo?utm_content=roi-calculator"
+                      className="inline-flex shrink-0 items-center justify-center gap-[8px] rounded-[6px] bg-dark px-[22px] py-[12px] font-sans text-[14.5px] font-medium text-cream-light no-underline transition-all duration-200 hover:scale-[1.03]"
+                    >
+                      Request a Demo <ArrowRight size={15} weight="bold" />
+                    </Link>
+                  </div>
+                )}
             </>
           </div>
         </div>

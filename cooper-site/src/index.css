@@ -531,3 +531,121 @@
 }
 @utility animate-overlay-in { animation: overlay-in 0.2s ease-out both; }
 @utility animate-modal-in { animation: modal-in 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+
+/* ── Range slider (ROI calculator) ──
+   Built to Untitled UI's slider spec — an 8px pill track, a 24px knob with a
+   2px ring set inside its edge and a soft drop shadow — redrawn in Cooper's
+   palette. Taken as a spec rather than as a package: UUI's own component is
+   built on react-aria-components, and pulling that dependency tree into a
+   static marketing site to render three inputs is not a trade worth making.
+
+   The filled portion is a hard-stopped gradient on the track rather than a
+   second element, because WebKit exposes no progress pseudo-element. The stop
+   is `--range-pct`, which the Slider component sets inline from its value.
+   Firefox does have ::-moz-range-progress, but it gets the same gradient so
+   there is one description of the fill instead of two that can drift.
+
+   The two thumb rules are duplicated rather than combined into one selector
+   list on purpose: both engines drop an entire rule that contains a selector
+   they do not recognise, so a combined rule would style neither. */
+.range-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  /* Keeps the knob's full 24px inside the control instead of clipped at the ends. */
+  padding-inline: 0;
+}
+
+.range-slider::-webkit-slider-runnable-track {
+  height: 8px;
+  border-radius: 999px;
+  /* The stop lands on the knob's centre, not on a raw percentage of the
+     track. A native range input insets the knob's travel by half its width,
+     so a raw percentage drifts up to 12px away from the knob it is supposed
+     to meet — visible as a sliver of orange past the knob near either end. */
+  background: linear-gradient(
+    to right,
+    var(--color-accent-orange) 0 calc(12px + (100% - 24px) * var(--range-frac, 0)),
+    rgba(30, 26, 21, 0.12) calc(12px + (100% - 24px) * var(--range-frac, 0)) 100%
+  );
+}
+.range-slider::-moz-range-track {
+  height: 8px;
+  border-radius: 999px;
+  /* The stop lands on the knob's centre, not on a raw percentage of the
+     track. A native range input insets the knob's travel by half its width,
+     so a raw percentage drifts up to 12px away from the knob it is supposed
+     to meet — visible as a sliver of orange past the knob near either end. */
+  background: linear-gradient(
+    to right,
+    var(--color-accent-orange) 0 calc(12px + (100% - 24px) * var(--range-frac, 0)),
+    rgba(30, 26, 21, 0.12) calc(12px + (100% - 24px) * var(--range-frac, 0)) 100%
+  );
+}
+
+.range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 24px;
+  width: 24px;
+  border: none;
+  border-radius: 999px;
+  background: var(--color-cream-light);
+  box-shadow:
+    inset 0 0 0 2px var(--color-accent-orange),
+    0 1px 3px rgba(30, 26, 21, 0.22),
+    0 1px 2px rgba(30, 26, 21, 0.1);
+  /* Centres the 24px knob on the 8px track: (8 - 24) / 2. */
+  margin-top: -8px;
+  cursor: grab;
+  transition: box-shadow 0.15s ease;
+}
+.range-slider::-moz-range-thumb {
+  height: 24px;
+  width: 24px;
+  border: none;
+  border-radius: 999px;
+  background: var(--color-cream-light);
+  box-shadow:
+    inset 0 0 0 2px var(--color-accent-orange),
+    0 1px 3px rgba(30, 26, 21, 0.22),
+    0 1px 2px rgba(30, 26, 21, 0.1);
+  cursor: grab;
+  transition: box-shadow 0.15s ease;
+}
+
+/* Halo on approach and on grab, the same one the nav and the integrations
+   hero use, so the control answers a pointer before it is dragged. */
+.range-slider:hover::-webkit-slider-thumb,
+.range-slider:active::-webkit-slider-thumb {
+  box-shadow:
+    inset 0 0 0 2px var(--color-accent-orange),
+    0 0 0 6px rgba(217, 86, 17, 0.14),
+    0 1px 3px rgba(30, 26, 21, 0.22);
+}
+.range-slider:hover::-moz-range-thumb,
+.range-slider:active::-moz-range-thumb {
+  box-shadow:
+    inset 0 0 0 2px var(--color-accent-orange),
+    0 0 0 6px rgba(217, 86, 17, 0.14),
+    0 1px 3px rgba(30, 26, 21, 0.22);
+}
+.range-slider:active::-webkit-slider-thumb { cursor: grabbing; }
+.range-slider:active::-moz-range-thumb { cursor: grabbing; }
+
+/* Focus lands on the knob, not on the full-width control, whose default ring
+   would draw a rectangle around the whole row. */
+.range-slider:focus { outline: none; }
+.range-slider:focus-visible::-webkit-slider-thumb {
+  outline: 2px solid var(--color-accent-orange);
+  outline-offset: 2px;
+}
+.range-slider:focus-visible::-moz-range-thumb {
+  outline: 2px solid var(--color-accent-orange);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .range-slider::-webkit-slider-thumb { transition: none; }
+  .range-slider::-moz-range-thumb { transition: none; }
+}
